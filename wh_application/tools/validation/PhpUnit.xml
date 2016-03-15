@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="../../vendor/autoload.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         verbose="true"
+         processIsolation="false"
+         backupGlobals="false"
+         syntaxCheck="true"
+         stopOnError="true"
+         stopOnFailure="true">
+
+    <testsuites>
+        <testsuite name="WebHemi\\Tests">
+            <directory>../../test</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">../../src</directory>
+        </whitelist>
+    </filter>
+
+    <logging>
+        <log type="coverage-html" target="../../data/coverage" title="WebHemi" charset="UTF-8" yui="true" highlight="true" lowUpperBound="35" highLowerBound="70" />
+    </logging>
+</phpunit>

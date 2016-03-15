@@ -2,7 +2,7 @@
 <?php
 
 /**
- * WebHemi2
+ * WebHemi
  *
  * PHP version 5.4
  *
@@ -17,7 +17,7 @@
  * obtain it through the world-wide-web, please send an email
  * to license@gixx-web.com so we can send you a copy immediately.
  *
- * @category  WebHemi2
+ * @category  WebHemi
  * @author    Gabor Ivan <gixx@gixx-web.com>
  * @copyright 2012 - 2016 Gixx-web (http://www.gixx-web.com)
  * @license   http://webhemi.gixx-web.com/license/new-bsd   New BSD License
@@ -29,7 +29,7 @@ define('SCRIPT_VERSION', 'v.1.0');
 chdir(__DIR__);
 define('DOC_ROOT', realpath(dirname(__DIR__) . '/..'));
 
-echo 'WebHemi2 git hooks installer (' . SCRIPT_VERSION . ')' . PHP_EOL . PHP_EOL;
+echo 'WebHemi git hooks installer (' . SCRIPT_VERSION . ')' . PHP_EOL . PHP_EOL;
 
 // Create symlink for all git hook scripts
 echo 'Create symlink for all git hook scripts: ' . PHP_EOL;

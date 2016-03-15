@@ -2,7 +2,6 @@
 
 # Define global variables
 PROJECT_ROOT="$(git rev-parse --show-toplevel)"
-MODULE_PATH="wh_application/module/WebHemi2"
 FILES_NAME_TO_CHECK="$(git diff --cached --name-only --diff-filter=ACM  | egrep '*.(php|phtml)')"
 ASK_PROMPT=0
 BOLD=$(tput bold)
@@ -46,7 +45,7 @@ function check_dump()
     echo -e "\n$MAGENTA  Check for debug code in module files $NORMAL"
 
     # Get only the module files
-    module_files="$(echo -e "$FILES_NAME_TO_CHECK" | egrep "$MODULE_PATH")"
+    module_files="$(echo -e "$FILES_NAME_TO_CHECK" | egrep "wh_application")"
 
     if [[ ! -n $module_files ]];then
         echo "    No module files to check"
@@ -71,7 +70,7 @@ function check_phpcs()
     echo -e "\n$MAGENTA  Run PHP Code Sniffer $NORMAL"
     phpcs_path="$PROJECT_ROOT/wh_application/vendor/squizlabs/php_codesniffer"
     echo "$FILES_NAME_TO_CHECK" | while read FILE; do
-        result="$($phpcs_path/scripts/phpcs --standard=$phpcs_path/CodeSniffer/Standards/PSR2 "$FILE" 2>&1)"
+        result="$($phpcs_path/scripts/phpcs --standard=$PROJECT_ROOT/wh_application/tools/validation/PhpCs.xml "$FILE" 2>&1)"
         if [ $? -ne 0 ]; then
             print_check_warn "$FILE" " + 4"
             result="$(echo -e "$result" | egrep -v "^FILE" | egrep -v "^Time: " | sed 's/^/       &/g')"
@@ -112,9 +111,9 @@ function run_unit_tests()
     echo -e "\n$MAGENTA  Run PHPUnit tests for changed module files $NORMAL"
 
     # Get the changed test files
-    test_files="$(echo -e "$FILES_NAME_TO_CHECK" | egrep "$MODULE_PATH" | egrep "/test\/.*Test\.php$/")"
+    test_files="$(echo -e "$FILES_NAME_TO_CHECK" | egrep "wh_application" | egrep "/test\/.*Test\.php$/")"
     # Get the changed module files and generate the UnitTest pair of them
-    module_files="$(echo -e "$FILES_NAME_TO_CHECK" | egrep "$MODULE_PATH" | egrep "/src/" | sed 's/src\/WebHemi2\//test\/WebHemi2Test\//' | sed 's/.php/Test.php/') "
+    module_files="$(echo -e "$FILES_NAME_TO_CHECK" | egrep "wh_application" | egrep "/src/" | sed 's/src\/WebHemi\//test\/WebHemiTest\//' | sed 's/.php/Test.php/') "
     # Sort and remove duplicates
     watched_files="$(echo -e "$test_files\n$module_files" | sort -u)"
 
@@ -123,7 +122,7 @@ function run_unit_tests()
         if [[ -f "$FILE" ]]; then
             # Set test for message
             touch /tmp/test.git.commit
-            output="$($PROJECT_ROOT/wh_application/vendor/phpunit/phpunit/phpunit -c "$PROJECT_ROOT/$MODULE_PATH/test/phpunit_nolog.xml" "$FILE" 2>&1)"
+            output="$($PROJECT_ROOT/wh_application/vendor/phpunit/phpunit/phpunit -c "$PROJECT_ROOT/wh_application/tools/validation/PhpUnitNolog.xml" "$FILE" 2>&1)"
             if [ $? -ne 0 ]; then
                 print_check_fail "$FILE"
 
@@ -225,12 +224,12 @@ function init()
 {
     clear
     echo ""
-    echo -e "   ██╗    ██╗███████╗██████╗ ██╗  ██╗███████╗███╗   ███╗██╗  ██████╗ "
-    echo -e "   ██║    ██║██╔════╝██╔══██╗██║  ██║██╔════╝████╗ ████║██║  ╚════██╗"
-    echo -e "   ██║ █╗ ██║█████╗  ██████╔╝███████║█████╗  ██╔████╔██║██║   █████╔╝"
-    echo -e "   ██║███╗██║██╔══╝  ██╔══██╗██╔══██║██╔══╝  ██║╚██╔╝██║██║  ██╔═══╝ "
-    echo -e "   ╚███╔███╔╝███████╗██████╔╝██║  ██║███████╗██║ ╚═╝ ██║██║  ███████╗"
-    echo -e "    ╚══╝╚══╝ ╚══════╝╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝╚═╝  ╚══════╝"
+    echo -e "   ██╗    ██╗███████╗██████╗ ██╗  ██╗███████╗███╗   ███╗██╗"
+    echo -e "   ██║    ██║██╔════╝██╔══██╗██║  ██║██╔════╝████╗ ████║██║"
+    echo -e "   ██║ █╗ ██║█████╗  ██████╔╝███████║█████╗  ██╔████╔██║██║"
+    echo -e "   ██║███╗██║██╔══╝  ██╔══██╗██╔══██║██╔══╝  ██║╚██╔╝██║██║"
+    echo -e "   ╚███╔███╔╝███████╗██████╔╝██║  ██║███████╗██║ ╚═╝ ██║██║"
+    echo -e "    ╚══╝╚══╝ ╚══════╝╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝╚═╝"
     echo ""
     echo ""
     echo -e "$YELLOW \bStarting pre-commit hooks. $NORMAL"

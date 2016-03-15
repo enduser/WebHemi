@@ -29,7 +29,7 @@ Features / Goals
 - Form enhancements [PLANNING]
 - Easy-to-use 'Admin' application [PLANNING]
 - User friendly design for 'Admin' application [PLANNING]
-- Write UnitTests for the WebHemi2 module [PLANNING]
+- Write unit tests [PLANNING]
 - 'Virtual folder structure'-like content management [PLANNING]
 - Default website design [PLANNING]
 - Responsive design for 'Admin' application to use the page from mobile devices [PLANNING]

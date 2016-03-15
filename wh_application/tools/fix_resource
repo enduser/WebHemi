@@ -1,0 +1,117 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * WebHemi
+ *
+ * PHP version 5.4
+ *
+ *
+ * LICENSE
+ *
+ * This source file is subject to the new BSD license that is bundled
+ * with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://webhemi.gixx-web.com/license/new-bsd
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@gixx-web.com so we can send you a copy immediately.
+ *
+ * @category  WebHemi
+ * @author    Gabor Ivan <gixx@gixx-web.com>
+ * @copyright 2012 - 2016 Gixx-web (http://www.gixx-web.com)
+ * @license   http://webhemi.gixx-web.com/license/new-bsd   New BSD License
+ * @link      http://www.gixx-web.com
+ */
+
+define('SCRIPT_VERSION', 'v.1.3');
+
+chdir(__DIR__);
+define('DOC_ROOT', realpath(dirname(__DIR__) . '/..'));
+
+echo 'WebHemi resource builder (' . SCRIPT_VERSION . ')' . PHP_EOL . PHP_EOL;
+echo 'Current directory is: ' . __DIR__ . PHP_EOL . PHP_EOL;
+
+$resources = [
+    DOC_ROOT . '/wh_application/vendor/google/material-design-lite/material.min.css'                    => DOC_ROOT . '/resources/common/css/plugins/material.min.css',
+    DOC_ROOT . '/wh_application/vendor/google/material-design-lite/material.min.css.map'                => DOC_ROOT . '/resources/common/css/plugins/material.min.css.map',
+    DOC_ROOT . '/wh_application/vendor/google/material-design-lite/material.min.js'                     => DOC_ROOT . '/resources/common/js/plugins/material.min.js',
+    DOC_ROOT . '/wh_application/vendor/google/material-design-lite/material.min.js.map'                 => DOC_ROOT . '/resources/common/js/plugins/material.min.js.map',
+    DOC_ROOT . '/wh_application/vendor/Gixx/mdl-components-ext/package/material.components.ext.min.css' => DOC_ROOT . '/resources/common/css/plugins/material.components.ext.min.css',
+    DOC_ROOT . '/wh_application/vendor/Gixx/mdl-components-ext/package/material.components.ext.min.js'  => DOC_ROOT . '/resources/common/js/plugins/material.components.ext.min.js',
+    DOC_ROOT . '/wh_application/vendor/Gixx/mdl-color-theme/package/minified'                           => DOC_ROOT . '/resources/common/css/plugins/material.themes',
+];
+
+// Create symlink for mdl-file static folder
+echo 'Create symbolic links for resources: ';
+
+foreach ($resources as $source => $destination) {
+    echo PHP_EOL . ' * ' . basename($source) . ' ';
+
+    if (!file_exists($source)) {
+        echo '- Failed: No source found';
+    } elseif (!file_exists($destination)) {
+        if (is_dir($source)) {
+            echo '- Source is a directory... ';
+        }
+        if (@symlink($source, $destination)) {
+            echo '- Done';
+        } else {
+            echo '- Failed: Permission denied';
+        }
+    } else {
+        echo '- Link already exists.';
+    }
+}
+
+// Create symlink for default theme
+echo PHP_EOL . PHP_EOL . 'Create symbolic link for default (webhemi) theme: ';
+
+if (!file_exists(DOC_ROOT . '/resources/theme/webhemi')) {
+    if (symlink(
+        DOC_ROOT . '/wh_application/templates/default_theme/static',
+        DOC_ROOT . '/resources/theme/webhemi'
+    )) {
+        echo 'Done';
+    }
+} else {
+    echo 'Already exists...';
+}
+
+// Create symlink for all additional themes
+echo PHP_EOL . 'Create symbolic links for additional themes: ';
+$handle = opendir(DOC_ROOT . '/wh_application/templates/vendor_themes/');
+
+if ($handle) {
+    $linkCounter = 0;
+    while (false !== ($entry = readdir($handle))) {
+        if ($entry != '.' && $entry != '..') {
+            if (is_dir(DOC_ROOT . '/wh_application/templates/vendor_themes/' . $entry)
+                && file_exists(DOC_ROOT . '/wh_application/templates/vendor_themes/' . $entry . '/static')
+            ) {
+                echo PHP_EOL . "\t-> " . $entry . ': ';
+                $linkCounter++;
+
+                if (!file_exists(DOC_ROOT . '/resources/theme/' . $entry)) {
+                    if (symlink(
+                        DOC_ROOT . '/wh_application/templates/vendor_themes/' . $entry . '/static',
+                        DOC_ROOT . '/resources/theme/' . $entry
+                    )) {
+                        echo 'Done';
+                    }
+                } else {
+                    echo 'Already exists...';
+                }
+
+            }
+        }
+    }
+    closedir($handle);
+
+    if (!$linkCounter) {
+        echo 'No themes installed...';
+    }
+}
+echo PHP_EOL;
+// exit program normally
+exit(0);
