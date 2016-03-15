@@ -4,7 +4,7 @@
 /**
  * WebHemi
  *
- * PHP version 5.4
+ * PHP version 5.6
  *
  *
  * LICENSE

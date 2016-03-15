@@ -1,6 +1,10 @@
 Change log
 ==========
 
+Version 3.0.0-0.3
+-----------------
+* Get the Zend Expressive Skeleton into action
+
 Version 3.0.0-0.2
 -----------------
 * Define folder structure

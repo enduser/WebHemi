@@ -1,9 +1,6 @@
 /**
  * WebHemi
  *
- * PHP version 5.4
- *
- *
  * LICENSE
  *
  * This source file is subject to the new BSD license that is bundled

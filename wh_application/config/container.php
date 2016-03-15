@@ -22,19 +22,17 @@
  * @link      http://www.gixx-web.com
  */
 
-// Delegate static file requests back to the PHP built-in webserver
-if (php_sapi_name() === 'cli-server'
-    && is_file(__DIR__ . parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH))
-) {
-    return false;
-}
+use Zend\ServiceManager\Config;
+use Zend\ServiceManager\ServiceManager;
 
-chdir(__DIR__);
-require 'wh_application/vendor/autoload.php';
+// Load configuration
+$config = require __DIR__ . '/config.php';
 
-/** @var \Interop\Container\ContainerInterface $container */
-$container = require 'wh_application/config/container.php';
+// Build container
+$container = new ServiceManager();
+(new Config($config['dependencies']))->configureServiceManager($container);
 
-/** @var \Zend\Expressive\Application $app */
-$app = $container->get('Zend\Expressive\Application');
-$app->run();
+// Inject config
+$container->setService('config', $config);
+
+return $container;
