@@ -5,25 +5,34 @@ namespace WebHemi\Application;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
 use ArrayObject;
+use Zend\Stdlib\ArrayUtils;
+use Interop\Container\ContainerInterface;
+use Zend\ServiceManager\ServiceManager;
+use Zend\Expressive\Template\TemplateRendererInterface;
+use Zend\Expressive\ZendView\ZendViewRenderer;
 
 class ApplicationMiddleware
 {
     /**
-     * @var RouterInterface
+     * @var ServiceManager
      */
-    private $config;
+    private $container;
+
+    /**
+     * @var string
+     */
+    private $themePath = 'default_theme';
 
     /**
      * ApplicationMiddleware constructor.
-     * @param ArrayObject $config
+     * @param ContainerInterface $container
      */
-    public function __construct(ArrayObject $config)
+    public function __construct(ContainerInterface $container)
     {
-        $this->config = $config;
+        $this->container = $container;
     }
 
     /**
@@ -36,6 +45,36 @@ class ApplicationMiddleware
     {
         echo 'Pre-route Config<br>';
 
+        $this->setThemeConfig();
+
         return $next($request, $response);
+    }
+    
+    protected function setThemeConfig()
+    {
+        // get chosen theme config
+        $configFile = __DIR__ . '/../../../templates/' . $this->themePath . '/theme.config.json';
+        $templateConfig = json_decode(file_get_contents($configFile), true);
+
+        // fix theme path
+        foreach ($templateConfig['templates']['map'] as $alias => $path) {
+            $templateConfig['templates']['map'][$alias] = 'wh_application/templates/' . $this->themePath . '/' . $path;
+        }
+
+        // Get already loaded config
+        $applicationConfig = (array)$this->container->get('config');
+
+        // Merge and set new config
+        $applicationConfig = ArrayUtils::merge($applicationConfig, $templateConfig);
+        $config = new ArrayObject($applicationConfig, ArrayObject::ARRAY_AS_PROPS);
+        $this->container
+            ->setAllowOverride(true)
+            ->setService('config', $config)
+            ->setAllowOverride(false);
+
+        // get template resolver
+        /** @var ZendViewRenderer $renderer */
+        $renderer = $this->container->get(TemplateRendererInterface::class);
+        var_dump($renderer->getPaths());
     }
 }

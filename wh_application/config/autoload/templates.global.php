@@ -15,9 +15,9 @@ return [
     ],
 
     'templates' => [
-        'layout' => 'layout/default',
+        'layout' => 'layout/layout',
         'map' => [
-            'layout/default' => 'wh_application/templates/default_theme/view/layout/default.phtml',
+            'layout/layout' => 'wh_application/templates/default_theme/view/layout/layout.phtml',
             'error/error'    => 'wh_application/templates/default_theme/view/error/500.phtml',
             'error/401'      => 'wh_application/templates/default_theme/view/error/401.phtml',
             'error/403'      => 'wh_application/templates/default_theme/view/error/403.phtml',

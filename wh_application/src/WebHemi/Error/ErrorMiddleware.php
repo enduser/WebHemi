@@ -9,6 +9,7 @@ use Zend\Expressive\Router\RouterInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
+use Exception;
 
 class ErrorMiddleware
 {
@@ -34,14 +35,17 @@ class ErrorMiddleware
     }
 
     /**
+     * @param Exception $error
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param callable $next
-     * @return mixed
+     * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    public function __invoke(Exception $error, ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
         echo 'Error<br>';
+
+        var_dump($error);
 
         if (isset($_GET['auth'])) {
             return new HtmlResponse($this->templateRenderer->render('error::401'), 401);

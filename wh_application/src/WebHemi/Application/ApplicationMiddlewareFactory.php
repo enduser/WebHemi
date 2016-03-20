@@ -13,6 +13,6 @@ class ApplicationMiddlewareFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        return new ApplicationMiddleware($container->get('config'));
+        return new ApplicationMiddleware($container);
     }
 }

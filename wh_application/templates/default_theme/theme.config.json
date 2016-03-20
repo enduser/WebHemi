@@ -1,0 +1,32 @@
+{
+  "templates": {
+    "meta": {
+      "title": "WebHemi Default Theme",
+      "description": "",
+      "version": "1.0",
+      "author": "Gabor Ivan <gixx@gixx-web.com>",
+      "homepage": "http://www.gixx-web.com",
+      "license": "BSD-3-Clause",
+      "mdl_enabled": false
+    },
+    "layout": "layout/layout",
+    "map": {
+      "layout/layout": "layout/layout.phtml",
+      "error/error": "error/500.phtml",
+      "error/401": "error/401.phtml",
+      "error/403": "error/403.phtml",
+      "error/404": "error/404.phtml"
+    },
+    "paths": {
+      "web-hemi": [
+        "web-hemi"
+      ],
+      "layout": [
+        "layout"
+      ],
+      "error": [
+        "error"
+      ]
+    }
+  }
+}
