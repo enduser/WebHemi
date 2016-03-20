@@ -18,7 +18,9 @@ return [
         'layout' => 'layout/default',
         'map' => [
             'layout/default' => 'wh_application/templates/default_theme/view/layout/default.phtml',
-            'error/error'    => 'wh_application/templates/default_theme/view/error/error.phtml',
+            'error/error'    => 'wh_application/templates/default_theme/view/error/500.phtml',
+            'error/401'      => 'wh_application/templates/default_theme/view/error/401.phtml',
+            'error/403'      => 'wh_application/templates/default_theme/view/error/403.phtml',
             'error/404'      => 'wh_application/templates/default_theme/view/error/404.phtml',
         ],
         'paths' => [

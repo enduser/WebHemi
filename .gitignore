@@ -1,3 +1,3 @@
-/wh_application/tools/encode_password
+/wh_application/config/autoload/database.local.php
 composer.phar
 composer.lock

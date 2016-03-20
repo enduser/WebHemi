@@ -19,8 +19,14 @@ return [
             'allowed_methods' => ['GET'],
         ],
         [
+            'name' => 'authome',
+            'path' => '/auth/',
+            'middleware' => WebHemi\Action\HomePageAction::class,
+            'allowed_methods' => ['GET'],
+        ],
+        [
             'name' => 'api.ping',
-            'path' => '/api/ping',
+            'path' => '/api/ping/',
             'middleware' => WebHemi\Action\PingAction::class,
             'allowed_methods' => ['GET'],
         ],

@@ -51,7 +51,7 @@ if (is_file($cachedConfigFile)) {
         file_put_contents($cachedConfigFile, '<?php return ' . var_export($config, true) . ';');
     }
 }
-
+//var_dump($config);
 // Return an ArrayObject so we can inject the config as a service in Aura.Di
 // and still use array checks like ``is_array``.
 return new ArrayObject($config, ArrayObject::ARRAY_AS_PROPS);

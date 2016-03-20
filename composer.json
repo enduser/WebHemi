@@ -78,6 +78,8 @@
     "zendframework/zend-expressive": "~1.0.0@rc || ^1.0",
     "zendframework/zend-expressive-helpers": "^2.0",
     "zendframework/zend-stdlib": "~2.7",
+    "zendframework/zend-db": "~2.7",
+    "zendframework/zend-cache": "~2.6",
     "zendframework/zend-expressive-zendrouter": "^1.0",
     "zendframework/zend-servicemanager": "^2.7.3 || ^3.0",
     "ocramius/proxy-manager": "^1.0",
