@@ -21,18 +21,19 @@
  * @link      http://www.gixx-web.com
  */
 
-use Zend\Db\Adapter;
-
 return [
-    'dependencies' => [
-        'factories' => [
-            Adapter\Adapter::class => Adapter\AdapterServiceFactory::class,
+    'applications' => [
+        'Admin' => [
+            // The default type is "subdir". "Subdomain" only when vhost supports it.
+            'type' => 'subdomain',
+            'path' => 'admin',
+            'theme' => 'default',
         ],
-    ],
-    'db' => [
-        'driver'   => 'Pdo',
-        'dsn'      => 'mysql:dbname=webhemi;charset=utf8;hostname=127.0.0.1',
-        'user'     => 'username',
-        'password' => 'password'
-    ],
+        'Website' => [
+            // The only supported type for this application is "subdomain".
+            'type' => 'subdomain',
+            'path' => 'www',
+            'theme' => 'default',
+        ],
+    ]
 ];
