@@ -3,6 +3,7 @@
 namespace WebHemiTest\Action;
 
 use WebHemi\Action\HomePageAction;
+use WebHemiTest\Fixtures;
 use Zend\Diactoros\Response;
 use Zend\Db\Adapter\Adapter;
 use Zend\Diactoros\ServerRequest;
@@ -16,17 +17,15 @@ class HomePageActionTest extends \PHPUnit_Framework_TestCase
     /** @var  Adapter */
     protected $adapter;
 
+    use Fixtures\GetConfigTrait;
+
     protected function setUp()
     {
         $this->router = $this->prophesize(RouterInterface::class);
 
-        $config = include __DIR__ . '/../../../config/autoload/database.global.php';
+        $config = $this->getConfig();
 
-        if (file_exists(__DIR__ . '/../../../config/autoload/database.local.php')) {
-            $config = ArrayUtils::merge($config, include __DIR__ . '/../../../config/autoload/database.local.php');
-        }
-
-        $this->adapter = new Adapter($config['db']);
+        $this->adapter = new Adapter((array)$config['db']);
     }
 
     public function testResponse()
