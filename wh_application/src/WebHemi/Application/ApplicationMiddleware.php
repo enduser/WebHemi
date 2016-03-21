@@ -45,11 +45,11 @@ class ApplicationMiddleware
     {
         echo 'Pre-route Config<br>';
 
-        $this->setThemeConfig();
+        //$this->setThemeConfig();
 
         return $next($request, $response);
     }
-    
+
     protected function setThemeConfig()
     {
         // get chosen theme config
@@ -74,7 +74,6 @@ class ApplicationMiddleware
 
         // get template resolver
         /** @var ZendViewRenderer $renderer */
-        $renderer = $this->container->get(TemplateRendererInterface::class);
-        var_dump($renderer->getPaths());
+//        $renderer = $this->container->get(TemplateRendererInterface::class);
     }
 }

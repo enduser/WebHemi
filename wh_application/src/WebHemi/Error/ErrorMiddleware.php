@@ -14,23 +14,17 @@ use Exception;
 class ErrorMiddleware
 {
     /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
      * @var Template\TemplateRendererInterface
      */
     private $templateRenderer;
 
     /**
      * AuthMiddleware constructor.
-     * @param RouterInterface $router
+     *
      * @param Template\TemplateRendererInterface $templateRenderer
      */
-    public function __construct(RouterInterface $router, Template\TemplateRendererInterface $templateRenderer)
+    public function __construct(Template\TemplateRendererInterface $templateRenderer)
     {
-        $this->router = $router;
         $this->templateRenderer = $templateRenderer;
     }
 
@@ -43,14 +37,29 @@ class ErrorMiddleware
      */
     public function __invoke(Exception $error, ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
-        echo 'Error<br>';
+        echo 'ErrorMiddleware<br>';
 
-        var_dump($error);
+        switch ($error->getCode()) {
+            case 401:
+                $code = 401;
+                $reason = 'Authentication required';
+                break;
 
-        if (isset($_GET['auth'])) {
-            return new HtmlResponse($this->templateRenderer->render('error::401'), 401);
+            case 403:
+                $code = 403;
+                $reason = 'Permission denied';
+                break;
+
+            case 404:
+                $code = 404;
+                $reason = 'Page not found';
+                break;
+
+            default:
+                $code = 500;
+                $reason = 'Application error';
         }
 
-        return $next($request, $response);
+        return new HtmlResponse($this->templateRenderer->render('error::' . $code, ['status' => $code, 'reason' => $reason, 'error' => $error]), $code);
     }
 }

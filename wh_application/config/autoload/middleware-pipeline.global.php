@@ -1,4 +1,5 @@
 <?php
+
 use Zend\Expressive\Container\ApplicationFactory;
 use Zend\Expressive\Helper;
 
@@ -11,7 +12,6 @@ return [
             WebHemi\Application\ApplicationMiddleware::class => WebHemi\Application\ApplicationMiddlewareFactory::class,
         ],
     ],
-    // This can be used to seed pre- and/or post-routing middleware
     'middleware_pipeline' => [
         'always' => [
             'middleware' => [

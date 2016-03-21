@@ -1,6 +1,7 @@
 <?php
 
 return [
+    // @todo "Application route" and "Theme" configs must go into config.php
     'dependencies' => [
         'invokables' => [
             Zend\Expressive\Router\RouterInterface::class => Zend\Expressive\Router\ZendRouter::class,
@@ -10,7 +11,6 @@ return [
             WebHemi\Action\HomePageAction::class => WebHemi\Action\HomePageFactory::class,
         ],
     ],
-
     'routes' => [
         [
             'name' => 'home',

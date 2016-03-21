@@ -4,6 +4,7 @@ namespace WebHemiTest\Action;
 
 use WebHemi\Action\HomePageAction;
 use WebHemi\Action\HomePageFactory;
+use Zend\Db\Adapter\Adapter;
 use Interop\Container\ContainerInterface;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
@@ -16,9 +17,12 @@ class HomePageFactoryTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->container = $this->prophesize(ContainerInterface::class);
-        $router = $this->prophesize(RouterInterface::class);
 
+        $router = $this->prophesize(RouterInterface::class);
         $this->container->get(RouterInterface::class)->willReturn($router);
+
+        $adapter = $this->prophesize(Adapter::class);
+        $this->container->get(Adapter::class)->willReturn($adapter);
     }
 
     public function testFactoryWithoutTemplate()

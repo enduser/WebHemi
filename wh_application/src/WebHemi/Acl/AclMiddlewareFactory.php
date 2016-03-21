@@ -9,12 +9,11 @@ namespace WebHemi\Acl;
 
 use Zend\Expressive\Router\RouterInterface;
 use Interop\Container\ContainerInterface;
-use Zend\Expressive\Template;
 
 class AclMiddlewareFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        return new AclMiddleware($container->get(RouterInterface::class), $container->get(Template\TemplateRendererInterface::class));
+        return new AclMiddleware($container->get(RouterInterface::class));
     }
 }

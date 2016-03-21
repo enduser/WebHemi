@@ -7,7 +7,6 @@
 
 namespace WebHemi\Error;
 
-use Zend\Expressive\Router\RouterInterface;
 use Interop\Container\ContainerInterface;
 use Zend\Expressive\Template;
 
@@ -15,6 +14,6 @@ class ErrorMiddlewareFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        return new ErrorMiddleware($container->get(RouterInterface::class), $container->get(Template\TemplateRendererInterface::class));
+        return new ErrorMiddleware($container->get(Template\TemplateRendererInterface::class));
     }
 }

@@ -1,1 +1,7 @@
-<h1>On, no you don't! This is a 401</h1>
+<?php $this->headTitle(sprintf('%d %s', $this->status, $this->reason)); ?>
+
+<h1>Oops!</h1>
+<h2>On, no you don't! This is a 401</h2>
+
+<p>We encountered a <?php echo $this->escapeHtml(sprintf('%d %s', $this->status, $this->reason)); ?> error.</p>
+<pre><code><?php var_dump($this->error); ?></code></pre>

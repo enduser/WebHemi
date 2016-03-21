@@ -15,6 +15,6 @@ class AuthMiddlewareFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        return new AuthMiddleware($container->get(RouterInterface::class), $container->get(Template\TemplateRendererInterface::class));
+        return new AuthMiddleware($container->get(RouterInterface::class));
     }
 }

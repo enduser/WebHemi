@@ -30,12 +30,21 @@ class HomePageAction
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
         echo 'Action<br>';
+        $params = $request->getQueryParams();
+
+        if (isset($params['e404'])) {
+            throw new \Exception('Not found', 404);
+        }
+
+        if (isset($params['e500'])) {
+            throw new \Exception('Internal server error', 500);
+        }
 
         $userTable = new User($this->dbAdapter);
 
-        var_dump($userTable->getUserById(1));
-        
-        $data = [];
+        $data = [
+            'user' => $userTable->getUserById(1)
+        ];
 
         if ($this->router instanceof Router\ZendRouter) {
             $data['routerName'] = 'Zend Router';
