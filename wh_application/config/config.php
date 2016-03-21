@@ -58,11 +58,12 @@ if (is_file($cachedConfigFile)) {
 Application::setApplicationProperties($config['applications']);
 
 // Load specific application's config (routes)
-$applicationConfigFile = __DIR__ . '/application/' . Application::$APPLICATION_MODULE . '.php';
-
-if (file_exists($applicationConfigFile)) {
-    $config = ArrayUtils::merge($config, include $applicationConfigFile);
-}
+$applicationConfigFile = __DIR__ . '/application/' .
+    (Application::$APPLICATION_MODULE == Application::APPLICATION_MODULE_ADMIN
+        ? Application::APPLICATION_MODULE_ADMIN
+        : Application::APPLICATION_MODULE_WEBSITE
+    ) . '.php';
+$config = ArrayUtils::merge($config, include $applicationConfigFile);
 
 // Load specific application's theme (templates)
 $theme = isset($config['applications'][Application::$APPLICATION_MODULE])
@@ -75,16 +76,14 @@ if ('default' != $theme && file_exists(__DIR__ . '/../templates/vendor_themes/' 
 }
 
 $themeTemplatePath = str_replace(__DIR__ . '/..', 'wh_application', $themePath);
-
 $themeConfig = json_decode(file_get_contents($themePath . '/theme.config.json'), true);
 
 // fix template map paths
 foreach ($themeConfig['templates']['map'] as $alias => $template) {
     $themeConfig['templates']['map'][$alias] = $themeTemplatePath . '/view/' . $template;
 }
-
 $config = ArrayUtils::merge($config, $themeConfig);
-var_dump(Application::$APPLICATION_MODULE);
+
 // Return an ArrayObject so we can inject the config as a service in Aura.Di
 // and still use array checks like ``is_array``.
 return new ArrayObject($config, ArrayObject::ARRAY_AS_PROPS);

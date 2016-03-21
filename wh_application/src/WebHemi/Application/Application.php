@@ -23,6 +23,10 @@
 
 namespace WebHemi\Application;
 
+/**
+ * Class Application
+ * @package WebHemi\Application
+ */
 class Application
 {
     const APPLICATION_MODULE_ADMIN = 'Admin';

@@ -22,7 +22,6 @@
  */
 
 return [
-    // @todo "Application route" and "Theme" configs must go into config.php
     'templates' => [
         'layout' => 'layout/layout',
         'paths' => [
