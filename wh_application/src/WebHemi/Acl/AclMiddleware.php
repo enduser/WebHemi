@@ -34,7 +34,9 @@ class AclMiddleware
     {
         echo 'Acl<br>';
 
-        if (isset($_GET['acl'])) {
+        $params = $request->getQueryParams();
+
+        if (isset($params['acl'])) {
             throw new \Exception('Forbidden', 403);
         }
 

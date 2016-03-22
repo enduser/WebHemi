@@ -9,11 +9,11 @@ use ArrayObject;
 trait GetConfigTrait
 {
     /**
-     * @param string $application
+     * 
      *
      * @return ArrayObject
      */
-    protected function getConfig($application = 'website')
+    protected function getConfig()
     {
         $config = [];
 

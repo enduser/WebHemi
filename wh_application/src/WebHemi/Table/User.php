@@ -29,7 +29,6 @@ namespace WebHemi\Table;
 use Zend\Db\Exception;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
-use Zend\Db\ResultSet\ResultSet;
 use ArrayObject;
 
 /**

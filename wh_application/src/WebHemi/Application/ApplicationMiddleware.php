@@ -11,7 +11,6 @@ use ArrayObject;
 use Zend\Stdlib\ArrayUtils;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\ServiceManager;
-use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Expressive\ZendView\ZendViewRenderer;
 
 class ApplicationMiddleware
