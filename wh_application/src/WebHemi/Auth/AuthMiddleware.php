@@ -62,7 +62,7 @@ class AuthMiddleware
 
         $params = $request->getQueryParams();
 
-        if (isset($params['acl'])) {
+        if (isset($params['auth'])) {
             throw new \Exception('Unauthorized', 401);
         }
 

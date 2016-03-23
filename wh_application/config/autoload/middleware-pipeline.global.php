@@ -27,9 +27,9 @@ use Zend\Expressive\Helper;
 return [
     'dependencies' => [
         'factories' => [
-            WebHemi\Auth\AuthMiddleware::class => WebHemi\Auth\AuthMiddlewareFactory::class,
-            WebHemi\Acl\AclMiddleware::class => WebHemi\Acl\AclMiddlewareFactory::class,
-            WebHemi\Error\ErrorMiddleware::class => WebHemi\Error\ErrorMiddlewareFactory::class,
+            WebHemi\Auth\AuthMiddleware::class => WebHemi\Middleware\MiddlewareFactory::class,
+            WebHemi\Acl\AclMiddleware::class => WebHemi\Middleware\MiddlewareFactory::class,
+            WebHemi\Error\ErrorMiddleware::class => WebHemi\Middleware\MiddlewareFactory::class,
             WebHemi\Application\ApplicationMiddleware::class => WebHemi\Application\ApplicationMiddlewareFactory::class,
         ],
     ],
@@ -53,7 +53,7 @@ return [
             'priority' => 1,
         ],
 
-        'errsdor' => [
+        'error' => [
             'middleware' => [
                 WebHemi\Error\ErrorMiddleware::class
             ],

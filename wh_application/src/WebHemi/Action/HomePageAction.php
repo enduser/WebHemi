@@ -20,6 +20,12 @@ class HomePageAction
 
     private $dbAdapter;
 
+    /**
+     * HomePageAction constructor.
+     * @param Router\RouterInterface $router
+     * @param Template\TemplateRendererInterface|null $template
+     * @param Adapter|null $dbAdapter
+     */
     public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $dbAdapter = null)
     {
         $this->router   = $router;
@@ -27,6 +33,13 @@ class HomePageAction
         $this->dbAdapter = $dbAdapter;
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param callable|null $next
+     * @return HtmlResponse|JsonResponse
+     * @throws \Exception
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
         echo 'Action<br>';

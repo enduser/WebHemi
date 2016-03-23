@@ -28,7 +28,7 @@ return [
             WebHemi\Action\PingAction::class => WebHemi\Action\PingAction::class,
         ],
         'factories' => [
-            WebHemi\Action\HomePageAction::class => WebHemi\Action\HomePageFactory::class,
+            WebHemi\Action\HomePageAction::class => WebHemi\Middleware\MiddlewareFactory::class,
         ],
     ],
     'routes' => [
