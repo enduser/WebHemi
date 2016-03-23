@@ -27,7 +27,7 @@ return [
             // The default type is "subdir". "Subdomain" only when vhost supports it.
             'type' => 'subdomain',
             'path' => 'admin',
-            'theme' => 'default',
+            'theme' => 'gold',
         ],
         'Website' => [
             // The only supported type for this application is "subdomain".

@@ -11,6 +11,8 @@
     },
     "map": {
       "layout/layout": "layout/layout.phtml",
+      "layout/login": "layout/login.phtml",
+      "layout/error": "layout/error.phtml",
       "error/500": "error/500.phtml",
       "error/401": "error/401.phtml",
       "error/403": "error/403.phtml",

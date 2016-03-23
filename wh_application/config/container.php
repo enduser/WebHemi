@@ -23,9 +23,10 @@
 
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
+use WebHemi\Application\Application;
 
 // Load configuration
-$config = require __DIR__ . '/config.php';
+$config = Application::getConfig();
 
 // Build container
 $container = new ServiceManager();

@@ -54,10 +54,17 @@ class HomePageAction
         }
 
         $userTable = new User($this->dbAdapter);
-
         $data = [
             'user' => $userTable->getUserById(1)
         ];
+
+//        if (Application::$APPLICATION_MODULE == Application::APPLICATION_MODULE_ADMIN) {
+//            $data['layout'] = 'layout::admin';
+//        }
+//
+//        if (Application::$APPLICATION_MODULE == 'AdminWiki') {
+//            $data['layout'] = 'layout::login';
+//        }
 
         if ($this->router instanceof Router\ZendRouter) {
             $data['routerName'] = 'Zend Router';

@@ -23,11 +23,15 @@
 
 namespace WebHemi\Application;
 
+use ArrayObject;
+use Zend\Stdlib\ArrayUtils;
+use Zend\Stdlib\Glob;
+
 /**
  * Class Application
  * @package WebHemi\Application
  */
-class Application
+final class Application
 {
     const APPLICATION_MODULE_ADMIN = 'Admin';
 
@@ -59,12 +63,15 @@ class Application
     /** @var string */
     public static $APPLICATION_DOMAIN = null;
 
+    /** @var  ArrayObject */
+    private static $config;
+
     /**
      * Init application properties
      *
      * @param array $modules
      */
-    public static function setApplicationProperties(array $modules = [])
+    private static function setApplicationProperties(array $modules = [])
     {
         // Define Application list
         if (!empty($modules)) {
@@ -141,5 +148,88 @@ class Application
         static::$APPLICATION_MODULE_URI = isset($modules[$module])
             ? $modules[$module]['path']
             : ($module == static::APPLICATION_MODULE_WEBSITE ? 'www' : '/');
+    }
+
+    /**
+     * @return ArrayObject
+     */
+    public static function getConfig()
+    {
+        if (!isset(self::$config)) {
+            $config = [];
+            $webHemiPath = realpath(__DIR__ . '/../../../');
+
+            // Load configuration from autoload path
+            foreach (Glob::glob($webHemiPath . '/config/autoload/{{,*.}global,{,*.}local}.php', Glob::GLOB_BRACE) as $file) {
+                $config = ArrayUtils::merge($config, include $file);
+            }
+
+            // Let system-wide constants
+            static::setApplicationProperties($config['applications']);
+
+            // Load specific application's config (Admin / Website routes)
+            $applicationConfigFile = $webHemiPath . '/config/application/' .
+                (Application::$APPLICATION_MODULE == Application::APPLICATION_MODULE_ADMIN
+                    ? Application::APPLICATION_MODULE_ADMIN
+                    : Application::APPLICATION_MODULE_WEBSITE
+                ) . '.php';
+            $config = ArrayUtils::merge($config, include $applicationConfigFile);
+
+            // Load specific application's theme (templates)
+            $theme = isset($config['applications'][Application::$APPLICATION_MODULE])
+                ? $config['applications'][Application::$APPLICATION_MODULE]['theme']
+                : 'default';
+            $defaultThemePath = $webHemiPath . '/templates/default_theme';
+            $themePath = $defaultThemePath;
+            $customLoginTemplate = false;
+
+            if ('default' != $theme && file_exists($webHemiPath . '/templates/vendor_themes/' . $theme . '/theme.config.json')) {
+                $themePath = $webHemiPath . '/templates/vendor_themes/' . $theme;
+            }
+
+            // For Admin application we allow only the login page to use custom theme
+            if (Application::APPLICATION_MODULE_ADMIN == Application::$APPLICATION_MODULE
+                && $themePath !== $defaultThemePath
+            ) {
+                // prepare absolute theme path
+                $themeTemplatePath = str_replace($webHemiPath, 'wh_application', $themePath);
+                $themeConfig = json_decode(file_get_contents($themePath . '/theme.config.json'), true);
+                if (isset($themeConfig['templates']['map']['layout/login'])) {
+                    $customLoginTemplate = $themeTemplatePath . '/view/' . $themeConfig['templates']['map']['layout/login'];
+                }
+                // reset $themePath to read default template
+                $themePath = $defaultThemePath;
+            }
+
+            // Read theme config
+            $themeConfig = json_decode(file_get_contents($themePath . '/theme.config.json'), true);
+            $config = ArrayUtils::merge($config, $themeConfig);
+
+            // fix template map paths
+            $themeTemplatePath = str_replace($webHemiPath, 'wh_application', $themePath);
+            foreach ($config['templates']['map'] as $alias => $template) {
+                // perform corrections for Admin application
+                if (Application::APPLICATION_MODULE_ADMIN == Application::$APPLICATION_MODULE
+                    && 'layout/layout' == $alias
+                ) {
+                    $template = 'layout/admin.phtml';
+                }
+
+                if (Application::APPLICATION_MODULE_ADMIN == Application::$APPLICATION_MODULE
+                    && 'layout/login' == $alias
+                    && $customLoginTemplate
+                ) {
+                    $config['templates']['map']['layout/login'] = $customLoginTemplate;
+                } else {
+                    $config['templates']['map'][$alias] = $themeTemplatePath . '/view/' . $template;
+                }
+            }
+
+            // Return an ArrayObject so we can inject the config as a service in Aura.Di
+            // and still use array checks like ``is_array``.
+            static::$config = new ArrayObject($config, ArrayObject::ARRAY_AS_PROPS);
+        }
+
+        return static::$config;
     }
 }

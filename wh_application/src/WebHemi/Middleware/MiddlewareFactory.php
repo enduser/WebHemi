@@ -28,6 +28,10 @@ namespace WebHemi\Middleware;
 use Interop\Container\ContainerInterface;
 use ReflectionClass;
 
+/**
+ * Class MiddlewareFactory
+ * @package WebHemi\Middleware
+ */
 class MiddlewareFactory
 {
     /**
@@ -38,9 +42,6 @@ class MiddlewareFactory
      */
     public function __invoke(ContainerInterface $container, $canonicalName = null, $requestedName = null)
     {
-        var_dump($canonicalName);
-        var_dump($requestedName);
-
         // Construct a new ReflectionClass object for the requested action
         $reflection = new ReflectionClass($requestedName);
         // Get the constructor
