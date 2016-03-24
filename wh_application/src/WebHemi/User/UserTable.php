@@ -23,7 +23,7 @@
  *
  */
 
-namespace WebHemi\Table;
+namespace WebHemi\User;
 
 use Zend\Db\Exception;
 use Zend\Db\TableGateway\AbstractTableGateway;
@@ -31,10 +31,10 @@ use Zend\Db\Adapter\Adapter;
 use ArrayObject;
 
 /**
- * Class User
+ * Class UserTable
  * @package WebHemi\Table
  */
-class User extends AbstractTableGateway
+class UserTable extends AbstractTableGateway
 {
     /** @var string $table The name of the database table */
     protected $table = 'webhemi_user';

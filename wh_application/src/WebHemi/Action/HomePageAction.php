@@ -10,7 +10,7 @@ use Zend\Expressive\Router;
 use Zend\Expressive\Template;
 use Zend\Expressive\ZendView\ZendViewRenderer;
 use Zend\Db\Adapter\Adapter;
-use WebHemi\Table\User;
+use WebHemi\User\UserTable;
 
 class HomePageAction
 {
@@ -53,7 +53,7 @@ class HomePageAction
             throw new \Exception('Internal server error', 500);
         }
 
-        $userTable = new User($this->dbAdapter);
+        $userTable = new UserTable($this->dbAdapter);
         $data = [
 //            'user' => $userTable->getUserById(1)
         ];
