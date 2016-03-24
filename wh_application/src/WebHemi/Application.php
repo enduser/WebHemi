@@ -142,9 +142,14 @@ final class Application
      */
     public function run(ServerRequestInterface $request = null, ResponseInterface $response = null)
     {
-        /** @var ZendApplication $app */
-        $app = $this->container->get('Zend\Expressive\Application');
-        $app->run($request, $response);
+        try {
+            /** @var ZendApplication $app */
+            $app = $this->container->get('Zend\Expressive\Application');
+            $app->run($request, $response);
+        } catch (\Exception $exp) {
+            // todo: render error page
+            var_dump($exp);
+        }
     }
 
     /**

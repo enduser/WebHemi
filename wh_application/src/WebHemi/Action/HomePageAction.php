@@ -55,7 +55,7 @@ class HomePageAction
 
         $userTable = new User($this->dbAdapter);
         $data = [
-            'user' => $userTable->getUserById(1)
+//            'user' => $userTable->getUserById(1)
         ];
 
 //        if (Application::$APPLICATION_MODULE == Application::APPLICATION_MODULE_ADMIN) {
