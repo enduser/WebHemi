@@ -1,3 +1,4 @@
 /wh_application/config/autoload/*.local.php
+/wh_application/test/WebHemiTest/Action/MiddlewareFactoryTest.php.dist
 composer.phar
 composer.lock

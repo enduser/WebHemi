@@ -31,6 +31,11 @@ return [
             WebHemi\Action\HomePageAction::class => WebHemi\Middleware\MiddlewareFactory::class,
         ],
     ],
+    'templates' => [
+        'map' => [
+            'layout/login' => 'layout/login.phtml',
+        ]
+    ],
     'routes' => [
         [
             'name' => 'home',

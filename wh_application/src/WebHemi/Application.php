@@ -28,7 +28,9 @@ namespace WebHemi;
 use ArrayObject;
 use Zend\Stdlib\ArrayUtils;
 use Zend\Stdlib\Glob;
+use Zend\Expressive\AppFactory;
 use Zend\Expressive\Application as ZendApplication;
+use Zend\Expressive\Router\RouterInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\ServiceManager\Config;
@@ -145,6 +147,14 @@ final class Application
         try {
             /** @var ZendApplication $app */
             $app = $this->container->get('Zend\Expressive\Application');
+
+            // When the application is in a sub-directory we add it's URL in the beginning of the middleware pipeline.
+            if ($this->applicationModuleType == static::APPLICATION_MODULE_TYPE_SUBDIR) {
+                $subApp = $app;
+                $app = AppFactory::create($this->container, $this->container->get(RouterInterface::class));
+                $app->pipe('/' . $this->applicationModuleUri, $subApp);
+            }
+
             $app->run($request, $response);
         } catch (\Exception $exp) {
             // todo: render error page
