@@ -27,26 +27,13 @@ namespace WebHemi\Auth;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Expressive\Router\RouterInterface;
-use Zend\Expressive\Router;
-use Zend\Expressive\Template;
 
+/**
+ * Class AuthMiddleware
+ * @package WebHemi\Auth
+ */
 class AuthMiddleware
 {
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
-     * AuthMiddleware constructor.
-     * @param RouterInterface $router
-     */
-    public function __construct(RouterInterface $router)
-    {
-        $this->router = $router;
-    }
-
     /**
      *
      * @param ServerRequestInterface $request
@@ -58,13 +45,8 @@ class AuthMiddleware
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
-        echo 'Auth<br>';
-
-        $params = $request->getQueryParams();
-
-        if (isset($params['auth'])) {
-            throw new \Exception('Unauthorized', 401);
-        }
+        // TODO: authenticate when necessary, and throw an error when unauthorized
+        //throw new \Exception('Unauthorized', 401);
 
         return $next($request, $response);
     }

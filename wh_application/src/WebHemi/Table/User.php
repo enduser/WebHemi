@@ -1,9 +1,9 @@
 <?php
-
 /**
- * WebHemi2
  *
- * PHP version 5.4
+ * WebHemi
+ *
+ * PHP version 5.6
  *
  *
  * LICENSE
@@ -16,12 +16,11 @@
  * obtain it through the world-wide-web, please send an email
  * to license@gixx-web.com so we can send you a copy immediately.
  *
- * @category  WebHemi
- * @package   WebHemi_Table
  * @author    Gabor Ivan <gixx@gixx-web.com>
  * @copyright 2012 - 2016 Gixx-web (http://www.gixx-web.com)
  * @license   http://webhemi.gixx-web.com/license/new-bsd   New BSD License
  * @link      http://www.gixx-web.com
+ *
  */
 
 namespace WebHemi\Table;
@@ -32,16 +31,8 @@ use Zend\Db\Adapter\Adapter;
 use ArrayObject;
 
 /**
- * WebHemi
- *
- * User Table
- *
- * @category  WebHemi
- * @package   WebHemi_Table
- * @author    Gabor Ivan <gixx@gixx-web.com>
- * @copyright 2012 - 2016 Gixx-web (http://www.gixx-web.com)
- * @license   http://webhemi.gixx-web.com/license/new-bsd   New BSD License
- * @link      http://www.gixx-web.com
+ * Class User
+ * @package WebHemi\Table
  */
 class User extends AbstractTableGateway
 {

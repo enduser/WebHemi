@@ -1,6 +1,14 @@
 Change log
 ==========
 
+Version 3.0.0-1.0
+-----------------
+* Inherit features from WebHemi2
+    * Add subdomain support (multi-application)
+    * Add theme support
+    * Add custom error page support
+    * Start building middlewares (Auth, Acl...)
+
 Version 3.0.0-0.3
 -----------------
 * Get the Zend Expressive Skeleton into action

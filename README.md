@@ -18,16 +18,16 @@ Requirements
 Features / Goals
 ----------------
 
-- Logical separation of 'Admin' and 'Website' applications [PLANNING]
-- Support for custom themes in 'Website' application and for 'Admin' login page [PLANNING]
-- Subdomain support for applications except 'Website' which is always on 'www' [PLANNING]
-- Cookie free subdomain support for static files [PLANNING]
+- Logical separation of 'Admin' and 'Website' applications [DONE]
+- Support for custom themes in 'Website' application and for 'Admin' login page [DONE]
+- Subdomain support for applications except 'Website' which is always on 'www' [DONE]
+- Cookie free subdomain support for static files [DONE]
+- Create Composer install script for vendor libraries [DONE]
 - Application-based privilege system with IP blacklist [PLANNING]
-- Create Composer install script for vendor libraries [PLANNING]
 - Secure authentication [PLANNING]
 - Secure Form solution [PLANNING]
 - Form enhancements [PLANNING]
-- Easy-to-use 'Admin' application [PLANNING]
+- Easy-to-use 'Admin' application [PLANNING]`
 - User friendly design for 'Admin' application [PLANNING]
 - Write unit tests [PLANNING]
 - 'Virtual folder structure'-like content management [PLANNING]

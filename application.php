@@ -1,5 +1,4 @@
 <?php
-
 /**
  * WebHemi
  *
@@ -31,10 +30,18 @@ if (php_sapi_name() === 'cli-server'
 
 chdir(__DIR__);
 require 'wh_application/vendor/autoload.php';
+require 'wh_application/src/WebHemi/Application.php';
 
-/** @var \Interop\Container\ContainerInterface $container */
-$container = require 'wh_application/config/container.php';
+$app = new WebHemi\Application();
 
-/** @var \Zend\Expressive\Application $app */
-$app = $container->get('Zend\Expressive\Application');
+echo 'APPLICATION_PATH : ' . APPLICATION_PATH . '<br>';
+echo 'APPLICATION_MODULE : ' . APPLICATION_MODULE . '<br>';
+echo 'APPLICATION_MODULE_TYPE : ' . APPLICATION_MODULE_TYPE . '<br>';
+echo 'APPLICATION_MODULE_URI : ' . APPLICATION_MODULE_URI . '<br>';
+echo 'MAIN_DOMAIN : ' . MAIN_DOMAIN . '<br>';
+echo 'APPLICATION_DOMAIN : ' . APPLICATION_DOMAIN . '<br>';
+echo 'APPLICATION_THEME_NAME : ' . APPLICATION_THEME_NAME . '<br>';
+echo 'APPLICATION_THEME_SYSTEM_PATH : ' . APPLICATION_THEME_SYSTEM_PATH . '<br>';
+echo 'APPLICATION_THEME_RESOURCE_PATH : ' . APPLICATION_THEME_RESOURCE_PATH . '<br>';
+
 $app->run();

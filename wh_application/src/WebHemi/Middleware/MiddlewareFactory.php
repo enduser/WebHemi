@@ -27,6 +27,7 @@ namespace WebHemi\Middleware;
 
 use Interop\Container\ContainerInterface;
 use ReflectionClass;
+use Exception;
 
 /**
  * Class MiddlewareFactory
@@ -36,12 +37,21 @@ class MiddlewareFactory
 {
     /**
      * @param ContainerInterface $container
-     * @param string $canonicalName
-     * @param string $requestedName
+     * @param null $canonicalName
+     * @param null $requestedName
      * @return object
+     * @throws Exception
      */
     public function __invoke(ContainerInterface $container, $canonicalName = null, $requestedName = null)
     {
+        if (empty($requestedName)) {
+            $requestedName = $canonicalName;
+        }
+
+        if (!class_exists($requestedName)) {
+            throw new Exception('Cannot instantiate class: ' . $requestedName, 500);
+        }
+
         // Construct a new ReflectionClass object for the requested action
         $reflection = new ReflectionClass($requestedName);
         // Get the constructor
