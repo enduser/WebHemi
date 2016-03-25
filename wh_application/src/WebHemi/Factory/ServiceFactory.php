@@ -23,17 +23,17 @@
  *
  */
 
-namespace WebHemi\Middleware;
+namespace WebHemi\Factory;
 
 use Interop\Container\ContainerInterface;
 use ReflectionClass;
 use Exception;
 
 /**
- * Class MiddlewareFactory
- * @package WebHemi\Middleware
+ * Class ServiceFactory
+ * @package WebHemi\Factory
  */
-class MiddlewareFactory
+class ServiceFactory
 {
     /**
      * @param ContainerInterface $container

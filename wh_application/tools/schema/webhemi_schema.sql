@@ -131,19 +131,19 @@ UNLOCK TABLES;
 -- Table structure for table `webhemi_acl`
 --
 
-DROP TABLE IF EXISTS `webhemi_acl`;
+DROP TABLE IF EXISTS `webhemi_acl_rule`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `webhemi_acl` (
-  `id_acl` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `webhemi_acl_rule` (
+  `id_acl_rule` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `fk_acl_role` INT(10) UNSIGNED NOT NULL,
   `fk_acl_resource` INT(10) UNSIGNED NOT NULL,
   `is_allowed` TINYINT(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id_acl`),
-  KEY `idx_acl_fk_acl_role` (`fk_acl_role`),
-  KEY `idx_acl_fk_acl_resource` (`fk_acl_resource`),
-  CONSTRAINT `fk_acl_fk_acl_role` FOREIGN KEY (`fk_acl_role`) REFERENCES `webhemi_acl_role` (`id_acl_role`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_acl_fk_acl_resource ` FOREIGN KEY (`fk_acl_resource`) REFERENCES `webhemi_acl_resource` (`id_acl_resource`) ON DELETE CASCADE ON UPDATE CASCADE
+  PRIMARY KEY (`id_acl_rule`),
+  KEY `idx_acl_rule_fk_acl_role` (`fk_acl_role`),
+  KEY `idx_acl_rule_fk_acl_resource` (`fk_acl_resource`),
+  CONSTRAINT `fk_acl_rule_fk_acl_role` FOREIGN KEY (`fk_acl_role`) REFERENCES `webhemi_acl_role` (`id_acl_role`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_acl_rule_fk_acl_resource ` FOREIGN KEY (`fk_acl_resource`) REFERENCES `webhemi_acl_resource` (`id_acl_resource`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -152,32 +152,32 @@ CREATE TABLE `webhemi_acl` (
 -- Dumping data for table `webhemi_acl`
 --
 
-LOCK TABLES `webhemi_acl` WRITE;
-/*!40000 ALTER TABLE `webhemi_acl` DISABLE KEYS */;
-INSERT INTO `webhemi_acl` VALUES
+LOCK TABLES `webhemi_acl_rule` WRITE;
+/*!40000 ALTER TABLE `webhemi_acl_rule` DISABLE KEYS */;
+INSERT INTO `webhemi_acl_rule` VALUES
   (1, 1, 1, 1), (2, 1, 2, 1), (3, 1, 3, 1), (4, 1, 4, 1), (5, 1, 5, 1), (6, 1, 6, 1), (7, 1, 7, 1), (8, 1, 8, 1), (9, 1, 9, 1), (10, 1, 10, 1), (11, 1, 11, 1), (12, 1, 12, 1), (13, 1, 13, 1), (14, 1, 14, 1), (15, 1, 15, 1), (16, 1, 16, 1), (17, 1, 17, 1), (18, 1, 18, 1), (19, 1, 19, 1), (20, 1, 20, 1), (21, 1, 21, 1), (22, 1, 22, 1), (23, 1, 23, 1), (24, 1, 24, 1), (25, 1, 25, 1), (26, 1, 26, 1), (27, 1, 27, 1), (28, 1, 28, 1),
   (29, 2, 1, 1), (30, 2, 2, 1), (31, 2, 3, 1), (32, 2, 4, 1), (33, 2, 5, 1), (34, 2, 6, 0), (35, 2, 7, 0), (36, 2, 8, 0), (37, 2, 9, 0), (38, 2, 10, 0), (39, 2, 11, 0), (40, 2, 12, 1), (41, 2, 13, 1), (42, 2, 14, 1), (43, 2, 15, 0), (44, 2, 16, 1), (45, 2, 17, 0), (46, 2, 18, 0), (47, 2, 19, 0), (48, 2, 20, 0), (49, 2, 21, 1), (50, 2, 22, 1), (51, 2, 23, 1), (52, 2, 24, 1), (53, 2, 25, 1), (54, 2, 26, 1), (55, 2, 27, 1), (56, 2, 28, 1),
   (57, 3, 1, 1), (58, 3, 2, 1), (59, 3, 3, 1), (60, 3, 4, 1), (61, 3, 5, 1), (62, 3, 6, 0), (63, 3, 7, 0), (64, 3, 8, 0), (65, 3, 9, 0), (66, 3, 10, 0), (67, 3, 11, 0), (68, 3, 12, 1), (69, 3, 13, 1), (70, 3, 14, 1), (71, 3, 15, 0), (72, 3, 16, 1), (73, 3, 17, 0), (74, 3, 18, 0), (75, 3, 19, 0), (76, 3, 20, 0), (77, 3, 21, 1), (78, 3, 22, 1), (79, 3, 23, 1), (80, 3, 24, 1), (81, 3, 25, 1), (82, 3, 26, 1), (83, 3, 27, 1), (84, 3, 28, 1),
   (85, 4, 1, 1), (86, 4, 2, 1), (87, 4, 3, 1), (88, 4, 4, 1), (89, 4, 5, 1), (90, 4, 6, 0), (91, 4, 7, 0), (92, 4, 8, 0), (93, 4, 9, 0), (94, 4, 10, 0), (95, 4, 11, 0), (96, 4, 12, 1), (97, 4, 13, 1), (98, 4, 14, 1), (99, 4, 15, 0), (100, 4, 16, 1), (101, 4, 17, 0), (102, 4, 18, 0), (103, 4, 19, 0), (104, 4, 20, 0), (105, 4, 21, 1), (106, 4, 22, 1), (107, 4, 23, 1), (108, 4, 24, 1), (109, 4, 25, 1), (110, 4, 26, 1), (111, 4, 27, 1), (112, 4, 28, 1),
   (113, 5, 1, 1), (114, 5, 2, 1), (115, 5, 3, 1), (116, 5, 4, 1), (117, 5, 5, 1), (118, 5, 6, 0), (119, 5, 7, 0), (120, 5, 8, 0), (121, 5, 9, 0), (122, 5, 10, 0), (123, 5, 11, 0), (124, 5, 12, 1), (125, 5, 13, 1), (126, 5, 14, 1), (127, 5, 15, 0), (128, 5, 16, 1), (129, 5, 17, 0), (130, 5, 18, 0), (131, 5, 19, 0), (132, 5, 20, 0), (133, 5, 21, 1), (134, 5, 22, 1), (135, 5, 23, 1), (136, 5, 24, 1), (137, 5, 25, 1), (138, 5, 26, 1), (139, 5, 27, 1), (140, 5, 28, 1),
   (141, 6, 1, 0), (142, 6, 2, 1), (143, 6, 3, 0), (144, 6, 4, 0), (145, 6, 5, 0), (146, 6, 6, 0), (147, 6, 7, 0), (148, 6, 8, 0), (149, 6, 9, 0), (150, 6, 10, 0), (151, 6, 11, 0), (152, 6, 12, 0), (153, 6, 13, 0), (154, 6, 14, 0), (155, 6, 15, 0), (156, 6, 16, 0), (157, 6, 17, 0), (158, 6, 18, 0), (159, 6, 19, 0), (160, 6, 20, 0), (161, 6, 21, 1), (162, 6, 22, 1), (163, 6, 23, 0), (164, 6, 24, 0), (165, 6, 25, 0), (166, 6, 26, 0), (167, 6, 27, 1), (168, 6, 28, 1);
-/*!40000 ALTER TABLE `webhemi_acl` ENABLE KEYS */;
+/*!40000 ALTER TABLE `webhemi_acl_rule` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `webhemi_lock`
+-- Table structure for table `webhemi_acl_lock`
 --
 
-DROP TABLE IF EXISTS `webhemi_lock`;
+DROP TABLE IF EXISTS `webhemi_client_lock`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `webhemi_lock` (
-  `id_lock` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `webhemi_client_lock` (
+  `id_client_lock` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `client_ip` varchar(15) NOT NULL,
   `tryings` int(10) unsigned NOT NULL DEFAULT '0',
   `time_lock` datetime DEFAULT NULL,
-  PRIMARY KEY (`id_lock`),
-  KEY `idx_lock_client_ip` (`client_ip`)
+  PRIMARY KEY (`id_client_lock`),
+  KEY `idx_client_lock_client_ip` (`client_ip`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

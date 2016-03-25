@@ -23,18 +23,30 @@
  *
  */
 
-namespace WebHemi\Application;
+namespace WebHemi\Acl\Role;
 
-use Interop\Container\ContainerInterface;
+use Zend\Db\Exception;
+use Zend\Db\TableGateway\AbstractTableGateway;
+use Zend\Db\Adapter\Adapter;
+use ArrayObject;
 
 /**
- * Class ApplicationMiddlewareFactory
- * @package WebHemi\Application
+ * Class Table
+ * @package WebHemi\Acl\Role
  */
-class ApplicationMiddlewareFactory
+class Table extends AbstractTableGateway
 {
-    public function __invoke(ContainerInterface $container)
+    /** @var string */
+    protected $table = 'webhemi_acl_role';
+
+    /**
+     * Class constructor
+     *
+     * @param Adapter $adapter
+     */
+    public function __construct(Adapter $adapter)
     {
-        return new ApplicationMiddleware($container);
+        $this->adapter = $adapter;
+        $this->initialize();
     }
 }

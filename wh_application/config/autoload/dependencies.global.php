@@ -36,6 +36,9 @@ return [
             'Zend\Expressive\FinalHandler' => Zend\Expressive\Container\TemplatedErrorHandlerFactory::class,
             Zend\Expressive\Template\TemplateRendererInterface::class => Zend\Expressive\ZendView\ZendViewRendererFactory::class,
             Zend\View\HelperPluginManager::class => Zend\Expressive\ZendView\HelperPluginManagerFactory::class,
+            WebHemi\Auth\Adapter::class => WebHemi\Factory\ServiceFactory::class,
+            WebHemi\Auth\Storage\Session::class => WebHemi\Factory\ServiceFactory::class,
+            WebHemi\Auth\AuthenticationService::class => WebHemi\Factory\ServiceFactory::class
         ],
     ],
 ];

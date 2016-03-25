@@ -1,5 +1,6 @@
 <?php
 /**
+ *
  * WebHemi
  *
  * PHP version 5.6
@@ -19,22 +20,33 @@
  * @copyright 2012 - 2016 Gixx-web (http://www.gixx-web.com)
  * @license   http://webhemi.gixx-web.com/license/new-bsd   New BSD License
  * @link      http://www.gixx-web.com
+ *
  */
 
-use Zend\Db\Adapter;
+namespace WebHemi\Acl\Rule;
 
-return [
-    'dependencies' => [
-        'factories' => [
-            Adapter\Adapter::class => Adapter\AdapterServiceFactory::class,
-            WebHemi\User\Table::class => WebHemi\Factory\DbTableFactory::class,
-            WebHemi\Client\Lock\Table::class => WebHemi\Factory\DbTableFactory::class,
-        ],
-    ],
-    'db' => [
-        'driver'   => 'Pdo',
-        'dsn'      => 'mysql:dbname=webhemi;charset=utf8;hostname=127.0.0.1',
-        'user'     => 'username',
-        'password' => 'password'
-    ],
-];
+use Zend\Db\Exception;
+use Zend\Db\TableGateway\AbstractTableGateway;
+use Zend\Db\Adapter\Adapter;
+use ArrayObject;
+
+/**
+ * Class Table
+ * @package WebHemi\Acl\Rule
+ */
+class Table extends AbstractTableGateway
+{
+    /** @var string */
+    protected $table = 'webhemi_acl_rule';
+
+    /**
+     * Class constructor
+     *
+     * @param Adapter $adapter
+     */
+    public function __construct(Adapter $adapter)
+    {
+        $this->adapter = $adapter;
+        $this->initialize();
+    }
+}

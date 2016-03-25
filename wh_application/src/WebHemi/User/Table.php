@@ -28,38 +28,66 @@ namespace WebHemi\User;
 use Zend\Db\Exception;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
-use ArrayObject;
+use Zend\Db\ResultSet\ResultSet;
 
 /**
- * Class UserTable
- * @package WebHemi\Table
+ * Class Table
+ * @package WebHemi\User
  */
-class UserTable extends AbstractTableGateway
+class Table extends AbstractTableGateway
 {
-    /** @var string $table The name of the database table */
+    /** @var string */
     protected $table = 'webhemi_user';
 
     /**
      * Class constructor
      *
-     * @param \Zend\Db\Adapter\Adapter $adapter
+     * @param Adapter $adapter
      */
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
+        $this->resultSetPrototype = new ResultSet();
+        $this->resultSetPrototype->setArrayObjectPrototype(new Entity());
         $this->initialize();
     }
 
     /**
-     * Retrieve UserModel by Id
+     * Retrieve entity by identifier
      *
      * @param int $userId
      *
-     * @return ArrayObject
+     * @return Entity
      */
     public function getUserById($userId)
     {
-        $rowSet = $this->select(['user_id' => (int)$userId]);
+        $rowSet = $this->select(['id_user' => (int)$userId]);
+        return $rowSet->current();
+    }
+
+    /**
+     * Retrieve entity by user name
+     *
+     * @param string $username
+     *
+     * @return Entity
+     */
+    public function getUserByName($username)
+    {
+        $rowSet = $this->select(['username' => $username]);
+        return $rowSet->current();
+    }
+
+    /**
+     * Retrieve entity by email address
+     *
+     * @param string $email
+     *
+     * @return Entity
+     */
+    public function getUserByEmail($email)
+    {
+        $rowSet = $this->select(['email' => $email]);
         return $rowSet->current();
     }
 }

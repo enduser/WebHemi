@@ -9,28 +9,37 @@ use Zend\Diactoros\Response\JsonResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
 use Zend\Expressive\ZendView\ZendViewRenderer;
-use Zend\Db\Adapter\Adapter;
-use WebHemi\User\UserTable;
+use WebHemi\Auth\AuthenticationService;
+use WebHemi\User\Table as UserTable;
 
 class HomePageAction
 {
+    /** @var Router\RouterInterface  */
     private $router;
-
+    /** @var null|Template\TemplateRendererInterface  */
     private $template;
-
-    private $dbAdapter;
+    /** @var AuthenticationService  */
+    private $auth;
+    /** @var UserTable  */
+    private $userTable;
 
     /**
      * HomePageAction constructor.
      * @param Router\RouterInterface $router
+     * @param AuthenticationService $auth
+     * @param UserTable $userTable
      * @param Template\TemplateRendererInterface|null $template
-     * @param Adapter|null $dbAdapter
      */
-    public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $dbAdapter = null)
-    {
+    public function __construct(
+        Router\RouterInterface $router,
+        AuthenticationService $auth,
+        UserTable $userTable,
+        Template\TemplateRendererInterface $template = null
+    ) {
         $this->router   = $router;
         $this->template = $template;
-        $this->dbAdapter = $dbAdapter;
+        $this->auth = $auth;
+        $this->userTable = $userTable;
     }
 
     /**
@@ -53,10 +62,13 @@ class HomePageAction
             throw new \Exception('Internal server error', 500);
         }
 
-        $userTable = new UserTable($this->dbAdapter);
-        $data = [
-//            'user' => $userTable->getUserById(1)
-        ];
+        if ($this->auth->hasIdentity()) {
+            $data = [
+                'user' => $this->auth->getIdentity()
+            ];
+        } else {
+            $data = [];
+        }
 
 //        if (Application::$APPLICATION_MODULE == Application::APPLICATION_MODULE_ADMIN) {
 //            $data['layout'] = 'layout::admin';

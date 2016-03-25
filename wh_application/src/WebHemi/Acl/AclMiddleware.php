@@ -1,5 +1,4 @@
 <?php
-
 /**
  *
  * WebHemi
@@ -27,6 +26,7 @@ namespace WebHemi\Acl;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use WebHemi\Auth\AuthenticationService;
 
 /**
  * Class AclMiddleware
@@ -34,6 +34,18 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class AclMiddleware
 {
+    /** @var  AuthenticationService */
+    protected $auth;
+
+    /**
+     * AclMiddleware constructor.
+     * @param AuthenticationService $auth
+     */
+    public function __construct(AuthenticationService $auth)
+    {
+        $this->auth = $auth;
+    }
+
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
@@ -47,6 +59,11 @@ class AclMiddleware
         // TODO: build ACL graph, check accessibility, throw an error when forbidden
         //throw new \Exception('Forbidden', 403);
 
+        if (!$this->auth->hasIdentity()) {
+            $this->auth->getAdapter()->setIdentity('admin');
+            $this->auth->getAdapter()->setCredential('admin');
+            $this->auth->authenticate();
+        }
         return $next($request, $response);
     }
 }

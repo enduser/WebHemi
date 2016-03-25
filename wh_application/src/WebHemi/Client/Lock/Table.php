@@ -23,31 +23,30 @@
  *
  */
 
-namespace WebHemi\Auth;
+namespace WebHemi\Client\Lock;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Zend\Db\Exception;
+use Zend\Db\TableGateway\AbstractTableGateway;
+use Zend\Db\Adapter\Adapter;
+use ArrayObject;
 
 /**
- * Class AuthMiddleware
- * @package WebHemi\Auth
+ * Class Table
+ * @package WebHemi\Client\Lock
  */
-class AuthMiddleware
+class Table extends AbstractTableGateway
 {
-    /**
-     *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param callable $next
-     *
-     * @return mixed
-     * @throws \Exception
-     */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
-    {
-        // TODO: authenticate when necessary, and throw an error when unauthorized
-        //throw new \Exception('Unauthorized', 401);
+    /** @var string */
+    protected $table = 'webhemi_client_lock';
 
-        return $next($request, $response);
+    /**
+     * Class constructor
+     *
+     * @param Adapter $adapter
+     */
+    public function __construct(Adapter $adapter)
+    {
+        $this->adapter = $adapter;
+        $this->initialize();
     }
 }

@@ -4,6 +4,7 @@ SetEnvIf Host .*\.dev APPLICATION_ENV=dev
     php_value xdebug.var_display_max_children 512
     php_value xdebug.var_display_max_data 1024
     php_value xdebug.var_display_max_depth 10
+    php_flag opcache.enable Off
 </If>
 
 # Disable cookies for static subdomain and allow Cross-Origin resouce sharing
