@@ -1,4 +1,27 @@
 <?php
+/**
+ *
+ * WebHemi
+ *
+ * PHP version 5.6
+ *
+ *
+ * LICENSE
+ *
+ * This source file is subject to the new BSD license that is bundled
+ * with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://webhemi.gixx-web.com/license/new-bsd
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@gixx-web.com so we can send you a copy immediately.
+ *
+ * @author    Gabor Ivan <gixx@gixx-web.com>
+ * @copyright 2012 - 2016 Gixx-web (http://www.gixx-web.com)
+ * @license   http://webhemi.gixx-web.com/license/new-bsd   New BSD License
+ * @link      http://www.gixx-web.com
+ *
+ */
 
 namespace WebHemi\Action;
 
@@ -10,37 +33,26 @@ use Zend\Expressive\Router;
 use Zend\Expressive\Template;
 use Zend\Expressive\ZendView\ZendViewRenderer;
 use WebHemi\Auth\AuthenticationService;
-use WebHemi\User\Table as UserTable;
+use WebHemi\Application\DependencyInjectionInterface;
 
-class HomePageAction
+/**
+ * Class HomePageAction
+ * @package WebHemi\Action
+ */
+class HomePageAction implements DependencyInjectionInterface
 {
     /** @var Router\RouterInterface  */
-    private $router;
+    protected $router;
     /** @var null|Template\TemplateRendererInterface  */
-    private $template;
+    protected $template;
     /** @var AuthenticationService  */
-    private $auth;
-    /** @var UserTable  */
-    private $userTable;
-
-    /**
-     * HomePageAction constructor.
-     * @param Router\RouterInterface $router
-     * @param AuthenticationService $auth
-     * @param UserTable $userTable
-     * @param Template\TemplateRendererInterface|null $template
-     */
-    public function __construct(
-        Router\RouterInterface $router,
-        AuthenticationService $auth,
-        UserTable $userTable,
-        Template\TemplateRendererInterface $template = null
-    ) {
-        $this->router   = $router;
-        $this->template = $template;
-        $this->auth = $auth;
-        $this->userTable = $userTable;
-    }
+    protected $auth;
+    /** @var array */
+    protected $dependency = [
+        'auth' => AuthenticationService::class,
+        'router' => Router\RouterInterface::class,
+        'template' => Template\TemplateRendererInterface::class
+    ];
 
     /**
      * @param ServerRequestInterface $request
@@ -62,20 +74,18 @@ class HomePageAction
             throw new \Exception('Internal server error', 500);
         }
 
-        if ($this->auth->hasIdentity()) {
-            $data = [
-                'user' => $this->auth->getIdentity()
-            ];
-        } else {
-            $data = [];
+        $data = [];
+
+        if ($this->auth) {
+            if ($this->auth->hasIdentity()) {
+                $data = [
+                    'user' => $this->auth->getIdentity()
+                ];
+            }
         }
 
 //        if (Application::$APPLICATION_MODULE == Application::APPLICATION_MODULE_ADMIN) {
 //            $data['layout'] = 'layout::admin';
-//        }
-//
-//        if (Application::$APPLICATION_MODULE == 'AdminWiki') {
-//            $data['layout'] = 'layout::login';
 //        }
 
         if ($this->router instanceof Router\ZendRouter) {
@@ -96,5 +106,16 @@ class HomePageAction
         }
 
         return new HtmlResponse($this->template->render('web-hemi::home-page', $data));
+    }
+
+    /**
+     * Injects a service into the class
+     *
+     * @param string $property
+     * @param object $service
+     * @return void
+     */
+    public function injectDependency($property, $service) {
+        $this->{$property} = $service;
     }
 }

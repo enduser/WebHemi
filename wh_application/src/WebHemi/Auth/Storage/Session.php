@@ -28,12 +28,14 @@ namespace WebHemi\Auth\Storage;
 use Zend\Session\Container as SessionContainer;
 use Zend\Authentication\Storage\StorageInterface;
 use WebHemi\User\Table as UserTable;
+use WebHemi\User\Entity as UserEntity;
+use WebHemi\Application\DependencyInjectionInterface;
 
 /**
  * Class Session
  * @package WebHemi\Auth\Storage
  */
-class Session implements StorageInterface
+class Session implements DependencyInjectionInterface, StorageInterface
 {
     const NAMESPACE_DEFAULT = 'WebHemiAuth';
 
@@ -49,16 +51,18 @@ class Session implements StorageInterface
     protected $namespace = self::NAMESPACE_DEFAULT;
     /**@var string */
     protected $member = self::MEMBER_DEFAULT;
-
+    /** @var  UserEntity */
     protected $resolvedIdentity;
+    /** @var array */
+    protected $dependency = [
+        'userTable' => UserTable::class
+    ];
 
     /**
      * Session constructor.
-     * @param UserTable $userTable
      */
-    public function __construct(UserTable $userTable)
+    public function __construct()
     {
-        $this->userTable = $userTable;
         $this->secureConfigSession();
         $this->session = new SessionContainer($this->namespace);
     }
@@ -103,7 +107,7 @@ class Session implements StorageInterface
     /**
      * Retrieve the contents of storage
      *
-     * @return mixed
+     * @return null|UserEntity
      */
     public function read()
     {
@@ -113,7 +117,7 @@ class Session implements StorageInterface
 
         $identity = $this->session->{$this->member};
 
-        if (is_int($identity) || is_scalar($identity)) {
+        if ($this->userTable && (is_int($identity) || is_scalar($identity))) {
             $identity = $this->userTable->getUserById($identity);
         }
 
@@ -130,7 +134,6 @@ class Session implements StorageInterface
      * Write contents to storage
      *
      * @param  mixed $contents
-     * @return void
      */
     public function write($contents)
     {
@@ -140,12 +143,21 @@ class Session implements StorageInterface
 
     /**
      * Clear contents from storage
-     *
-     * @return void
      */
     public function clear()
     {
         $this->resolvedIdentity = null;
         unset($this->session->{$this->member});
+    }
+
+    /**
+     * Injects a service into the class
+     *
+     * @param string $property
+     * @param object $service
+     * @return void
+     */
+    public function injectDependency($property, $service) {
+        $this->{$property} = $service;
     }
 }

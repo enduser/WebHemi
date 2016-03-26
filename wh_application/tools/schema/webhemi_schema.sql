@@ -216,7 +216,7 @@ CREATE TABLE `webhemi_user` (
 LOCK TABLES `webhemi_user` WRITE;
 /*!40000 ALTER TABLE `webhemi_user` DISABLE KEYS */;
 INSERT INTO `webhemi_user` VALUES
-  (1,'admin','admin@foo.org','$2y$14$H2WLOqAPyZqZBDPy/8NMEemMBIYQFJoaVQG.wuVrAG23e/UEz34GG','',NULL,'127.0.0.1',1,1,NOW(),NOW());
+  (1,'admin','admin@foo.org','$2y$09$dmrDfcYZt9jORA4vx9MKpeyRt0ilCH/gxSbSHcfBtGaghMJ30tKzS','',NULL,'127.0.0.1',1,1,NOW(),NOW());
 /*!40000 ALTER TABLE `webhemi_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -260,10 +260,10 @@ UNLOCK TABLES;
 -- Table structure for table `webhemi_user_acl`
 --
 
-DROP TABLE IF EXISTS `webhemi_user_acl`;
+DROP TABLE IF EXISTS `webhemi_user_role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `webhemi_user_acl` (
+CREATE TABLE `webhemi_user_role` (
   `fk_user` INT(10) UNSIGNED NOT NULL,
   `fk_application` INT(10) UNSIGNED NOT NULL,
   `fk_acl_role` INT(10) UNSIGNED NOT NULL,
@@ -281,12 +281,12 @@ CREATE TABLE `webhemi_user_acl` (
 -- Dumping data for table `webhemi_user_acl`
 --
 
-LOCK TABLES `webhemi_user_acl` WRITE;
-/*!40000 ALTER TABLE `webhemi_user_acl` DISABLE KEYS */;
-INSERT INTO `webhemi_user_acl` VALUES
+LOCK TABLES `webhemi_user_role` WRITE;
+/*!40000 ALTER TABLE `webhemi_user_role` DISABLE KEYS */;
+INSERT INTO `webhemi_user_role` VALUES
   (1,1,1),
   (1,2,1);
-/*!40000 ALTER TABLE `webhemi_user_acl` ENABLE KEYS */;
+/*!40000 ALTER TABLE `webhemi_user_role` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

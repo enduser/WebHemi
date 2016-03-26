@@ -126,7 +126,7 @@ final class Application
         $container->setService('config', $this->config);
 
         // Inject WebHemi
-        $container->setService('WebHemi', $this);
+//        $container->setService('WebHemi', $this);
     }
 
     /**
@@ -144,7 +144,7 @@ final class Application
      */
     public function run(ServerRequestInterface $request = null, ResponseInterface $response = null)
     {
-        try {
+//        try {
             /** @var ZendApplication $app */
             $app = $this->container->get('Zend\Expressive\Application');
 
@@ -156,10 +156,10 @@ final class Application
             }
 
             $app->run($request, $response);
-        } catch (\Exception $exp) {
-            // todo: render error page
-            var_dump($exp);
-        }
+//        } catch (\Exception $exp) {
+//            // todo: render error page
+//            var_dump($exp);
+//        }
     }
 
     /**

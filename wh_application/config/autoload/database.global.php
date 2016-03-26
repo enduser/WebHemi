@@ -28,7 +28,12 @@ return [
         'factories' => [
             Adapter\Adapter::class => Adapter\AdapterServiceFactory::class,
             WebHemi\User\Table::class => WebHemi\Factory\DbTableFactory::class,
+            WebHemi\User\Role\Table::class => WebHemi\Factory\DbTableFactory::class,
+            WebHemi\Application\Table::class => WebHemi\Factory\DbTableFactory::class,
             WebHemi\Client\Lock\Table::class => WebHemi\Factory\DbTableFactory::class,
+            WebHemi\Acl\Rule\Table::class => WebHemi\Factory\DbTableFactory::class,
+            WebHemi\Acl\Role\Table::class => WebHemi\Factory\DbTableFactory::class,
+            WebHemi\Acl\Resource\Table::class => WebHemi\Factory\DbTableFactory::class,
         ],
     ],
     'db' => [

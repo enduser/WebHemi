@@ -22,29 +22,30 @@
  * @link      http://www.gixx-web.com
  *
  */
+
 namespace WebHemi\Acl;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Authentication\Result;
 use WebHemi\Auth\AuthenticationService;
+use WebHemi\Application\DependencyInjectionInterface;
 
 /**
  * Class AclMiddleware
  * @package WebHemi\Acl
  */
-class AclMiddleware
+class AclMiddleware implements DependencyInjectionInterface
 {
     /** @var  AuthenticationService */
     protected $auth;
-
-    /**
-     * AclMiddleware constructor.
-     * @param AuthenticationService $auth
-     */
-    public function __construct(AuthenticationService $auth)
-    {
-        $this->auth = $auth;
-    }
+    /** @var  int */
+    protected $number;
+    /** @var array */
+    protected $dependency = [
+        'auth' => AuthenticationService::class,
+        'number' => 3.141596
+    ];
 
     /**
      * @param ServerRequestInterface $request
@@ -59,11 +60,27 @@ class AclMiddleware
         // TODO: build ACL graph, check accessibility, throw an error when forbidden
         //throw new \Exception('Forbidden', 403);
 
-        if (!$this->auth->hasIdentity()) {
+        if ($this->auth && !$this->auth->hasIdentity()) {
             $this->auth->getAdapter()->setIdentity('admin');
             $this->auth->getAdapter()->setCredential('admin');
-            $this->auth->authenticate();
+            /** @var Result $result */
+            $result = $this->auth->authenticate();
+
+            if ($result->getCode() != Result::SUCCESS) {
+                throw new \Exception(implode('; ', $result->getMessages()), 403);
+            }
         }
         return $next($request, $response);
+    }
+
+    /**
+     * Injects a service into the class
+     *
+     * @param string $property
+     * @param object $service
+     * @return void
+     */
+    public function injectDependency($property, $service) {
+        $this->{$property} = $service;
     }
 }

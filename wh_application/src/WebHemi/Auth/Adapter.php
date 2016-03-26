@@ -27,22 +27,27 @@ namespace WebHemi\Auth;
 
 use Zend\Authentication\Adapter\AdapterInterface;
 use Zend\Authentication\Result;
-use Zend\Crypt\Password\Bcrypt;
 use Zend\Http\PhpEnvironment\RemoteAddress;
 use Zend\Validator\Ip as IpValidator;
 use WebHemi\Client\Lock\Table as ClientLockTable;
 use WebHemi\User\Table as UserTable;
 use WebHemi\User\Entity as UserEntity;
+use WebHemi\User\Role\Table as UserRoleTable;
+use WebHemi\Application\Table as ApplicationTable;
+use WebHemi\Application\Entity as ApplicationEntity;
+use WebHemi\Acl\Role\Table as AclRoleTable;
+use WebHemi\Application\DependencyInjectionInterface;
 use DateTime;
 
 /**
  * Class Adapter
  * @package WebHemi\Auth
  */
-class Adapter implements AdapterInterface
+class Adapter implements DependencyInjectionInterface, AdapterInterface
 {
-    /** Default bcrypt password cost */
-    const PASSWORD_COST = 14;
+    const PASSWORD_COST = 9;
+
+    const PASSWORD_ALGORITHM = PASSWORD_DEFAULT;
 
     /** @var string */
     public $identity = null;
@@ -53,21 +58,29 @@ class Adapter implements AdapterInterface
     protected $credential;
     /** @var UserTable */
     protected $userTable;
-    /** @var ClientLockTable  */
+    /** @var UserRoleTable */
+    protected $userRoleTable;
+    /** @var ApplicationTable */
+    protected $applicationTable;
+    /** @var AclRoleTable */
+    protected $aclRoleTable;
+    /** @var ClientLockTable */
     protected $clientLockTable;
     /** @var UserEntity */
     protected $verifiedUser;
+    /** @var array */
+    protected $dependency = [
+        'userTable' => UserTable::class,
+        'userRoleTable' => UserRoleTable::class,
+        'aclRoleTable' => AclRoleTable::class,
+        'applicationTable' => ApplicationTable::class,
+        'clientLockTable' => ClientLockTable::class
+    ];
 
     /**
      * Adapter constructor.
-     * @param UserTable $userTable
-     * @param ClientLockTable $clientLockTable
      */
-    public function __construct(UserTable $userTable, ClientLockTable $clientLockTable)
-    {
-        $this->userTable = $userTable;
-        $this->clientLockTable = $clientLockTable;
-
+    public function __construct() {
         // Avoid access to super global
         $this->serverData = filter_input_array(INPUT_SERVER);
     }
@@ -80,48 +93,56 @@ class Adapter implements AdapterInterface
      */
     public function authenticate()
     {
-        /** @var UserEntity $userModel */
+        /** @var UserEntity $userEntity */
 
         if (!isset($this->verifiedUser)) {
             if (strpos($this->identity, '@') !== false) {
                 // identified by email
-                $userModel = $this->userTable->getUserByEmail($this->identity);
+                $userEntity = $this->userTable->getUserByEmail($this->identity);
             } else {
                 // identified by username
-                $userModel = $this->userTable->getUserByName($this->identity);
+                $userEntity = $this->userTable->getUserByName($this->identity);
             }
-//var_dump($userModel);exit;
-            $bcrypt = new Bcrypt();
-            $bcrypt->setCost(self::PASSWORD_COST);
+
+            /** @var ApplicationEntity $applicationEntity */
+//            $applicationEntity = $this->applicationTable->getCurrentApplication();
 
             // if identity not found
-            if (!$userModel) {
+            if (!$userEntity) {
                 $authResult = new Result(
                     Result::FAILURE_IDENTITY_NOT_FOUND,
                     $this->identity,
                     ['A record with the supplied identity could not be found.']
                 );
-            } elseif (!$userModel->isActive || !$userModel->isEnabled) {
+            } elseif (!$userEntity->isActive || !$userEntity->isEnabled) {
                 // else if the identity exists but not activated or disabled
                 $authResult = new Result(
                     Result::FAILURE_UNCATEGORIZED,
                     $this->identity,
                     ['A record with the supplied identity is not available.']
                 );
-            } elseif (!$bcrypt->verify($this->credential, $userModel->password)) {
-                // else if the supplied credential is not valid
-                $authResult = new Result(
-                    Result::FAILURE_CREDENTIAL_INVALID,
-                    $this->identity,
-                    ['Supplied credential is invalid.']
-                );
+            } else {
+//                $hashedPassword = password_hash(
+//                    $this->credential,
+//                    static::PASSWORD_ALGORITHM,//PASSWORD_BCRYPT,
+//                    ['cost' => static::PASSWORD_COST]
+//                );
+
+                if (!password_verify ($this->credential, $userEntity->password)) {
+                    // else if the supplied credential is not valid
+                    $authResult = new Result(
+                        Result::FAILURE_CREDENTIAL_INVALID,
+                        $this->identity,
+                        ['Supplied credential is invalid. ' . sha1($this->credential)]
+                    );
+                }
             }
         } else {
-            $userModel = $this->verifiedUser;
+            $userEntity = $this->verifiedUser;
         }
 
         // if authentication was successful
-        if (!isset($authResult) && $userModel instanceof UserEntity) {
+        if (!isset($authResult) && $userEntity instanceof UserEntity) {
             // update some additional info
             $remoteAddress = new RemoteAddress();
             $ipValidator = new IpValidator();
@@ -132,25 +153,25 @@ class Adapter implements AdapterInterface
                 $ipAddress = $this->serverData['REMOTE_ADDR'];
             }
 
-            $userModel->lastIp = $ipAddress;
-            $userModel->timeLogin = new DateTime(gmdate('Y-m-d H:i:s'));
+            $userEntity->lastIp = $ipAddress;
+            $userEntity->timeLogin = new DateTime(gmdate('Y-m-d H:i:s'));
 
             // if no hash has been set yet
-            if (empty($userModel->hash)) {
-                $userModel->hash = md5($userModel->username . '-' . $userModel->email);
+            if (empty($userEntity->hash)) {
+                $userEntity->hash = md5($userEntity->username . '-' . $userEntity->email);
             }
 
-            $this->userTable->update($userModel->toArray());
+            $this->userTable->update($userEntity->toArray());
 
             // result success
             $authResult = new Result(
                 Result::SUCCESS,
-                $userModel,
+                $userEntity,
                 ['Authentication successful.']
             );
 
             // avoid auth process in the same runtime
-            $this->verifiedUser = $userModel;
+            $this->verifiedUser = $userEntity;
 
             // reset the counter
             //$this->clientLockTable->releaseLock();
@@ -199,5 +220,16 @@ class Adapter implements AdapterInterface
     {
         $this->credential = $credential;
         return $this;
+    }
+
+    /**
+     * Injects a service into the class
+     *
+     * @param string $property
+     * @param object $service
+     * @return void
+     */
+    public function injectDependency($property, $service) {
+        $this->{$property} = $service;
     }
 }
