@@ -47,12 +47,6 @@ class HomePageAction implements DependencyInjectionInterface
     protected $template;
     /** @var AuthenticationService  */
     protected $auth;
-    /** @var array */
-    protected $dependency = [
-        'auth' => AuthenticationService::class,
-        'router' => Router\RouterInterface::class,
-        'template' => Template\TemplateRendererInterface::class
-    ];
 
     /**
      * @param ServerRequestInterface $request
@@ -115,7 +109,8 @@ class HomePageAction implements DependencyInjectionInterface
      * @param object $service
      * @return void
      */
-    public function injectDependency($property, $service) {
+    public function injectDependency($property, $service)
+    {
         $this->{$property} = $service;
     }
 }

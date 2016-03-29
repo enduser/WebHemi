@@ -61,6 +61,24 @@ class Table extends AbstractTableGateway
      */
     public function getUserById($userId)
     {
+        $data = [
+            'user_id' => 1,
+            'username' => 'admin',
+            'email' => 'admin@foo.org',
+            'password' => '$2y$14$H2WLOqAPyZqZBDPy/8NMEemMBIYQFJoaVQG.wuVrAG23e/UEz34GG',
+            'hash' => 'a11abe47c50c5b9b4d28add27f80d601',
+            'last_ip' => '192.168.56.1',
+            'register_ip' => '127.0.0.1',
+            'is_active' => true,
+            'is_enabled' => true,
+            'time_login' => '2016-03-29 07:24:11',
+            'timeRegister' =>  '2016-03-24 16:25:12',
+        ];
+
+        $entity = new Entity();
+        $entity->exchangeArray($data);
+        return $entity;
+
         $rowSet = $this->select(['id_user' => (int)$userId]);
         return $rowSet->current();
     }
@@ -74,6 +92,24 @@ class Table extends AbstractTableGateway
      */
     public function getUserByName($username)
     {
+        $data = [
+            'user_id' => 1,
+            'username' => 'admin',
+            'email' => 'admin@foo.org',
+            'password' => '$2y$14$H2WLOqAPyZqZBDPy/8NMEemMBIYQFJoaVQG.wuVrAG23e/UEz34GG',
+            'hash' => 'a11abe47c50c5b9b4d28add27f80d601',
+            'last_ip' => '192.168.56.1',
+            'register_ip' => '127.0.0.1',
+            'is_active' => true,
+            'is_enabled' => true,
+            'time_login' => '2016-03-29 07:24:11',
+            'timeRegister' =>  '2016-03-24 16:25:12',
+        ];
+
+        $entity = new Entity();
+        $entity->exchangeArray($data);
+        return $entity;
+
         $rowSet = $this->select(['username' => $username]);
         return $rowSet->current();
     }
@@ -87,6 +123,24 @@ class Table extends AbstractTableGateway
      */
     public function getUserByEmail($email)
     {
+        $data = [
+            'user_id' => 1,
+            'username' => 'admin',
+            'email' => 'admin@foo.org',
+            'password' => '$2y$14$H2WLOqAPyZqZBDPy/8NMEemMBIYQFJoaVQG.wuVrAG23e/UEz34GG',
+            'hash' => 'a11abe47c50c5b9b4d28add27f80d601',
+            'last_ip' => '192.168.56.1',
+            'register_ip' => '127.0.0.1',
+            'is_active' => true,
+            'is_enabled' => true,
+            'time_login' => '2016-03-29 07:24:11',
+            'timeRegister' =>  '2016-03-24 16:25:12',
+        ];
+
+        $entity = new Entity();
+        $entity->exchangeArray($data);
+        return $entity;
+
         $rowSet = $this->select(['email' => $email]);
         return $rowSet->current();
     }

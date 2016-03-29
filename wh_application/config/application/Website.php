@@ -24,12 +24,26 @@
 return [
     'dependencies' => [
         'invokables' => [
-            Zend\Expressive\Router\RouterInterface::class => Zend\Expressive\Router\ZendRouter::class,
             WebHemi\Action\PingAction::class => WebHemi\Action\PingAction::class,
         ],
         'factories' => [
             WebHemi\Action\HomePageAction::class => WebHemi\Factory\MiddlewareFactory::class,
         ],
+        'service_factory' => [
+            WebHemi\Action\HomePageAction::class => [
+                'class' => WebHemi\Action\HomePageAction::class,
+                'calls' => [
+                    ['injectDependency' => ['auth',     Zend\Authentication\AuthenticationService::class]],
+                    ['injectDependency' => ['router',   Zend\Expressive\Router\RouterInterface::class]],
+                    ['injectDependency' => ['template', Zend\Expressive\Template\TemplateRendererInterface::class]]
+                ]
+            ],
+        ]
+    ],
+    'templates' => [
+        'map' => [
+            'layout/login' => 'layout/login.phtml',
+        ]
     ],
     'routes' => [
         [

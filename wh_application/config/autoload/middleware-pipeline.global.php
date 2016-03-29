@@ -21,24 +21,15 @@
  * @link      http://www.gixx-web.com
  */
 
-use Zend\Expressive\Container\ApplicationFactory;
-use Zend\Expressive\Helper;
-
 return [
-    'dependencies' => [
-        'factories' => [
-            WebHemi\Acl\AclMiddleware::class => WebHemi\Factory\MiddlewareFactory::class,
-            WebHemi\Error\ErrorMiddleware::class => WebHemi\Factory\MiddlewareFactory::class,
-        ],
-    ],
     'middleware_pipeline' => [
         'routing' => [
             'middleware' => [
-                ApplicationFactory::ROUTING_MIDDLEWARE,
+                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
 
                 WebHemi\Acl\AclMiddleware::class,
 
-                ApplicationFactory::DISPATCH_MIDDLEWARE,
+                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
             ],
             'priority' => 1,
         ],

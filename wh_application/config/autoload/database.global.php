@@ -21,21 +21,7 @@
  * @link      http://www.gixx-web.com
  */
 
-use Zend\Db\Adapter;
-
 return [
-    'dependencies' => [
-        'factories' => [
-            Adapter\Adapter::class => Adapter\AdapterServiceFactory::class,
-            WebHemi\User\Table::class => WebHemi\Factory\DbTableFactory::class,
-            WebHemi\User\Role\Table::class => WebHemi\Factory\DbTableFactory::class,
-            WebHemi\Application\Table::class => WebHemi\Factory\DbTableFactory::class,
-            WebHemi\Client\Lock\Table::class => WebHemi\Factory\DbTableFactory::class,
-            WebHemi\Acl\Rule\Table::class => WebHemi\Factory\DbTableFactory::class,
-            WebHemi\Acl\Role\Table::class => WebHemi\Factory\DbTableFactory::class,
-            WebHemi\Acl\Resource\Table::class => WebHemi\Factory\DbTableFactory::class,
-        ],
-    ],
     'db' => [
         'driver'   => 'Pdo',
         'dsn'      => 'mysql:dbname=webhemi;charset=utf8;hostname=127.0.0.1',

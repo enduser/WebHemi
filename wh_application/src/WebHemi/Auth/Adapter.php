@@ -68,19 +68,12 @@ class Adapter implements DependencyInjectionInterface, AdapterInterface
     protected $clientLockTable;
     /** @var UserEntity */
     protected $verifiedUser;
-    /** @var array */
-    protected $dependency = [
-        'userTable' => UserTable::class,
-        'userRoleTable' => UserRoleTable::class,
-        'aclRoleTable' => AclRoleTable::class,
-        'applicationTable' => ApplicationTable::class,
-        'clientLockTable' => ClientLockTable::class
-    ];
 
     /**
      * Adapter constructor.
      */
-    public function __construct() {
+    public function __construct()
+    {
         // Avoid access to super global
         $this->serverData = filter_input_array(INPUT_SERVER);
     }
@@ -121,21 +114,13 @@ class Adapter implements DependencyInjectionInterface, AdapterInterface
                     $this->identity,
                     ['A record with the supplied identity is not available.']
                 );
-            } else {
-//                $hashedPassword = password_hash(
-//                    $this->credential,
-//                    static::PASSWORD_ALGORITHM,//PASSWORD_BCRYPT,
-//                    ['cost' => static::PASSWORD_COST]
-//                );
-
-                if (!password_verify ($this->credential, $userEntity->password)) {
-                    // else if the supplied credential is not valid
-                    $authResult = new Result(
-                        Result::FAILURE_CREDENTIAL_INVALID,
-                        $this->identity,
-                        ['Supplied credential is invalid. ' . sha1($this->credential)]
-                    );
-                }
+            } elseif (!password_verify($this->credential, $userEntity->password)) {
+                // else if the supplied credential is not valid
+                $authResult = new Result(
+                    Result::FAILURE_CREDENTIAL_INVALID,
+                    $this->identity,
+                    ['Supplied credential is invalid. ' . sha1($this->credential)]
+                );
             }
         } else {
             $userEntity = $this->verifiedUser;
@@ -229,7 +214,8 @@ class Adapter implements DependencyInjectionInterface, AdapterInterface
      * @param object $service
      * @return void
      */
-    public function injectDependency($property, $service) {
+    public function injectDependency($property, $service)
+    {
         $this->{$property} = $service;
     }
 }

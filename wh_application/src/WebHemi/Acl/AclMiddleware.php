@@ -25,10 +25,10 @@
 
 namespace WebHemi\Acl;
 
+use Zend\Authentication\Result;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Authentication\Result;
-use WebHemi\Auth\AuthenticationService;
+use Zend\Authentication\AuthenticationService;
 use WebHemi\Application\DependencyInjectionInterface;
 
 /**
@@ -39,13 +39,6 @@ class AclMiddleware implements DependencyInjectionInterface
 {
     /** @var  AuthenticationService */
     protected $auth;
-    /** @var  int */
-    protected $number;
-    /** @var array */
-    protected $dependency = [
-        'auth' => AuthenticationService::class,
-        'number' => 3.141596
-    ];
 
     /**
      * @param ServerRequestInterface $request
@@ -80,7 +73,8 @@ class AclMiddleware implements DependencyInjectionInterface
      * @param object $service
      * @return void
      */
-    public function injectDependency($property, $service) {
+    public function injectDependency($property, $service)
+    {
         $this->{$property} = $service;
     }
 }

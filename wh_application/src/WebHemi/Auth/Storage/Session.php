@@ -53,10 +53,6 @@ class Session implements DependencyInjectionInterface, StorageInterface
     protected $member = self::MEMBER_DEFAULT;
     /** @var  UserEntity */
     protected $resolvedIdentity;
-    /** @var array */
-    protected $dependency = [
-        'userTable' => UserTable::class
-    ];
 
     /**
      * Session constructor.
@@ -157,7 +153,8 @@ class Session implements DependencyInjectionInterface, StorageInterface
      * @param object $service
      * @return void
      */
-    public function injectDependency($property, $service) {
+    public function injectDependency($property, $service)
+    {
         $this->{$property} = $service;
     }
 }
