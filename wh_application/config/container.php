@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * WebHemi
  *
  * PHP version 5.6
@@ -20,19 +19,19 @@
  * @copyright 2012 - 2016 Gixx-web (http://www.gixx-web.com)
  * @license   http://webhemi.gixx-web.com/license/new-bsd   New BSD License
  * @link      http://www.gixx-web.com
- *
  */
 
-namespace WebHemi\Application;
+use Zend\ServiceManager\Config;
+use Zend\ServiceManager\ServiceManager;
 
-interface DependencyInjectionInterface
-{
-    /**
-     * Injects a non-mandatory service into the class
-     *
-     * @param string $property
-     * @param object $service
-     * @return void
-     */
-    public function injectDependency($property, $service);
-}
+// Load configuration
+$config = require __DIR__ . '/config.php';
+
+// Build container
+$container = new ServiceManager();
+(new Config($config['dependencies']))->configureServiceManager($container);
+
+// Inject config
+$container->setService('config', $config);
+
+return $container;

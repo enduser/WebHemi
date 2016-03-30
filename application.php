@@ -30,10 +30,20 @@ if (php_sapi_name() === 'cli-server'
 
 chdir(__DIR__);
 require 'wh_application/vendor/autoload.php';
-//require 'wh_application/src/WebHemi/Application.php';
 
-use WebHemi\Application;
+/** @var \Interop\Container\ContainerInterface $container */
+$container = require 'wh_application/config/container.php';
 
-$app = new Application();
+/** @var \Zend\Expressive\Application $app */
+$app = $container->get('Zend\Expressive\Application');
 
+// When the application is in a sub-directory we add it's URL in the beginning of the middleware pipeline.
+//if (APPLICATION_MODULE_TYPE == APPLICATION_MODULE_TYPE_SUBDIR) {
+//    $topApp = \Zend\Expressive\AppFactory::create(
+//        $container,
+//        $container->get(\Zend\Expressive\Router\RouterInterface::class)
+//    );
+//    $topApp->pipe('/' . APPLICATION_MODULE_URI, $app);
+//    $topApp->run();
+//}
 $app->run();
