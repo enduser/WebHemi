@@ -86,6 +86,10 @@ class ServiceFactory
                             } elseif (class_exists($parameter)) {
                                 $arguments[] = new $parameter;
                             } else {
+                                if (strpos($parameter, ':') === 0) {
+                                    $parameter = substr($parameter, 1);
+                                }
+
                                 $arguments[] = $parameter;
                             }
                         }

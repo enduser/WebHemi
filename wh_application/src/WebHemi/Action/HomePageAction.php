@@ -32,7 +32,8 @@ use Zend\Diactoros\Response\JsonResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
 use Zend\Expressive\ZendView\ZendViewRenderer;
-use WebHemi\Auth\AuthenticationService;
+use Zend\Authentication\AuthenticationService;
+use Zend\ServiceManager\Config;
 use WebHemi\Application\DependencyInjectionInterface;
 
 /**
@@ -47,6 +48,8 @@ class HomePageAction implements DependencyInjectionInterface
     protected $template;
     /** @var AuthenticationService  */
     protected $auth;
+    /** @var  Config */
+    protected $config;
 
     /**
      * @param ServerRequestInterface $request
@@ -77,6 +80,13 @@ class HomePageAction implements DependencyInjectionInterface
                 ];
             }
         }
+
+        $config = $this->config;
+        var_dump('APPLICATION_THEME_NAME                : ' . APPLICATION_THEME_NAME);
+        var_dump('APPLICATION_THEME_SYSTEM_PATH         : ' . APPLICATION_THEME_SYSTEM_PATH);
+        var_dump('APPLICATION_THEME_RESOURCE`PATH       : ' . APPLICATION_THEME_RESOURCE_PATH);
+        var_dump('APPLICATION_THEME_RESOURCE_LOGIN_PATH : ' . APPLICATION_THEME_RESOURCE_LOGIN_PATH);
+        var_dump($config->templates['map']);
 
 //        if (Application::$APPLICATION_MODULE == Application::APPLICATION_MODULE_ADMIN) {
 //            $data['layout'] = 'layout::admin';

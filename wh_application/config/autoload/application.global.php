@@ -33,7 +33,7 @@ return [
             // The only supported type for this application is "subdomain".
             'type' => 'subdomain',
             'path' => 'www',
-            'theme' => 'default',
+            'theme' => 'gold',
         ],
     ]
 ];

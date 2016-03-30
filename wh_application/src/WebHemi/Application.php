@@ -42,17 +42,23 @@ use Zend\ServiceManager\ServiceManager;
  */
 final class Application
 {
-    const APPLICATION_MODULE_ADMIN = 'Admin';
+    /** @var string  */
+    private $applicationModuleAdmin = 'Admin';
 
-    const APPLICATION_MODULE_WEBSITE = 'Website';
+    /** @var string  */
+    private $applicationModuleWebsite = 'Website';
 
-    const APPLICATION_MODULE_TYPE_SUBDOMAIN = 'subdomain';
+    /** @var string  */
+    private $applicationModuleTypeSubdomain = 'subdomain';
 
-    const APPLICATION_MODULE_TYPE_SUBDIR = 'subdir';
+    /** @var string  */
+    private $applicationModuleTypeSubdirectory = 'subdir';
 
-    const AUTOLOGIN_COOKIE_PREFIX = 'atln';
+    /** @var string  */
+    private $autologinCookiePrefix = 'atln';
 
-    const SESSION_COOKIE_PREFIX = 'atsn';
+    /** @var string  */
+    private $sessionCookiePrefix = 'atsn';
 
     /** @var array  */
     private $serverData = [];
@@ -61,37 +67,37 @@ final class Application
     private $container;
 
     /** @var array  */
-    private $applicationModuleList = [
-        self::APPLICATION_MODULE_ADMIN,
-        self::APPLICATION_MODULE_WEBSITE
-    ];
+    private $applicationModuleList = [];
 
     /** @var string  */
-    public $applicationPath = '';
+    private $applicationPath = '';
 
     /** @var string  */
-    public $applicationModule = self::APPLICATION_MODULE_WEBSITE;
+    private $applicationModule = 'Website';
 
     /** @var string  */
-    public $applicationModuleType = self::APPLICATION_MODULE_TYPE_SUBDOMAIN;
+    private $applicationModuleType = 'subdomain';
 
     /** @var string  */
-    public $applicationModuleUri = '/';
+    private $applicationModuleUri = '/';
 
     /** @var string */
-    public $mainDomain = null;
+    private $mainDomain = null;
 
     /** @var string */
-    public $applicationDomain = null;
+    private $applicationDomain = null;
 
-    /** @var array */
-    public $applicationThemeName;
+    /** @var string */
+    private $applicationThemeName;
 
-    /** @var array */
-    public $applicationThemeSystemPath;
+    /** @var string */
+    private $applicationThemeSystemPath;
 
-    /** @var array */
-    public $applicationThemeResourcePath;
+    /** @var string */
+    private $applicationThemeResourcePath;
+
+    /** @var string */
+    private $applicationThemeResourceLoginPath;
 
     /** @var  ArrayObject */
     private $config;
@@ -105,6 +111,7 @@ final class Application
         if (empty($container)) {
             $container = new ServiceManager();
         }
+
 
         // Avoid access to super global
         $this->serverData = filter_input_array(INPUT_SERVER);
@@ -124,9 +131,6 @@ final class Application
 
         // Inject config
         $container->setService('config', $this->config);
-
-        // Inject WebHemi
-//        $container->setService('WebHemi', $this);
     }
 
     /**
@@ -144,22 +148,23 @@ final class Application
      */
     public function run(ServerRequestInterface $request = null, ResponseInterface $response = null)
     {
-//        try {
+        try {
             /** @var ZendApplication $app */
             $app = $this->container->get('Zend\Expressive\Application');
 
             // When the application is in a sub-directory we add it's URL in the beginning of the middleware pipeline.
-            if ($this->applicationModuleType == static::APPLICATION_MODULE_TYPE_SUBDIR) {
+            if ($this->applicationModuleType == $this->applicationModuleTypeSubdirectory) {
                 $subApp = $app;
                 $app = AppFactory::create($this->container, $this->container->get(RouterInterface::class));
                 $app->pipe('/' . $this->applicationModuleUri, $subApp);
             }
 
             $app->run($request, $response);
-//        } catch (\Exception $exp) {
+        } catch (\Exception $exp) {
 //            // todo: render error page
-//            var_dump($exp);
-//        }
+            echo 'asd';
+            var_dump($exp);
+        }
     }
 
     /**
@@ -195,33 +200,25 @@ final class Application
         }
 
         // Let system-wide constants
-        static::setApplicationProperties($config['applications']);
+        $this->setApplicationProperties($config['applications']);
 
-        // Load specific application's config (Admin / Website routes)
-        $applicationConfigFile = $this->applicationPath . '/config/application/' .
-            (static::APPLICATION_MODULE_ADMIN == $this->applicationModule
-                ? static::APPLICATION_MODULE_ADMIN
-                : static::APPLICATION_MODULE_WEBSITE
-            ) . '.php';
-        $config = ArrayUtils::merge($config, include $applicationConfigFile);
-
-        // Load specific application's theme (templates)
-        $theme = isset($config['applications'][$this->applicationModule])
+        $defaultThemePath = $this->applicationPath . '/templates/default_theme';
+        $themePath        = $defaultThemePath;
+        $theme            = isset($config['applications'][$this->applicationModule])
             ? $config['applications'][$this->applicationModule]['theme']
             : 'default';
-        $defaultThemePath = $this->applicationPath . '/templates/default_theme';
-        $themePath = $defaultThemePath;
 
+        // Update theme path or reset theme to default
         if ('default' != $theme && file_exists($this->applicationPath . '/templates/vendor_themes/' . $theme . '/theme.config.json')) {
             $themePath = $this->applicationPath . '/templates/vendor_themes/' . $theme;
         } else {
             $theme = 'default';
         }
-
+        // Save the theme name for later use
         $this->applicationThemeName = $theme;
 
         // For Admin application we allow only the default theme. Login page can use custom CSS and JS only
-        if (static::APPLICATION_MODULE_ADMIN == $this->applicationModule
+        if ($this->applicationModuleAdmin == $this->applicationModule
             && $themePath !== $defaultThemePath
         ) {
             // Reset theme (except the name) to read default template
@@ -230,29 +227,39 @@ final class Application
         }
 
         $this->applicationThemeSystemPath = $themePath;
+
+        // Set resource path
         if ('default' == $theme) {
-            $resourcePath = '/resources/theme/webhemi';
+            $this->applicationThemeResourcePath = '/resources/theme/webhemi';
         } else {
-            $resourcePath = '/resources/theme/' . $theme;
+            $this->applicationThemeResourcePath = '/resources/theme/' . $theme;
         }
-        $this->applicationThemeResourcePath = $resourcePath;
+
+        // Set resource path for the login
+        if ('default' == $this->applicationThemeName) {
+            $this->applicationThemeResourceLoginPath = '/resources/theme/webhemi';
+        } else {
+            $this->applicationThemeResourceLoginPath = '/resources/theme/' . $this->applicationThemeName;
+        }
 
         // Read theme config
-        $themeConfig = json_decode(file_get_contents($themePath . '/theme.config.json'), true);
+        $themeConfig = @json_decode(file_get_contents($themePath . '/theme.config.json'), true);
         $config = ArrayUtils::merge($config, $themeConfig);
+
+        // Load specific application's config (Admin / Website routes)
+        $applicationConfigFile = $this->applicationPath . '/config/application/' .
+            ($this->applicationModuleAdmin == $this->applicationModule
+                ? $this->applicationModuleAdmin
+                : $this->applicationModuleWebsite
+            ) . '.php';
+        $config = ArrayUtils::merge($config, include $applicationConfigFile);
 
         // fix template map paths
         $themeTemplatePath = str_replace($this->applicationPath, 'wh_application', $themePath);
         foreach ($config['templates']['map'] as $alias => $template) {
-            // perform corrections for Admin application
-            if (static::APPLICATION_MODULE_ADMIN == $this->applicationModule
-                && 'layout/layout' == $alias
-            ) {
-                $template = 'layout/admin.phtml';
-            }
-
             $config['templates']['map'][$alias] = $themeTemplatePath . '/view/' . $template;
         }
+
 
         $this->config = new ArrayObject($config, ArrayObject::ARRAY_AS_PROPS);
     }
@@ -314,7 +321,7 @@ final class Application
             // subdirectory-based modules
             if ($subDomain == 'www') {
                 if (!empty($subDir)
-                    && $moduleData['type'] == static::APPLICATION_MODULE_TYPE_SUBDIR
+                    && $moduleData['type'] == $this->applicationModuleTypeSubdirectory
                     && $moduleData['path'] == $subDir
                 ) {
                     $module = $moduleName;
@@ -322,7 +329,7 @@ final class Application
                 }
             } else {
                 // subDomain-based modules
-                if ($moduleData['type'] == static::APPLICATION_MODULE_TYPE_SUBDOMAIN
+                if ($moduleData['type'] == $this->applicationModuleTypeSubdomain
                     && $moduleData['path'] == $subDomain
                 ) {
                     $module = $moduleName;
@@ -335,11 +342,11 @@ final class Application
 
         $this->applicationModuleType = isset($modules[$module])
             ? $modules[$module]['type']
-            : ($module == static::APPLICATION_MODULE_WEBSITE ? 'subdomain' : 'subdir');
+            : ($module == $this->applicationModuleWebsite ? 'subdomain' : 'subdir');
 
         $this->applicationModuleUri = isset($modules[$module])
             ? $modules[$module]['path']
-            : ($module == static::APPLICATION_MODULE_WEBSITE ? 'www' : '/');
+            : ($module == $this->applicationModuleWebsite ? 'www' : '/');
     }
 
     /**
@@ -347,12 +354,12 @@ final class Application
      */
     private function setDefinitions()
     {
-        define('APPLICATION_MODULE_ADMIN', static::APPLICATION_MODULE_ADMIN);
-        define('APPLICATION_MODULE_WEBSITE', static::APPLICATION_MODULE_WEBSITE);
-        define('APPLICATION_MODULE_TYPE_SUBDOMAIN', static::APPLICATION_MODULE_TYPE_SUBDOMAIN);
-        define('APPLICATION_MODULE_TYPE_SUBDIR', static::APPLICATION_MODULE_TYPE_SUBDIR);
-        define('AUTOLOGIN_COOKIE_PREFIX', static::AUTOLOGIN_COOKIE_PREFIX);
-        define('SESSION_COOKIE_PREFIX', static::SESSION_COOKIE_PREFIX);
+        define('APPLICATION_MODULE_ADMIN', $this->applicationModuleAdmin);
+        define('APPLICATION_MODULE_WEBSITE', $this->applicationModuleWebsite);
+        define('APPLICATION_MODULE_TYPE_SUBDOMAIN', $this->applicationModuleTypeSubdomain);
+        define('APPLICATION_MODULE_TYPE_SUBDIR', $this->applicationModuleTypeSubdirectory);
+        define('AUTOLOGIN_COOKIE_PREFIX', $this->autologinCookiePrefix);
+        define('SESSION_COOKIE_PREFIX', $this->sessionCookiePrefix);
         define('APPLICATION_PATH', $this->applicationPath);
         define('APPLICATION_MODULE', $this->applicationModule);
         define('APPLICATION_MODULE_TYPE', $this->applicationModuleType);
@@ -362,5 +369,6 @@ final class Application
         define('APPLICATION_THEME_NAME', $this->applicationThemeName);
         define('APPLICATION_THEME_SYSTEM_PATH', $this->applicationThemeSystemPath);
         define('APPLICATION_THEME_RESOURCE_PATH', $this->applicationThemeResourcePath);
+        define('APPLICATION_THEME_RESOURCE_LOGIN_PATH', $this->applicationThemeResourceLoginPath);
     }
 }

@@ -1,6 +1,6 @@
 <?php
-
 /**
+ *
  * WebHemi
  *
  * PHP version 5.6
@@ -20,8 +20,32 @@
  * @copyright 2012 - 2016 Gixx-web (http://www.gixx-web.com)
  * @license   http://webhemi.gixx-web.com/license/new-bsd   New BSD License
  * @link      http://www.gixx-web.com
+ *
  */
 
-echo 'Error page';
+namespace WebHemi\Factory;
 
-return false;
+use WebHemi\Error\ErrorHandler;
+use Interop\Container\ContainerInterface;
+use Zend\Expressive\TemplatedErrorHandler;
+use Zend\Expressive\Template\TemplateRendererInterface;
+
+/**
+ * Class FinalHandlerFactory
+ * @package WebHemi\Factory
+ */
+class FinalHandlerFactory
+{
+    /**
+     * @param ContainerInterface $container
+     * @return TemplatedErrorHandler
+     */
+    public function __invoke(ContainerInterface $container)
+    {
+        $template = $container->has(TemplateRendererInterface::class)
+            ? $container->get(TemplateRendererInterface::class)
+            : null;
+
+        return new ErrorHandler($template);
+    }
+}

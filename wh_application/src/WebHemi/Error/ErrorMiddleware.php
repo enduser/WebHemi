@@ -155,10 +155,16 @@ class ErrorMiddleware
                 break;
 
             default:
-                $code = ($error->getCode() < 100) ? 500 : $error->getCode();
+                $code = array_key_exists($error->getCode(), $this->phrases) ? $error->getCode() : 500;
                 $template = 500;
         }
 
-        return new HtmlResponse($this->templateRenderer->render('error::' . $template, ['status' => $code, 'reason' => $this->phrases[$code], 'error' => $error]), $code);
+        return new HtmlResponse(
+            $this->templateRenderer->render(
+                'error::' . $template,
+                ['layout' => 'layout::error', 'status' => $code, 'reason' => $this->phrases[$code], 'error' => $error]
+            ),
+            $code
+        );
     }
 }

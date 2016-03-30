@@ -33,16 +33,12 @@ return [
             WebHemi\Action\HomePageAction::class => [
                 'class' => WebHemi\Action\HomePageAction::class,
                 'calls' => [
-                    ['injectDependency' => ['auth',     Zend\Authentication\AuthenticationService::class]],
-                    ['injectDependency' => ['router',   Zend\Expressive\Router\RouterInterface::class]],
-                    ['injectDependency' => ['template', Zend\Expressive\Template\TemplateRendererInterface::class]]
+                    ['injectDependency' => [':auth',     Zend\Authentication\AuthenticationService::class]],
+                    ['injectDependency' => [':router',   Zend\Expressive\Router\RouterInterface::class]],
+                    ['injectDependency' => [':template', Zend\Expressive\Template\TemplateRendererInterface::class]],
+                    ['injectDependency' => [':config',   'config']]
                 ]
             ],
-        ]
-    ],
-    'templates' => [
-        'map' => [
-            'layout/login' => 'layout/login.phtml',
         ]
     ],
     'routes' => [

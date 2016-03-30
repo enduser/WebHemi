@@ -1,8 +1,8 @@
 SetEnvIf Host .*\.dev APPLICATION_ENV=dev
 
 <If "req('Host') =~ /.*\.dev$/">
-    php_value xdebug.var_display_max_children 512
-    php_value xdebug.var_display_max_data 1024
+#    php_value xdebug.var_display_max_children 512
+#    php_value xdebug.var_display_max_data 1024
     php_value xdebug.var_display_max_depth 10
     php_flag opcache.enable Off
 </If>
@@ -21,9 +21,9 @@ SetEnvIf Host .*\.dev APPLICATION_ENV=dev
 Options -Indexes -MultiViews
 
 # Set all error pages to rewriteless entry point
-ErrorDocument 403 /index.php
-ErrorDocument 404 /index.php
-ErrorDocument 500 /index.php
+#ErrorDocument 403 /error.php
+#ErrorDocument 404 /error.php
+#ErrorDocument 500 /error.php
 
 <IfModule mod_expires.c>
     # Enable expirations
@@ -55,19 +55,21 @@ ErrorDocument 500 /index.php
     RewriteCond %{REQUEST_FILENAME} !-l
     RewriteRule ^(.*)$ "-" [F,L]
     # Protect application with redeirect to invalid route
+    RewriteCond %{REQUEST_URI} ^/wh_application/?$
+    RewriteRule ^wh_application/?(.*)$ /wh_application/index.html [R,L]
+    RewriteCond %{REQUEST_URI} ^/wh_application/.+$
     RewriteCond %{REQUEST_URI} !\.html$
     RewriteRule ^wh_application/?(.*)$ /wh_application/$1.html [R,L]
     # Redirect favicon.ico to PHP script
 #    RewriteCond %{REQUEST_URI} favicon.ico$
 #    RewriteRule ^(.*)$ favicon.php [NC,L]
     # Fix routes with adding trailing slash
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-l
-    RewriteCond %{REQUEST_URI} !\.[a-z0-9]{2,4}$
+    RewriteCond %{REQUEST_URI} !.*\.[a-z0-9]{2,4}$
     RewriteCond %{REQUEST_URI} !(.+)/$
     RewriteRule ^(.+)$ /$1/ [L,R=301]
     # Redirect all other request to entry point
-    RewriteCond %{REQUEST_URI}  !(\.png|\.jpg|\.gif|\.jpeg|\.bmp|\.ico|\.js|\.css|\.map)$
+    RewriteCond %{REQUEST_URI}  !.*(\.png|\.jpg|\.gif|\.jpeg|\.bmp|\.ico|\.js|\.css|\.map)$
     RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-l
     RewriteRule ^(.*)$ application.php [NC,L]
 </IfModule>

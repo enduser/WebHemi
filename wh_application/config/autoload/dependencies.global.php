@@ -86,18 +86,18 @@ return [
             WebHemi\Auth\Adapter::class => [
                 'class' => WebHemi\Auth\Adapter::class,
                 'calls' => [
-                    ['injectDependency' => ['userTable',        WebHemi\User\Table::class]],
-                    ['injectDependency' => ['userRoleTable',    WebHemi\User\Role\Table::class]],
-                    ['injectDependency' => ['aclRoleTable',     WebHemi\Acl\Role\Table::class]],
-                    ['injectDependency' => ['applicationTable', WebHemi\Application\Table::class]],
-                    ['injectDependency' => ['clientLockTable',  WebHemi\Client\Lock\Table::class]]
+                    ['injectDependency' => [':userTable',        WebHemi\User\Table::class]],
+                    ['injectDependency' => [':userRoleTable',    WebHemi\User\Role\Table::class]],
+                    ['injectDependency' => [':aclRoleTable',     WebHemi\Acl\Role\Table::class]],
+                    ['injectDependency' => [':applicationTable', WebHemi\Application\Table::class]],
+                    ['injectDependency' => [':clientLockTable',  WebHemi\Client\Lock\Table::class]]
                 ],
             ],
 
             WebHemi\Auth\Storage\Session::class => [
                 'class' => WebHemi\Auth\Storage\Session::class,
                 'calls' => [
-                    ['injectDependency' => ['userTable', WebHemi\User\Table::class]]
+                    ['injectDependency' => [':userTable', WebHemi\User\Table::class]]
                 ]
             ],
 
@@ -109,7 +109,7 @@ return [
             WebHemi\Acl\AclMiddleware::class => [
                 'class' => WebHemi\Acl\AclMiddleware::class,
                 'calls' => [
-                    ['injectDependency' => ['auth', Zend\Authentication\AuthenticationService::class]],
+                    ['injectDependency' => [':auth', Zend\Authentication\AuthenticationService::class]],
                 ]
             ],
 
