@@ -60,7 +60,6 @@ class HomePageAction implements DependencyInjectionInterface
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
-        echo 'Action<br>';
         $params = $request->getQueryParams();
 
         if (isset($params['e404'])) {
@@ -80,14 +79,6 @@ class HomePageAction implements DependencyInjectionInterface
                 ];
             }
         }
-
-        $config = $this->config;
-        var_dump('APPLICATION_THEME_NAME                : ' . APPLICATION_THEME_NAME);
-        var_dump('APPLICATION_THEME_SYSTEM_PATH         : ' . APPLICATION_THEME_SYSTEM_PATH);
-        var_dump('APPLICATION_THEME_RESOURCE_PATH       : ' . APPLICATION_THEME_RESOURCE_PATH);
-        var_dump('APPLICATION_THEME_ADMIN_LOGIN_STYLE   : ' . APPLICATION_THEME_ADMIN_LOGIN_STYLE);
-        var_dump('APPLICATION_THEME_ADMIN_LOGIN_SCRIPT  : ' . APPLICATION_THEME_ADMIN_LOGIN_SCRIPT);
-        var_dump($config->templates['map']);
 
         if ($this->router instanceof Router\ZendRouter) {
             $data['routerName'] = 'Zend Router';
