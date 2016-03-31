@@ -27,7 +27,6 @@ namespace WebHemi\Factory;
 
 use WebHemi\Error\ErrorHandler;
 use Interop\Container\ContainerInterface;
-use Zend\Expressive\TemplatedErrorHandler;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
 /**
@@ -38,14 +37,14 @@ class FinalHandlerFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return TemplatedErrorHandler
+     * @return ErrorHandler
      */
     public function __invoke(ContainerInterface $container)
     {
-        $template = $container->has(TemplateRendererInterface::class)
+        $templateRenderer = $container->has(TemplateRendererInterface::class)
             ? $container->get(TemplateRendererInterface::class)
             : null;
 
-        return new ErrorHandler($template);
+        return new ErrorHandler($templateRenderer);
     }
 }

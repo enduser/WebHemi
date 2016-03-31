@@ -38,12 +38,11 @@ $container = require 'wh_application/config/container.php';
 $app = $container->get('Zend\Expressive\Application');
 
 // When the application is in a sub-directory we add it's URL in the beginning of the middleware pipeline.
-//if (APPLICATION_MODULE_TYPE == APPLICATION_MODULE_TYPE_SUBDIR) {
-//    $topApp = \Zend\Expressive\AppFactory::create(
-//        $container,
-//        $container->get(\Zend\Expressive\Router\RouterInterface::class)
-//    );
-//    $topApp->pipe('/' . APPLICATION_MODULE_URI, $app);
-//    $topApp->run();
-//}
+if (APPLICATION_MODULE_TYPE == APPLICATION_MODULE_TYPE_SUBDIR) {
+    $router = $container->get(\Zend\Expressive\Router\RouterInterface::class);
+    $topApp = \Zend\Expressive\AppFactory::create($container, $router);
+    $topApp->pipe('/' . APPLICATION_MODULE_URI, $app);
+    $topApp->run();
+}
+
 $app->run();

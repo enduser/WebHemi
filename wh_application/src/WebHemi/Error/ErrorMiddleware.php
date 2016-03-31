@@ -25,21 +25,22 @@
 
 namespace WebHemi\Error;
 
+use WebHemi\Application\DependencyInjectionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
-use Zend\Expressive\Template;
+use Zend\Expressive\Template\TemplateRendererInterface;
 use Exception;
 
 /**
  * Class ErrorMiddleware
  * @package WebHemi\Error
  */
-class ErrorMiddleware
+class ErrorMiddleware implements DependencyInjectionInterface
 {
     /**
-     * @var Template\TemplateRendererInterface
+     * @var TemplateRendererInterface
      */
     private $templateRenderer;
 
@@ -115,16 +116,6 @@ class ErrorMiddleware
     ];
 
     /**
-     * AuthMiddleware constructor.
-     *
-     * @param Template\TemplateRendererInterface $templateRenderer
-     */
-    public function __construct(Template\TemplateRendererInterface $templateRenderer)
-    {
-        $this->templateRenderer = $templateRenderer;
-    }
-
-    /**
      * @param int|Exception $error
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
@@ -166,5 +157,17 @@ class ErrorMiddleware
             ),
             $code
         );
+    }
+
+    /**
+     * Injects a service into the class
+     *
+     * @param string $property
+     * @param object $service
+     * @return void
+     */
+    public function injectDependency($property, $service)
+    {
+        $this->{$property} = $service;
     }
 }

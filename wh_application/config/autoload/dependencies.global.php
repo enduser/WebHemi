@@ -28,12 +28,12 @@ return [
             Zend\Expressive\Helper\ServerUrlHelper::class => Zend\Expressive\Helper\ServerUrlHelper::class,
         ],
         'factories' => [
-            'Zend\Expressive\FinalHandler'                            => Zend\Expressive\Container\TemplatedErrorHandlerFactory::class,
             Zend\View\HelperPluginManager::class                      => Zend\Expressive\ZendView\HelperPluginManagerFactory::class,
             Zend\Expressive\Template\TemplateRendererInterface::class => Zend\Expressive\ZendView\ZendViewRendererFactory::class,
             Zend\Expressive\Application::class                        => Zend\Expressive\Container\ApplicationFactory::class,
             Zend\Expressive\Helper\UrlHelper::class                   => Zend\Expressive\Helper\UrlHelperFactory::class,
             Zend\Db\Adapter\Adapter::class                            => Zend\Db\Adapter\AdapterServiceFactory::class,
+            'Zend\Expressive\FinalHandler'                            => WebHemi\Factory\FinalHandlerFactory::class,
             WebHemi\Acl\Rule\Table::class                             => WebHemi\Factory\DbTableFactory::class,
             WebHemi\Acl\Role\Table::class                             => WebHemi\Factory\DbTableFactory::class,
             WebHemi\Acl\Resource\Table::class                         => WebHemi\Factory\DbTableFactory::class,
@@ -114,8 +114,10 @@ return [
             ],
 
             WebHemi\Error\ErrorMiddleware::class => [
-                'class'     => WebHemi\Error\ErrorMiddleware::class,
-                'arguments' => [Zend\Expressive\Template\TemplateRendererInterface::class]
+                'class' => WebHemi\Error\ErrorMiddleware::class,
+                'calls' => [
+                    ['injectDependency' => [':templateRenderer', Zend\Expressive\Template\TemplateRendererInterface::class]],
+                ]
             ],
         ]
     ],
