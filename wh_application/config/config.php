@@ -29,23 +29,24 @@ require_once 'definitions.php';
 $config              = [];
 $serverData          = filter_input_array(INPUT_SERVER);
 $applicationSettings = [
+    'mainDomain' => null,
+    'sessionCookiePrefix' => 'atsn',
+    'autologinCookiePrefix' => 'atln',
+    'applicationPath' => realpath(__DIR__ . '/../'),
+    'applicationModule' => 'Website',
+    'applicationModuleUri' => 'www',
+    'applicationModuleList' => [],
+    'applicationModuleType' => 'subdomain',
     'applicationModuleAdmin' => 'Admin',
     'applicationModuleWebsite' => 'Website',
     'applicationModuleTypeSubdomain' => 'subdomain',
     'applicationModuleTypeSubdirectory' => 'subdir',
-    'autologinCookiePrefix' => 'atln',
-    'sessionCookiePrefix' => 'atsn',
-    'applicationModuleList' => [],
-    'applicationPath' => realpath(__DIR__ . '/../'),
-    'applicationModule' => 'Website',
-    'applicationModuleType' => 'subdomain',
-    'applicationModuleUri' => '/',
-    'mainDomain' => null,
     'applicationDomain' => null,
     'applicationThemeName' => '',
     'applicationThemeSystemPath' => '',
     'applicationThemeResourcePath' => '',
-    'applicationThemeResourceLoginPath' => '',
+    'applicationThemeAdminLoginStyle' => '/resources/theme/webhemi/css/login.css',
+    'applicationThemeAdminLoginScript' => '/resources/theme/webhemi/js/login.js',
 ];
 
 // Load configuration from autoload path
@@ -53,54 +54,51 @@ foreach (Glob::glob($applicationSettings['applicationPath'] . '/config/autoload/
     $config = ArrayUtils::merge($config, include $file);
 }
 
-$modules = $config['applications'];
+$modules               = $config['applications'];
+$domain                = $serverData['SERVER_NAME'];
+$module                = $applicationSettings['applicationModule'];
+$subDomain             = '';
+$applicationModuleList = [];
+$url                   = 'http' . ((isset($serverData['HTTPS']) && $serverData['HTTPS']) ? 's' : '') . '://'
+    . $serverData['HTTP_HOST'] . $serverData['REQUEST_URI'] . $serverData['QUERY_STRING'];
+$urlParts              = parse_url($url);
 
-// Define Application list
-if (!empty($modules)) {
-    $applicationSettings['applicationModuleList'] = json_encode(array_keys($modules));
-}
-
-$domain     = $serverData['SERVER_NAME'];
-// set a default module
-$module     = $applicationSettings['applicationModule'];
-$subDomain  = '';
-
-// if no URL is present, then the current URL will be used
-$url = 'http' . ((isset($serverData['HTTPS']) && $serverData['HTTPS']) ? 's' : '') . '://';
-$url .= $serverData['HTTP_HOST'] . $serverData['REQUEST_URI'] . $serverData['QUERY_STRING'];
-
-// parse the URL into
-$urlParts = parse_url($url);
-
-// if the host is not an IP address, then we can check the subdomain-based module names too
+// If the host is not an IP address, then check the subdomain-based module names too
 if (!preg_match(
     '/^((\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.){3}(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])$/',
     $urlParts['host']
 )) {
     $domainParts = explode('.', $urlParts['host']);
     // @todo find out how to support complex TLDs like `.co.uk` or `.com.br`
-    $tld = array_pop($domainParts);
-    $domain = array_pop($domainParts) . '.' . $tld;
+    $tld         = array_pop($domainParts);
+    $domain      = array_pop($domainParts) . '.' . $tld;
     // the rest is the sub-domain
-    $subDomain = implode('.', $domainParts);
+    $subDomain   = implode('.', $domainParts);
 }
 
-// if no sub-domain presents, then it should be handled as 'www'
+// If no sub-domain presents, then it should be handled as 'www'
 if (empty($subDomain)) {
     $subDomain = 'www';
 }
 
-// additionally we store the domains as well
+// Additionally store the domains as well
 $applicationSettings['mainDomain']        = $domain;
 $applicationSettings['applicationDomain'] = $subDomain . '.' . $applicationSettings['mainDomain'];
 
-// we ignore the first (actually an empty string) and last (the rest of the URL)
+// Ignore the first (actually an empty string) and last (the rest of the URL)
 list($tmp, $subDir) = explode('/', $urlParts['path'], 3);
 
-// we run through the available application-modules
+// Run through the available application-modules to validate and find active module
 foreach ($modules as $moduleName => $moduleData) {
-    // subdirectory-based modules
+    // Skip invalid application
+    if (!isset($moduleData['type']) || !isset($moduleData['path'])) {
+        continue;
+    }
+
+    $applicationModuleList[] = $moduleName;
+
     if ($subDomain == 'www') {
+        // Sub directory-based modules
         if (!empty($subDir)
             && $moduleData['type'] == $applicationSettings['applicationModuleTypeSubdirectory']
             && $moduleData['path'] == $subDir
@@ -109,7 +107,7 @@ foreach ($modules as $moduleName => $moduleData) {
             break;
         }
     } else {
-        // subDomain-based modules
+        // Sub domain-based modules
         if ($moduleData['type'] == $applicationSettings['applicationModuleTypeSubdomain']
             && $moduleData['path'] == $subDomain
         ) {
@@ -119,61 +117,76 @@ foreach ($modules as $moduleName => $moduleData) {
     }
 }
 
+// If no valid applications available: terminate
+if (empty($applicationModuleList)) {
+    throw new \Exception('No applications available!');
+}
+
+if (empty($config['applications'][$module]['theme'])) {
+    $config['applications'][$module]['theme'] = 'default';
+}
+
 $applicationSettings['applicationModule']     = $module;
-$applicationSettings['applicationModuleType'] = isset($modules[$module])
-    ? $modules[$module]['type']
-    : ($module == $applicationSettings['applicationModuleWebsite'] ? 'subdomain' : 'subdir');
-$applicationSettings['applicationModuleUri']  = isset($modules[$module])
-    ? $modules[$module]['path']
-    : ($module == $applicationSettings['applicationModuleWebsite'] ? 'www' : '/');
+$applicationSettings['applicationModuleType'] = $modules[$module]['type'];
+$applicationSettings['applicationModuleUri']  = $modules[$module]['path'];
+$applicationSettings['applicationModuleList'] = json_encode(array_keys($applicationModuleList));
+// Preset variables for default theme
+$defaultThemePath                             = $applicationSettings['applicationPath'] . '/templates/default_theme';
+$themeName                                    = 'default';
+$themePath                                    = $defaultThemePath;
+$themeConfig                                  = null;
 
-$defaultThemePath = $applicationSettings['applicationPath'] . '/templates/default_theme';
-$themePath        = $defaultThemePath;
-$theme            = isset($config['applications'][$applicationSettings['applicationModule']])
-    ? $config['applications'][$applicationSettings['applicationModule']]['theme']
-    : 'default';
 
-// Update theme path or reset theme to default
-if ('default' != $theme
-    && file_exists($applicationSettings['applicationPath'] . '/templates/vendor_themes/' . $theme . '/theme.config.json')) {
-    $themePath = $applicationSettings['applicationPath'] . '/templates/vendor_themes/' . $theme;
-} else {
-    $theme = 'default';
-}
-
-$applicationSettings['applicationThemeName'] = $theme;
-
-// For Admin application we allow only the default theme. Login page can use custom CSS and JS only
-if ($applicationSettings['applicationModuleAdmin'] == $applicationSettings['applicationModule']
-    && $themePath !== $defaultThemePath
+// Check theme config
+if ('default' != $config['applications'][$module]['theme']
+    && file_exists($applicationSettings['applicationPath'] . '/templates/vendor_themes/' . $config['applications'][$module]['theme'] . '/theme.config.json')
 ) {
-    // Reset theme (except the name) to read default template
+    // Read the theme config and validate it
+    $themeConfig = @json_decode(
+        file_get_contents(
+            $applicationSettings['applicationPath'] . '/templates/vendor_themes/'
+            . $config['applications'][$module]['theme'] . '/theme.config.json'
+        ),
+        true
+    );
+    if ($themeConfig) {
+        $themeName = $config['applications'][$module]['theme'];
+        $themePath = $applicationSettings['applicationPath'] . '/templates/vendor_themes/' . $themeName;
+
+        // Check if it supports admin login
+        if (!empty($themeConfig['templates']['options']['admin_login_customized'])
+            && !empty($themeConfig['templates']['options']['admin_login_stylesheet'])
+            && !empty($themeConfig['templates']['options']['admin_login_javascript'])
+        ) {
+            $themeTemplatePath = str_replace($applicationSettings['applicationPath'], 'wh_application', $themePath);
+
+            $applicationSettings['applicationThemeAdminLoginStyle']  = '/resources/theme/' . $themeName . '/'
+                . $themeConfig['templates']['options']['admin_login_stylesheet'];
+            $applicationSettings['applicationThemeAdminLoginScript'] = '/resources/theme/' . $themeName . '/'
+                . $themeConfig['templates']['options']['admin_login_javascript'];
+        }
+    }
+}
+
+// If there is a valid custom theme, save it's name
+$applicationSettings['applicationThemeName'] = $themeName;
+
+// For Admin application we allow only the default theme.
+// Only the login page can use custom CSS and JS and the variables are already saved or having the defaults
+if (!$themeConfig || $applicationSettings['applicationModuleAdmin'] == $applicationSettings['applicationModule']) {
+    // Reset theme to read default template
     $themePath = $defaultThemePath;
-    $theme = 'default';
+    $themeName = 'default';
+    $themeConfig = json_decode(file_get_contents($defaultThemePath . '/theme.config.json'), true);
 }
-
-$applicationSettings['applicationThemeSystemPath'] = $themePath;
-
-// Set resource path
-if ('default' == $theme) {
-    $applicationSettings['applicationThemeResourcePath'] = '/resources/theme/webhemi';
-} else {
-    $applicationSettings['applicationThemeResourcePath'] = '/resources/theme/' . $theme;
-}
-
-// Set resource path for the login
-if ('default' == $applicationSettings['applicationThemeName']) {
-    $applicationSettings['applicationThemeResourceLoginPath'] = '/resources/theme/webhemi';
-} else {
-    $applicationSettings['applicationThemeResourceLoginPath'] = '/resources/theme/'
-        . $applicationSettings['applicationThemeName'];
-}
-
-// Read theme config
-$themeConfig = json_decode(file_get_contents($themePath . '/theme.config.json'), true);
+// Apply config
 $config = ArrayUtils::merge($config, $themeConfig);
 
-// Load specific application's config (Admin / Website routes)
+// Set theme paths
+$applicationSettings['applicationThemeSystemPath'] = $themePath;
+$applicationSettings['applicationThemeResourcePath'] = '/resources/theme/' . (('default' == $themeName) ? 'webhemi' : $themeName);
+
+// Load specific application's config (Admin / Website routes and fixed template maps)
 $applicationConfigFile = $applicationSettings['applicationPath'] . '/config/application/' .
     ($applicationSettings['applicationModuleAdmin'] == $applicationSettings['applicationModule']
         ? $applicationSettings['applicationModuleAdmin']
@@ -181,16 +194,19 @@ $applicationConfigFile = $applicationSettings['applicationPath'] . '/config/appl
     ) . '.php';
 $config = ArrayUtils::merge($config, include $applicationConfigFile);
 
-// fix template map paths
+// Fix template map paths
 $themeTemplatePath = str_replace($applicationSettings['applicationPath'], 'wh_application', $themePath);
+
 foreach ($config['templates']['map'] as $alias => $template) {
     $config['templates']['map'][$alias] = $themeTemplatePath . '/view/' . $template;
 }
 
+// Create application-wide constants
 createDefinitions($applicationSettings);
-// cleanup global variables
+
+// Cleanup global variables
 unset($serverData, $applicationSettings, $module, $modules, $domain, $subDomain, $url, $urlParts, $domainParts, $tld);
-unset($tmp, $moduleName, $moduleData, $defaultThemePath, $themePath, $theme, $themeConfig, $applicationConfigFile);
-unset($themeTemplatePath);
+unset($tmp, $moduleName, $moduleData, $defaultThemePath, $themePath, $themeName, $themeConfig, $applicationConfigFile);
+unset($themeTemplatePath, $applicationModuleList);
 
 return new ArrayObject($config, ArrayObject::ARRAY_AS_PROPS);

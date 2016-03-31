@@ -34,6 +34,7 @@ function createDefinitions(array $applicationSettings)
     define('SESSION_COOKIE_PREFIX', $applicationSettings['sessionCookiePrefix']);
     define('APPLICATION_PATH', $applicationSettings['applicationPath']);
     define('APPLICATION_MODULE', $applicationSettings['applicationModule']);
+    define('APPLICATION_MODULE_LIST', $applicationSettings['applicationModuleList']);
     define('APPLICATION_MODULE_TYPE', $applicationSettings['applicationModuleType']);
     define('APPLICATION_MODULE_URI', $applicationSettings['applicationModuleUri']);
     define('MAIN_DOMAIN', $applicationSettings['mainDomain']);
@@ -41,5 +42,6 @@ function createDefinitions(array $applicationSettings)
     define('APPLICATION_THEME_NAME', $applicationSettings['applicationThemeName']);
     define('APPLICATION_THEME_SYSTEM_PATH', $applicationSettings['applicationThemeSystemPath']);
     define('APPLICATION_THEME_RESOURCE_PATH', $applicationSettings['applicationThemeResourcePath']);
-    define('APPLICATION_THEME_RESOURCE_LOGIN_PATH', $applicationSettings['applicationThemeResourceLoginPath']);
+    define('APPLICATION_THEME_ADMIN_LOGIN_STYLE', $applicationSettings['applicationThemeAdminLoginStyle']);
+    define('APPLICATION_THEME_ADMIN_LOGIN_SCRIPT', $applicationSettings['applicationThemeAdminLoginScript']);
 }

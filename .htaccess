@@ -1,7 +1,7 @@
 SetEnvIf Host .*\.dev APPLICATION_ENV=dev
 
 <If "req('Host') =~ /.*\.dev$/">
-    php_value xdebug.default_enable Off
+#    php_value xdebug.default_enable Off
     php_value xdebug.remote_enable Off
     php_value xdebug.profiler_enable Off
     php_value xdebug.profiler_enable_trigger Off

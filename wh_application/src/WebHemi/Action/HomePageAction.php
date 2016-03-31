@@ -84,8 +84,9 @@ class HomePageAction implements DependencyInjectionInterface
         $config = $this->config;
         var_dump('APPLICATION_THEME_NAME                : ' . APPLICATION_THEME_NAME);
         var_dump('APPLICATION_THEME_SYSTEM_PATH         : ' . APPLICATION_THEME_SYSTEM_PATH);
-        var_dump('APPLICATION_THEME_RESOURCE`PATH       : ' . APPLICATION_THEME_RESOURCE_PATH);
-        var_dump('APPLICATION_THEME_RESOURCE_LOGIN_PATH : ' . APPLICATION_THEME_RESOURCE_LOGIN_PATH);
+        var_dump('APPLICATION_THEME_RESOURCE_PATH       : ' . APPLICATION_THEME_RESOURCE_PATH);
+        var_dump('APPLICATION_THEME_ADMIN_LOGIN_STYLE   : ' . APPLICATION_THEME_ADMIN_LOGIN_STYLE);
+        var_dump('APPLICATION_THEME_ADMIN_LOGIN_SCRIPT  : ' . APPLICATION_THEME_ADMIN_LOGIN_SCRIPT);
         var_dump($config->templates['map']);
 
 //        if (Application::$APPLICATION_MODULE == Application::APPLICATION_MODULE_ADMIN) {
