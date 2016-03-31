@@ -89,10 +89,6 @@ class HomePageAction implements DependencyInjectionInterface
         var_dump('APPLICATION_THEME_ADMIN_LOGIN_SCRIPT  : ' . APPLICATION_THEME_ADMIN_LOGIN_SCRIPT);
         var_dump($config->templates['map']);
 
-//        if (Application::$APPLICATION_MODULE == Application::APPLICATION_MODULE_ADMIN) {
-//            $data['layout'] = 'layout::admin';
-//        }
-
         if ($this->router instanceof Router\ZendRouter) {
             $data['routerName'] = 'Zend Router';
             $data['routerDocs'] = 'http://framework.zend.com/manual/current/en/modules/zend.mvc.routing.html';
