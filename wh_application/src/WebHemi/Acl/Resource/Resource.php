@@ -23,35 +23,44 @@
  *
  */
 
-namespace WebHemi\Acl\Role;
+namespace WebHemi\Acl\Resource;
+
+use Zend\Permissions\Acl\Resource\ResourceInterface;
 
 /**
- * Class Provider
- * @package WebHemi\Acl\Role
+ * Class Resource
+ * @package WebHemi\Acl
  */
-class Provider
+class Resource extends ResourceInterface
 {
-    /** @var array  */
-    protected $roles = [];
+    /** @var string */
+    protected $resourceId;
 
     /**
-     * Provider constructor.
-     * @param array $config
+     * Resource constructor.
+     * @param null $resourceId
      */
-    public function __construct(array $config = [])
+    public function __construct($resourceId = null)
     {
-        foreach ($config as $roleName) {
-            if (!isset($this->roles[$roleName])) {
-                $this->roles[$roleName] = new Role($roleName);
-            }
-        }
+        $this->resourceId = $resourceId;
     }
 
     /**
-     * @return array
+     * @return null|string
      */
-    public function getRoles()
+    public function getResourceId()
     {
-        return $this->roles;
+        return $this->resourceId;
+    }
+
+    /**
+     * @param string $resourceId
+     * @return $this
+     */
+    public function setResourceId($resourceId)
+    {
+        $this->resourceId = $resourceId;
+
+        return $this;
     }
 }
