@@ -85,7 +85,7 @@ class HomePageActionTest extends \PHPUnit_Framework_TestCase
     {
         $homePage = new HomePageAction();
 
-        //$homePage->injectDependency('auth', $this->authService);
+        $homePage->injectDependency('auth', $this->authService->reveal());
         $homePage->injectDependency('router', $this->router);
         $homePage->injectDependency('config', $this->config);
 
