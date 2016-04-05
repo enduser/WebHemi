@@ -23,32 +23,13 @@
  *
  */
 
-namespace WebHemi\Client\Lock;
-
-use Zend\Db\Exception;
-use Zend\Db\ResultSet\ResultSet;
-use Zend\Db\TableGateway\AbstractTableGateway;
-use Zend\Db\Adapter\Adapter;
+namespace WebHemi\Factory;
 
 /**
- * Class Table
- * @package WebHemi\Client\Lock
+ * Class DbEntityFactory
+ * @package WebHemi\Factory
  */
-class Table extends AbstractTableGateway
+class DbEntityFactory extends ServiceFactory
 {
-    /** @var string */
-    protected $table = 'webhemi_client_lock';
 
-    /**
-     * Table constructor.
-     * @param Adapter $adapter
-     * @param Entity $entity
-     */
-    public function __construct(Adapter $adapter, Entity $entity)
-    {
-        $this->adapter = $adapter;
-        $this->resultSetPrototype = new ResultSet();
-        $this->resultSetPrototype->setArrayObjectPrototype($entity);
-        $this->initialize();
-    }
 }

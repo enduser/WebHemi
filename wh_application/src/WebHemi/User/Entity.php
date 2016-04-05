@@ -27,6 +27,15 @@ namespace WebHemi\User;
 
 use ArrayObject;
 use DateTime;
+use Serializable;
+use WebHemi\User\Meta\Table as UserMetaTable;
+use WebHemi\User\Role\Entity as UserRoleEntity;
+use WebHemi\User\Role\Table as UserRoleTable;
+use WebHemi\Acl\Role\Entity as AclRoleEntity;
+use WebHemi\Acl\Role\Table as AclRoleTable;
+use WebHemi\Application\Entity as ApplicationEntity;
+use WebHemi\Application\Table as ApplicationTable;
+use WebHemi\Application\DependencyInjectionInterface;
 
 /**
  * Class Entity
@@ -44,14 +53,78 @@ use DateTime;
  * @property DateTime $timeLogin
  * @property DateTime $timeRegister
  */
-class Entity extends ArrayObject
+class Entity extends ArrayObject implements DependencyInjectionInterface, Serializable
 {
+    /** @var  UserMetaTable */
+    protected $userMetaTable;
+    /** @var  UserRoleTable */
+    protected $userRoleTable;
+    /** @var  ApplicationTable */
+    protected $applicationTable;
+    /** @var  AclRoleTable */
+    protected $aclRoleTable;
+
+    /**
+     * @return array
+     */
+    public function getMetaList()
+    {
+        return $this->userMetaTable->getAllByUserId($this->userId);
+    }
+
+    /**
+     * @return AclRoleEntity
+     */
+    public function getCurrentUserRole()
+    {
+        /** @var ApplicationEntity $application */
+        $application = $this->applicationTable->getCurrentApplication();
+        /** @var UserRoleEntity $userRole */
+        $userRole = $this->userRoleTable->getRole($this->userId, $application->applicationId);
+        return $this->aclRoleTable->getRoleById($userRole->aclRoleId);
+    }
+
+    /**
+     * @param string $applicationName
+     * @return AclRoleEntity
+     */
+    public function getUserRoleForApplication($applicationName)
+    {
+        /** @var ApplicationEntity $application */
+        $application = $this->applicationTable->getApplicationByName($applicationName);
+        /** @var UserRoleEntity $userRole */
+        $userRole = $this->userRoleTable->getRole($this->userId, $application->applicationId);
+        return $this->aclRoleTable->getRoleById($userRole->aclRoleId);
+    }
+
+    /**
+     * @return string
+     */
+    public function serialize()
+    {
+        return serialize($this->toArray());
+    }
+
+    /**
+     * Unserialize data from session.
+     * Beware! The instance won't have the dependencies!
+     *
+     * @see WebHemi\Auth\Storage\Session::read()
+     * @todo find a way to inject services
+     *
+     * @param string $serialized
+     */
+    public function unserialize($serialized)
+    {
+        $this->exchangeArray(unserialize($serialized));
+    }
+
     /**
      * Exchange array values into object properties.
      *
      * @param array $data
      *
-     * @return array
+     * @return Entity
      */
     public function exchangeArray($data)
     {
@@ -64,10 +137,10 @@ class Entity extends ArrayObject
         $this->registerIp = (isset($data['register_ip'])) ? $data['register_ip'] : null;
         $this->isActive = (isset($data['is_active'])) ? (bool)$data['is_active'] : null;
         $this->isEnabled = (isset($data['is_enabled'])) ? (bool)$data['is_enabled'] : null;
-        $this->timeLogin = (isset($data['time_login'])) ? new \DateTime($data['time_login']) : null;
-        $this->timeRegister = (isset($data['time_register'])) ? new \DateTime($data['time_register']) : null;
+        $this->timeLogin = (isset($data['time_login'])) ? new DateTime($data['time_login']) : null;
+        $this->timeRegister = (isset($data['time_register'])) ? new DateTime($data['time_register']) : null;
 
-        return $data;
+        return $this;
     }
 
     /**
@@ -90,5 +163,17 @@ class Entity extends ArrayObject
             'time_login' => $this->timeLogin ? $this->timeLogin->format('Y-m-d H:i:s') : null,
             'time_register' => $this->timeRegister ? $this->timeRegister->format('Y-m-d H:i:s') : null
         ];
+    }
+
+    /**
+     * Injects a service into the class
+     *
+     * @param string $property
+     * @param object $service
+     * @return void
+     */
+    public function injectDependency($property, $service)
+    {
+        $this->{$property} = $service;
     }
 }

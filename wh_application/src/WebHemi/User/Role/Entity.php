@@ -23,18 +23,17 @@
  *
  */
 
-namespace WebHemi\Application;
+namespace WebHemi\User\Role;
 
 use ArrayObject;
 
 /**
  * Class Entity
- * @package WebHemi\Application
+ * @package WebHemi\User\Role
  *
- * @property int    $applicationId
- * @property string $name
- * @property bool   $isReadonly
- * @property string $description
+ * @property int $userId
+ * @property int $applicationId
+ * @property int $aclRoleId
  */
 class Entity extends ArrayObject
 {
@@ -47,10 +46,9 @@ class Entity extends ArrayObject
      */
     public function exchangeArray($data)
     {
-        $this->applicationId = (isset($data['id_application'])) ? (int)$data['id_application'] : null;
-        $this->name = (isset($data['name'])) ? $data['name'] : null;
-        $this->isReadonly = (isset($data['is_readonly'])) ? (bool)$data['is_readonly'] : true;
-        $this->description = (isset($data['description'])) ? $data['description'] : null;
+        $this->userId = isset($data['fk_user']) ? (int)$data['fk_user'] : null;
+        $this->applicationId = isset($data['fk_application']) ? (int)$data['fk_application'] : null;
+        $this->aclRoleId = isset($data['fk_acl_role']) ? (int)$data['fk_acl_role'] : null;
 
         return $this;
     }
@@ -63,10 +61,9 @@ class Entity extends ArrayObject
     public function toArray()
     {
         return [
-            'id_application' => $this->applicationId,
-            'username' => $this->name,
-            'is_readonly' => $this->isReadonly ? 1 : 0,
-            'description' => $this->description
+            'fk_user' => $this->userId,
+            'fk_application' => $this->applicationId,
+            'fk_acl_role' => $this->aclRoleId
         ];
     }
 }

@@ -26,9 +26,9 @@
 namespace WebHemi\Acl\Role;
 
 use Zend\Db\Exception;
+use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
-use ArrayObject;
 
 /**
  * Class Table
@@ -39,15 +39,26 @@ class Table extends AbstractTableGateway
     /** @var string */
     protected $table = 'webhemi_acl_role';
 
-
     /**
-     * Class constructor
-     *
+     * Table constructor.
      * @param Adapter $adapter
+     * @param Entity $entity
      */
-    public function __construct(Adapter $adapter)
+    public function __construct(Adapter $adapter, Entity $entity)
     {
         $this->adapter = $adapter;
+        $this->resultSetPrototype = new ResultSet();
+        $this->resultSetPrototype->setArrayObjectPrototype($entity);
         $this->initialize();
+    }
+
+    /**
+     * @param int $roleId
+     * @return Entity
+     */
+    public function getRoleById($roleId)
+    {
+        $rowSet = $this->select(['id_acl_role' => (int)$roleId]);
+        return $rowSet->current();
     }
 }

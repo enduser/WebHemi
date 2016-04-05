@@ -25,6 +25,9 @@
 namespace WebHemiTest\Action;
 
 use WebHemi\Action\HomePageAction;
+use WebHemi\User\Entity as UserEntity;
+use WebHemi\User\Meta\Entity as UserMetaEntity;
+use WebHemi\Acl\Role\Entity as AclRoleEntity;
 use WebHemiTest\Fixtures;
 use Zend\Authentication\AuthenticationService;
 use Zend\Diactoros\Response;
@@ -43,6 +46,8 @@ class HomePageActionTest extends \PHPUnit_Framework_TestCase
     protected $router;
     /** @var  AuthenticationService */
     protected $authService;
+    /** @var  UserEntity */
+    protected $userEntity;
     /** @var  Config */
     protected $config;
 
@@ -53,9 +58,24 @@ class HomePageActionTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
+        $this->config = $this->getConfig();
+
+        //$aclRoleEntity = new AclRoleEntity();
+        //$aclRoleEntity->exchangeArray([
+        //    'id_acl_role' => 1,
+        //    'name' => 'admin',
+        //    'is_read_only' => 1,
+        //    'description' => ''
+        //]);
+
+        $this->userEntity = $this->prophesize(UserEntity::class);
+        //$this->userEntity->getMetaList()->willReturn([]);
+        //$this->userEntity->getCurrentUserRole()->willReturn($aclRoleEntity);
+
         $this->router = $this->prophesize(RouterInterface::class);
         $this->authService = $this->prophesize(AuthenticationService::class);
-        $this->config = $this->getConfig();
+        //$this->authService->hasIdentity()->willReturn(false);
+        //$this->authService->getIdentity()->willReturn($this->userEntity);
     }
 
     /**
@@ -65,7 +85,7 @@ class HomePageActionTest extends \PHPUnit_Framework_TestCase
     {
         $homePage = new HomePageAction();
 
-        $homePage->injectDependency('auth', $this->authService);
+        //$homePage->injectDependency('auth', $this->authService);
         $homePage->injectDependency('router', $this->router);
         $homePage->injectDependency('config', $this->config);
 

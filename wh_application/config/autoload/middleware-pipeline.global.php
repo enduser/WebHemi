@@ -27,7 +27,7 @@ return [
             'middleware' => [
                 Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
 
-                WebHemi\Acl\AclMiddleware::class,
+                WebHemi\Acl\Middleware::class,
 
                 Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
             ],
@@ -36,7 +36,7 @@ return [
 
         'error' => [
             'middleware' => [
-                WebHemi\Error\ErrorMiddleware::class
+                WebHemi\Error\Middleware::class
             ],
             'error'    => true,
             'priority' => -10000,

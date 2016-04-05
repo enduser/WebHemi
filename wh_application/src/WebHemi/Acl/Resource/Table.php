@@ -26,9 +26,9 @@
 namespace WebHemi\Acl\Resource;
 
 use Zend\Db\Exception;
+use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
-use ArrayObject;
 
 /**
  * Class Table
@@ -40,13 +40,25 @@ class Table extends AbstractTableGateway
     protected $table = 'webhemi_acl_resource';
 
     /**
-     * Class constructor
-     *
+     * Table constructor.
      * @param Adapter $adapter
+     * @param Entity $entity
      */
-    public function __construct(Adapter $adapter)
+    public function __construct(Adapter $adapter, Entity $entity)
     {
         $this->adapter = $adapter;
+        $this->resultSetPrototype = new ResultSet();
+        $this->resultSetPrototype->setArrayObjectPrototype($entity);
         $this->initialize();
+    }
+
+    /**
+     * @param int $resourceId
+     * @return Entity
+     */
+    public function getResourceById($resourceId)
+    {
+        $rowSet = $this->select(['id_acl_resource' => (int)$resourceId]);
+        return $rowSet->current();
     }
 }

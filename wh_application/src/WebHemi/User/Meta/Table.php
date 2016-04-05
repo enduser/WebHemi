@@ -23,21 +23,22 @@
  *
  */
 
-namespace WebHemi\User;
+namespace WebHemi\User\Meta;
 
 use Zend\Db\Exception;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
+use WebHemi\User\Entity as UserEntity;
 
 /**
  * Class Table
- * @package WebHemi\User
+ * @package WebHemi\User\Meta
  */
 class Table extends AbstractTableGateway
 {
     /** @var string */
-    protected $table = 'webhemi_user';
+    protected $table = 'webhemi_user_meta';
 
     /**
      * Table constructor.
@@ -53,59 +54,39 @@ class Table extends AbstractTableGateway
     }
 
     /**
-     * Retrieve entity by identifier
-     *
+     * @param string $metaKey
      * @param int $userId
-     *
      * @return Entity
      */
-    public function getUserById($userId)
+    public function getMetaByUserId($metaKey, $userId)
     {
-        $rowSet = $this->select(['id_user' => (int)$userId]);
+        if ($userId instanceof UserEntity) {
+            $userId = $userId->userId;
+        }
+
+        $rowSet = $this->select(['fk_user' => $userId, 'meta_key' => $metaKey]);
         return $rowSet->current();
     }
 
     /**
-     * Retrieve entity by user name
-     *
-     * @param string $username
-     *
-     * @return Entity
+     * @param int $userId
+     * @return array
      */
-    public function getUserByName($username)
+    public function getAllByUserId($userId)
     {
-        $rowSet = $this->select(['username' => $username]);
-        return $rowSet->current();
-    }
+        if ($userId instanceof UserEntity) {
+            $userId = $userId->userId;
+        }
 
-    /**
-     * Retrieve entity by email address
-     *
-     * @param string $email
-     *
-     * @return Entity
-     */
-    public function getUserByEmail($email)
-    {
-//        $data = [
-//            'user_id' => 1,
-//            'username' => 'admin',
-//            'email' => 'admin@foo.org',
-//            'password' => '$2y$14$H2WLOqAPyZqZBDPy/8NMEemMBIYQFJoaVQG.wuVrAG23e/UEz34GG',
-//            'hash' => 'a11abe47c50c5b9b4d28add27f80d601',
-//            'last_ip' => '192.168.56.1',
-//            'register_ip' => '127.0.0.1',
-//            'is_active' => true,
-//            'is_enabled' => true,
-//            'time_login' => '2016-03-29 07:24:11',
-//            'timeRegister' =>  '2016-03-24 16:25:12',
-//        ];
-//
-//        $entity = new Entity();
-//        $entity->exchangeArray($data);
-//        return $entity;
+        $rowSet     = $this->select(['fk_user' => $userId]);
+        $entityList = [];
 
-        $rowSet = $this->select(['email' => $email]);
-        return $rowSet->current();
+        /** @var Entity $entity */
+        while ($entity = $rowSet->current()) {
+            $entityList[$entity->metaKey] = $entity->metaData;
+            $rowSet->next();
+        }
+
+        return $entityList;
     }
 }

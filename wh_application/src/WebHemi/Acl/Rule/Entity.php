@@ -23,18 +23,18 @@
  *
  */
 
-namespace WebHemi\Application;
+namespace WebHemi\Acl\Rule;
 
 use ArrayObject;
 
 /**
  * Class Entity
- * @package WebHemi\Application
+ * @package WebHemi\Acl\Rule
  *
- * @property int    $applicationId
- * @property string $name
- * @property bool   $isReadonly
- * @property string $description
+ * @property int $aclRuleId
+ * @property int $aclRoleId
+ * @property int $aclResourceId
+ * @property bool $isAllowed
  */
 class Entity extends ArrayObject
 {
@@ -47,10 +47,10 @@ class Entity extends ArrayObject
      */
     public function exchangeArray($data)
     {
-        $this->applicationId = (isset($data['id_application'])) ? (int)$data['id_application'] : null;
-        $this->name = (isset($data['name'])) ? $data['name'] : null;
-        $this->isReadonly = (isset($data['is_readonly'])) ? (bool)$data['is_readonly'] : true;
-        $this->description = (isset($data['description'])) ? $data['description'] : null;
+        $this->aclRuleId = isset($data['id_alc_rule']) ? (int)$data['id_alc_rule'] : null;
+        $this->aclRoleId = isset($data['fk_acl_role']) ? (int)$data['fk_acl_role'] : null;
+        $this->aclResourceId = isset($data['fk_acl_resource']) ? (int)$data['fk_acl_resource'] : null;
+        $this->isAllowed = isset($data['is_allowed']) ? (int)$data['is_allowed'] : false;
 
         return $this;
     }
@@ -63,10 +63,10 @@ class Entity extends ArrayObject
     public function toArray()
     {
         return [
-            'id_application' => $this->applicationId,
-            'username' => $this->name,
-            'is_readonly' => $this->isReadonly ? 1 : 0,
-            'description' => $this->description
+            'id_acl_rule' => $this->aclRuleId,
+            'fk_acl_role' => $this->aclRoleId,
+            'fk_acl_resource' => $this->aclResourceId,
+            'is_allowed' => $this->isAllowed ? 1 : 0
         ];
     }
 }

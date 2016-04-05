@@ -32,10 +32,6 @@ use Zend\Validator\Ip as IpValidator;
 use WebHemi\Client\Lock\Table as ClientLockTable;
 use WebHemi\User\Table as UserTable;
 use WebHemi\User\Entity as UserEntity;
-use WebHemi\User\Role\Table as UserRoleTable;
-use WebHemi\Application\Table as ApplicationTable;
-use WebHemi\Application\Entity as ApplicationEntity;
-use WebHemi\Acl\Role\Table as AclRoleTable;
 use WebHemi\Application\DependencyInjectionInterface;
 use DateTime;
 
@@ -58,12 +54,6 @@ class Adapter implements DependencyInjectionInterface, AdapterInterface
     protected $credential;
     /** @var UserTable */
     protected $userTable;
-    /** @var UserRoleTable */
-    protected $userRoleTable;
-    /** @var ApplicationTable */
-    protected $applicationTable;
-    /** @var AclRoleTable */
-    protected $aclRoleTable;
     /** @var ClientLockTable */
     protected $clientLockTable;
     /** @var UserEntity */
@@ -96,9 +86,6 @@ class Adapter implements DependencyInjectionInterface, AdapterInterface
                 // identified by username
                 $userEntity = $this->userTable->getUserByName($this->identity);
             }
-
-            /** @var ApplicationEntity $applicationEntity */
-//            $applicationEntity = $this->applicationTable->getCurrentApplication();
 
             // if identity not found
             if (!$userEntity) {
@@ -158,6 +145,7 @@ class Adapter implements DependencyInjectionInterface, AdapterInterface
             // avoid auth process in the same runtime
             $this->verifiedUser = $userEntity;
 
+            // @TODO: implement lock
             // reset the counter
             //$this->clientLockTable->releaseLock();
         } else {

@@ -26,16 +26,17 @@
 namespace WebHemi\Acl;
 
 use Zend\Authentication\Result;
+
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Authentication\AuthenticationService;
 use WebHemi\Application\DependencyInjectionInterface;
 
 /**
- * Class AclMiddleware
+ * Class Middleware
  * @package WebHemi\Acl
  */
-class AclMiddleware implements DependencyInjectionInterface
+class Middleware implements DependencyInjectionInterface
 {
     /** @var  AuthenticationService */
     protected $auth;
@@ -63,6 +64,7 @@ class AclMiddleware implements DependencyInjectionInterface
                 throw new \Exception(implode('; ', $result->getMessages()), 403);
             }
         }
+        var_dump('acl middleware');
         return $next($request, $response);
     }
 

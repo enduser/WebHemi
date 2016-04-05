@@ -23,18 +23,19 @@
  *
  */
 
-namespace WebHemi\Application;
+namespace WebHemi\Client\Lock;
 
+use DateTime;
 use ArrayObject;
 
 /**
  * Class Entity
- * @package WebHemi\Application
+ * @package WebHemi\Client\Lock
  *
- * @property int    $applicationId
- * @property string $name
- * @property bool   $isReadonly
- * @property string $description
+ * @property int $clientLockId
+ * @property string $clientIp
+ * @property int $tryings
+ * @property DateTime $timeLock
  */
 class Entity extends ArrayObject
 {
@@ -47,10 +48,11 @@ class Entity extends ArrayObject
      */
     public function exchangeArray($data)
     {
-        $this->applicationId = (isset($data['id_application'])) ? (int)$data['id_application'] : null;
-        $this->name = (isset($data['name'])) ? $data['name'] : null;
-        $this->isReadonly = (isset($data['is_readonly'])) ? (bool)$data['is_readonly'] : true;
-        $this->description = (isset($data['description'])) ? $data['description'] : null;
+
+        $this->clientLockId = (isset($data['id_client_lock'])) ? (int)$data['id_client_lock'] : null;
+        $this->clientIp = (isset($data['client_ip'])) ? $data['client_ip'] : null;
+        $this->tryings = (isset($data['tryings'])) ? (int)$data['tryings'] : 0;
+        $this->timeLock = (isset($data['time_lock'])) ? new DateTime($data['time_lock']) : null;
 
         return $this;
     }
@@ -63,10 +65,10 @@ class Entity extends ArrayObject
     public function toArray()
     {
         return [
-            'id_application' => $this->applicationId,
-            'username' => $this->name,
-            'is_readonly' => $this->isReadonly ? 1 : 0,
-            'description' => $this->description
+            'id_client_lock' => $this->clientLockId,
+            'client_ip' => $this->clientIp,
+            'tryings' => $this->tryings,
+            'time_lock' => $this->timeLock ? $this->timeLock->format('Y-m-d H:i:s') : null,
         ];
     }
 }

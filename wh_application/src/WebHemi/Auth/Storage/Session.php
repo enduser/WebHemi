@@ -103,7 +103,7 @@ class Session implements DependencyInjectionInterface, StorageInterface
     /**
      * Retrieve the contents of storage
      *
-     * @return null|UserEntity
+     * @return UserEntity
      */
     public function read()
     {
@@ -113,11 +113,14 @@ class Session implements DependencyInjectionInterface, StorageInterface
 
         $identity = $this->session->{$this->member};
 
-        if ($this->userTable && (is_int($identity) || is_scalar($identity))) {
-            $identity = $this->userTable->getUserById($identity);
+        // unserialized object doesn't contain the dependencies
+        if ($identity instanceof UserEntity) {
+            $identity = $identity->userId;
         }
 
-        if ($identity) {
+        $identity = $this->userTable->getUserById($identity);
+
+        if ($identity instanceof UserEntity) {
             $this->resolvedIdentity = $identity;
         } else {
             $this->resolvedIdentity = null;

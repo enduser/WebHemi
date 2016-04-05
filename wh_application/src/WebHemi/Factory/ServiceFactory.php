@@ -31,6 +31,48 @@ use Exception;
 /**
  * Class ServiceFactory
  * @package WebHemi\Factory
+ *
+ * @example Basic ServiceFactory configuration
+ *
+ * 'dependencies' => [
+ *      'invokables' => [
+ *          // ...
+ *      ],
+ *      // This class must be defined for services to use the service_factory feature
+ *      'factories' => [
+ *          SomeService::class => WebHemi\Factory\ServiceFactory::class,
+ *          'SomeOtherServiceAlias' => WebHemi\Factory\ServiceFactory::class,
+ *      ],
+ *      // This is not part of the ZF core, only parsed and used by this class
+ *      'service_factory' => [
+ *          // The factory will instantiate the service with injecting dependencies as constructor arguments
+ *          SomeService::class => [
+ *              'arguments' => [SomeTable::class, SomeAdapter::class]
+ *          ],
+ *          // The factory will instantiate the service and injecting dependencies by setters
+ *          'SomeOtherServiceAlias' => [
+ *              // When alias is used as service name, the original class must be defined
+ *              'class' => SomeOtherService::class,
+ *              'calls' => [
+ *                  ['classMethodName' => ['argument1', 'argument2', SomeZendService::class]]
+ *              ]
+ *          ]
+ *      ]
+ *  ]
+ *
+ * For both class constructor arguments and setter method arguments the following cases are possible:
+ *
+ * - the argument is a registered service: it will be retrieved from the the container and be passed its instance
+ * - the argument is not a service, but an existing class: it will be instantiated and be passed its instance
+ * - the argument is an object instance, an array, a resource or a scalar: it will be passes as is
+ *
+ * @example It's a possible to force a parameter to be scalar to make is sure it won't match any registered service:
+ *
+ *      // It will be found as a registered service (see config/container.php)
+ *      'arguments' => ['config'],
+ *
+ *      // It will be used as a scalar after trimming the leading `:` character
+ *      'arguments' => [':config'],
  */
 class ServiceFactory
 {
@@ -65,6 +107,11 @@ class ServiceFactory
                         } elseif (class_exists($parameter)) {
                             $arguments[] = new $parameter;
                         } else {
+                            // support forcing to scalar
+                            if (strpos($parameter, ':') === 0) {
+                                $parameter = substr($parameter, 1);
+                            }
+
                             $arguments[] = $parameter;
                         }
                     }
@@ -86,6 +133,7 @@ class ServiceFactory
                             } elseif (class_exists($parameter)) {
                                 $arguments[] = new $parameter;
                             } else {
+                                // support forcing to scalar
                                 if (strpos($parameter, ':') === 0) {
                                     $parameter = substr($parameter, 1);
                                 }
@@ -96,14 +144,15 @@ class ServiceFactory
 
                         if (method_exists($instance, $method)) {
                             $instance->{$method}(...$arguments);
+                        } else {
+                            throw new Exception('Cannot call method ' . $method . ' in class: ' . $className, 500);
                         }
                     }
                 }
             }
-
             return $instance;
         } catch (Exception $e) {
-            throw new Exception('Cannot instantiate class: ' . $className, 500);
+            throw new Exception('Cannot instantiate class: ' . $className . '. Error: ' . $e->getMessage(), 500);
         }
     }
 }

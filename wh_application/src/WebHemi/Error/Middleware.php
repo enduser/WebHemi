@@ -37,7 +37,7 @@ use Exception;
  * Class ErrorMiddleware
  * @package WebHemi\Error
  */
-class ErrorMiddleware implements DependencyInjectionInterface
+class Middleware implements DependencyInjectionInterface
 {
     /**
      * @var TemplateRendererInterface

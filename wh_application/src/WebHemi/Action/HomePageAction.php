@@ -35,6 +35,7 @@ use Zend\Expressive\ZendView\ZendViewRenderer;
 use Zend\Authentication\AuthenticationService;
 use Zend\ServiceManager\Config;
 use WebHemi\Application\DependencyInjectionInterface;
+use WebHemi\User\Entity as UserEntity;
 
 /**
  * Class HomePageAction
@@ -60,6 +61,8 @@ class HomePageAction implements DependencyInjectionInterface
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
+        var_dump('action middleware');
+
         $params = $request->getQueryParams();
 
         if (isset($params['e404'])) {
@@ -74,8 +77,12 @@ class HomePageAction implements DependencyInjectionInterface
 
         if ($this->auth) {
             if ($this->auth->hasIdentity()) {
+                /** @var UserEntity $userEntity */
+                $userEntity = $this->auth->getIdentity();
                 $data = [
-                    'user' => $this->auth->getIdentity()
+                    'user' => $userEntity,
+                    'meta' => $userEntity->getMetaList(),
+                    'role' => $userEntity->getCurrentUserRole(),
                 ];
             }
         }

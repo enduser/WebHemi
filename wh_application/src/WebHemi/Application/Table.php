@@ -26,9 +26,9 @@
 namespace WebHemi\Application;
 
 use Zend\Db\Exception;
+use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
-use Zend\Db\ResultSet\ResultSet;
 
 /**
  * Class Table
@@ -40,23 +40,20 @@ class Table extends AbstractTableGateway
     protected $table = 'webhemi_application';
 
     /**
-     * Class constructor
-     *
+     * Table constructor.
      * @param Adapter $adapter
+     * @param Entity $entity
      */
-    public function __construct(Adapter $adapter)
+    public function __construct(Adapter $adapter, Entity $entity)
     {
         $this->adapter = $adapter;
         $this->resultSetPrototype = new ResultSet();
-        $this->resultSetPrototype->setArrayObjectPrototype(new Entity());
+        $this->resultSetPrototype->setArrayObjectPrototype($entity);
         $this->initialize();
     }
 
     /**
-     * Retrieve entity by identifier
-     *
      * @param int $applicationId
-     *
      * @return Entity
      */
     public function getApplicationById($applicationId)
@@ -66,10 +63,7 @@ class Table extends AbstractTableGateway
     }
 
     /**
-     * Retrieve entity by user name
-     *
      * @param string $name
-     *
      * @return Entity
      */
     public function getApplicationByName($name)
@@ -79,8 +73,6 @@ class Table extends AbstractTableGateway
     }
 
     /**
-     * Retrieve entity by email address
-     *
      * @return Entity
      */
     public function getCurrentApplication()

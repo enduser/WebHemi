@@ -26,16 +26,15 @@
 namespace WebHemi\User\Role;
 
 use Zend\Db\Exception;
+use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
-use Zend\Db\ResultSet\ResultSet;
-use ArrayObject;
 use WebHemi\User\Entity as UserEntity;
 use WebHemi\Application\Entity as ApplicationEntity;
 
 /**
  * Class Table
- * @package WebHemi\User
+ * @package WebHemi\User\Role
  */
 class Table extends AbstractTableGateway
 {
@@ -43,40 +42,34 @@ class Table extends AbstractTableGateway
     protected $table = 'webhemi_user_role';
 
     /**
-     * Class constructor
-     *
+     * Table constructor.
      * @param Adapter $adapter
+     * @param Entity $entity
      */
-    public function __construct(Adapter $adapter)
+    public function __construct(Adapter $adapter, Entity $entity)
     {
         $this->adapter = $adapter;
         $this->resultSetPrototype = new ResultSet();
+        $this->resultSetPrototype->setArrayObjectPrototype($entity);
         $this->initialize();
     }
 
     /**
-     * Retrieve entity by identifier and application
-     *
-     * @param int|UserEntity        $user
-     * @param int|ApplicationEntity $application
-     *
-     * @return ArrayObject
+     * @param $userId
+     * @param $applicationId
+     * @return Entity
      */
-    public function getRoleByPrimary($user, $application)
+    public function getRole($userId, $applicationId)
     {
-        if ($user instanceof UserEntity) {
-            $userId = $user->userId;
-        } else {
-            $userId = (int)$user;
+        if ($userId instanceof UserEntity) {
+            $userId = $userId->userId;
         }
 
-        if ($application instanceof ApplicationEntity) {
-            $applicationId = $user->userId;
-        } else {
-            $applicationId = (int)$application;
+        if ($applicationId instanceof ApplicationEntity) {
+            $applicationId = $applicationId->applicationId;
         }
 
-        $rowSet = $this->select(['id_user' => $userId, 'application_id' => $applicationId]);
+        $rowSet = $this->select(['fk_user' => $userId, 'fk_application' => $applicationId]);
         return $rowSet->current();
     }
 }

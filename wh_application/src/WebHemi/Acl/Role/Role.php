@@ -31,7 +31,7 @@ use Zend\Permissions\Acl\Role\RoleInterface;
  * Class Role
  * @package WebHemi\Acl\Role
  */
-class Role extends RoleInterface
+class Role implements RoleInterface
 {
     /** @var null|string  */
     protected $roleId;

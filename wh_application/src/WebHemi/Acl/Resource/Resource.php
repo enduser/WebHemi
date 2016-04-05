@@ -31,7 +31,7 @@ use Zend\Permissions\Acl\Resource\ResourceInterface;
  * Class Resource
  * @package WebHemi\Acl
  */
-class Resource extends ResourceInterface
+class Resource implements ResourceInterface
 {
     /** @var string */
     protected $resourceId;

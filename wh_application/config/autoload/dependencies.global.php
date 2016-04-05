@@ -34,63 +34,58 @@ return [
             Zend\Expressive\Helper\UrlHelper::class                   => Zend\Expressive\Helper\UrlHelperFactory::class,
             Zend\Db\Adapter\Adapter::class                            => Zend\Db\Adapter\AdapterServiceFactory::class,
             'Zend\Expressive\FinalHandler'                            => WebHemi\Factory\FinalHandlerFactory::class,
-            WebHemi\Acl\Rule\Table::class                             => WebHemi\Factory\DbTableFactory::class,
-            WebHemi\Acl\Role\Table::class                             => WebHemi\Factory\DbTableFactory::class,
+
             WebHemi\Acl\Resource\Table::class                         => WebHemi\Factory\DbTableFactory::class,
+            WebHemi\Acl\Role\Table::class                             => WebHemi\Factory\DbTableFactory::class,
+            WebHemi\Acl\Rule\Table::class                             => WebHemi\Factory\DbTableFactory::class,
             WebHemi\Application\Table::class                          => WebHemi\Factory\DbTableFactory::class,
             WebHemi\Client\Lock\Table::class                          => WebHemi\Factory\DbTableFactory::class,
             WebHemi\User\Table::class                                 => WebHemi\Factory\DbTableFactory::class,
+            WebHemi\User\Meta\Table::class                            => WebHemi\Factory\DbTableFactory::class,
             WebHemi\User\Role\Table::class                            => WebHemi\Factory\DbTableFactory::class,
+
+//            WebHemi\Acl\Entity::class                                 => WebHemi\Factory\DbEntityFactory::class,
+//            WebHemi\Acl\Resource\Entity::class                        => WebHemi\Factory\DbEntityFactory::class,
+//            WebHemi\Acl\Role\Entity::class                            => WebHemi\Factory\DbEntityFactory::class,
+//            WebHemi\Application\Entity::class                         => WebHemi\Factory\DbEntityFactory::class,
+//            WebHemi\Client\Lock\Entity::class                         => WebHemi\Factory\DbEntityFactory::class,
+            WebHemi\User\Entity::class                                => WebHemi\Factory\DbEntityFactory::class,
+//            WebHemi\User\Acl\Entity::class                            => WebHemi\Factory\DbEntityFactory::class,
+//            WebHemi\User\Meta\Entity::class                           => WebHemi\Factory\DbEntityFactory::class,
+
+            WebHemi\Acl\AclService::class                             => WebHemi\Factory\ServiceFactory::class,
             WebHemi\Auth\Adapter::class                               => WebHemi\Factory\ServiceFactory::class,
             WebHemi\Auth\Storage\Session::class                       => WebHemi\Factory\ServiceFactory::class,
             Zend\Authentication\AuthenticationService::class          => WebHemi\Factory\ServiceFactory::class,
-            WebHemi\Acl\AclMiddleware::class                          => WebHemi\Factory\MiddlewareFactory::class,
-            WebHemi\Error\ErrorMiddleware::class                      => WebHemi\Factory\MiddlewareFactory::class,
+
+            WebHemi\Acl\Middleware::class                             => WebHemi\Factory\MiddlewareFactory::class,
+            WebHemi\Error\Middleware::class                           => WebHemi\Factory\MiddlewareFactory::class,
         ],
         'service_factory' => [
-            WebHemi\User\Table::class => [
-              'class'     => WebHemi\User\Table::class,
-              'arguments' => [Zend\Db\Adapter\Adapter::class]
-            ],
+            WebHemi\Acl\Resource\Table::class => ['arguments' => [Zend\Db\Adapter\Adapter::class, WebHemi\Acl\Resource\Entity::class]],
+            WebHemi\Acl\Role\Table::class => ['arguments' => [Zend\Db\Adapter\Adapter::class, WebHemi\Acl\Role\Entity::class]],
+            WebHemi\Acl\Rule\Table::class => ['arguments' => [Zend\Db\Adapter\Adapter::class, WebHemi\Acl\Rule\Entity::class]],
+            WebHemi\Application\Table::class => ['arguments' => [Zend\Db\Adapter\Adapter::class, WebHemi\Application\Entity::class]],
+            WebHemi\Client\Lock\Table::class => ['arguments' => [Zend\Db\Adapter\Adapter::class, WebHemi\Client\Lock\Entity::class]],
+            WebHemi\User\Table::class => ['arguments' => [Zend\Db\Adapter\Adapter::class, WebHemi\User\Entity::class]],
+            WebHemi\User\Role\Table::class => ['arguments' => [Zend\Db\Adapter\Adapter::class, WebHemi\User\Role\Entity::class]],
+            WebHemi\User\Meta\Table::class => ['arguments' => [Zend\Db\Adapter\Adapter::class, WebHemi\User\Meta\Entity::class]],
 
-            WebHemi\User\Role\Table::class => [
-                'class'     => WebHemi\User\Role\Table::class,
-                'arguments' => [Zend\Db\Adapter\Adapter::class]
-            ],
-
-            WebHemi\Application\Table::class => [
-                'class'     => WebHemi\Application\Table::class,
-                'arguments' => [Zend\Db\Adapter\Adapter::class]
-            ],
-
-            WebHemi\Client\Lock\Table::class => [
-                'class'     => WebHemi\Client\Lock\Table::class,
-                'arguments' => [Zend\Db\Adapter\Adapter::class]
-            ],
-
-            WebHemi\Acl\Rule\Table::class => [
-                'class'     => WebHemi\Acl\Rule\Table::class,
-                'arguments' => [Zend\Db\Adapter\Adapter::class]
-            ],
-
-            WebHemi\Acl\Role\Table::class => [
-                'class'     => WebHemi\Acl\Role\Table::class,
-                'arguments' => [Zend\Db\Adapter\Adapter::class]
-            ],
-
-            WebHemi\Acl\Resource\Table::class => [
-                'class'     => WebHemi\Acl\Resource\Table::class,
-                'arguments' => [Zend\Db\Adapter\Adapter::class]
+            WebHemi\User\Entity::class => [
+                'class' => WebHemi\User\Entity::class,
+                'calls' => [
+                    ['injectDependency' => [':userMetaTable',    WebHemi\User\Meta\Table::class]],
+                    ['injectDependency' => [':userRoleTable',    WebHemi\User\Role\Table::class]],
+                    ['injectDependency' => [':aclRoleTable',     WebHemi\Acl\Role\Table::class]],
+                    ['injectDependency' => [':applicationTable', WebHemi\Application\Table::class]],
+                ],
             ],
 
             WebHemi\Auth\Adapter::class => [
                 'class' => WebHemi\Auth\Adapter::class,
                 'calls' => [
-                    ['injectDependency' => [':userTable',        WebHemi\User\Table::class]],
-                    ['injectDependency' => [':userRoleTable',    WebHemi\User\Role\Table::class]],
-                    ['injectDependency' => [':aclRoleTable',     WebHemi\Acl\Role\Table::class]],
-                    ['injectDependency' => [':applicationTable', WebHemi\Application\Table::class]],
-                    ['injectDependency' => [':clientLockTable',  WebHemi\Client\Lock\Table::class]]
+                    ['injectDependency' => [':userTable',       WebHemi\User\Table::class]],
+                    ['injectDependency' => [':clientLockTable', WebHemi\Client\Lock\Table::class]]
                 ],
             ],
 
@@ -101,20 +96,29 @@ return [
                 ]
             ],
 
+            WebHemi\Acl\AclService::class => [
+                'class' => WebHemi\Acl\AclService::class,
+                'arguments' => [Zend\Permissions\Acl\Acl::class],
+                'calls' => [
+                    ['init' => []]
+                ]
+            ],
+
             Zend\Authentication\AuthenticationService::class => [
                 'class'     => Zend\Authentication\AuthenticationService::class,
                 'arguments' => [WebHemi\Auth\Storage\Session::class, WebHemi\Auth\Adapter::class]
             ],
 
-            WebHemi\Acl\AclMiddleware::class => [
-                'class' => WebHemi\Acl\AclMiddleware::class,
+            WebHemi\Acl\Middleware::class => [
+                'class' => WebHemi\Acl\Middleware::class,
                 'calls' => [
                     ['injectDependency' => [':auth', Zend\Authentication\AuthenticationService::class]],
+                    ['injectDependency' => [':alc', WebHemi\Acl\AclService::class]],
                 ]
             ],
 
-            WebHemi\Error\ErrorMiddleware::class => [
-                'class' => WebHemi\Error\ErrorMiddleware::class,
+            WebHemi\Error\Middleware::class => [
+                'class' => WebHemi\Error\Middleware::class,
                 'calls' => [
                     ['injectDependency' => [':templateRenderer', Zend\Expressive\Template\TemplateRendererInterface::class]],
                 ]

@@ -31,6 +31,8 @@ namespace WebHemi\Acl\Role;
  */
 class Provider
 {
+    const DEFAULT_ROLE = 'guest';
+
     /** @var array  */
     protected $roles = [];
 

@@ -63,7 +63,7 @@ CREATE TABLE `webhemi_acl_role` (
 LOCK TABLES `webhemi_acl_role` WRITE;
 /*!40000 ALTER TABLE `webhemi_acl_role` DISABLE KEYS */;
 INSERT INTO `webhemi_acl_role` VALUES
-  (1, 'admin',     1, 'An admin it the GOD of the application.'),
+  (1, 'admin',     1, 'An admin is the GOD of the application.'),
   (2, 'publisher', 1, 'A publisher can moderate all content and decide what, where and when can be published.'),
   (3, 'editor',    1, 'An editor can create contents and supervise the members\' activities.'),
   (4, 'moderator', 1, 'A moderator can supervise the members\' activities.'),
