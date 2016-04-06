@@ -25,7 +25,7 @@
 
 namespace WebHemi\User\Meta;
 
-use ArrayObject;
+use WebHemi\Db\AbstractEntity;
 
 /**
  * Class Entity
@@ -35,7 +35,7 @@ use ArrayObject;
  * @property string $metaKey
  * @property string $metaData
  */
-class Entity extends ArrayObject
+class Entity extends AbstractEntity
 {
     /**
      * Exchange array values into object properties.

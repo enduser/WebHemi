@@ -26,7 +26,7 @@
 namespace WebHemi\Client\Lock;
 
 use DateTime;
-use ArrayObject;
+use WebHemi\Db\AbstractEntity;
 
 /**
  * Class Entity
@@ -37,7 +37,7 @@ use ArrayObject;
  * @property int $tryings
  * @property DateTime $timeLock
  */
-class Entity extends ArrayObject
+class Entity extends AbstractEntity
 {
     /**
      * Exchange array values into object properties.

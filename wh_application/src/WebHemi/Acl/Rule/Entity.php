@@ -25,7 +25,7 @@
 
 namespace WebHemi\Acl\Rule;
 
-use ArrayObject;
+use WebHemi\Db\AbstractEntity;
 
 /**
  * Class Entity
@@ -36,7 +36,7 @@ use ArrayObject;
  * @property int $aclResourceId
  * @property bool $isAllowed
  */
-class Entity extends ArrayObject
+class Entity extends AbstractEntity
 {
     /**
      * Exchange array values into object properties.

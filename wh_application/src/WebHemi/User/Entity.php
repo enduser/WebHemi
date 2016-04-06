@@ -25,9 +25,8 @@
 
 namespace WebHemi\User;
 
-use ArrayObject;
 use DateTime;
-use Serializable;
+use WebHemi\Db\AbstractEntity;
 use WebHemi\User\Meta\Table as UserMetaTable;
 use WebHemi\User\Role\Entity as UserRoleEntity;
 use WebHemi\User\Role\Table as UserRoleTable;
@@ -35,7 +34,6 @@ use WebHemi\Acl\Role\Entity as AclRoleEntity;
 use WebHemi\Acl\Role\Table as AclRoleTable;
 use WebHemi\Application\Entity as ApplicationEntity;
 use WebHemi\Application\Table as ApplicationTable;
-use WebHemi\Application\DependencyInjectionInterface;
 
 /**
  * Class Entity
@@ -53,7 +51,7 @@ use WebHemi\Application\DependencyInjectionInterface;
  * @property DateTime $timeLogin
  * @property DateTime $timeRegister
  */
-class Entity extends ArrayObject implements DependencyInjectionInterface, Serializable
+class Entity extends AbstractEntity
 {
     /** @var  UserMetaTable */
     protected $userMetaTable;
@@ -98,25 +96,23 @@ class Entity extends ArrayObject implements DependencyInjectionInterface, Serial
     }
 
     /**
-     * @return string
+     * Override default debug information to hide injected elements
      */
-    public function serialize()
+    public function __debugInfo()
     {
-        return serialize($this->toArray());
-    }
-
-    /**
-     * Unserialize data from session.
-     * Beware! The instance won't have the dependencies!
-     *
-     * @see WebHemi\Auth\Storage\Session::read()
-     * @todo find a way to inject services
-     *
-     * @param string $serialized
-     */
-    public function unserialize($serialized)
-    {
-        $this->exchangeArray(unserialize($serialized));
+        return [
+            'userId' => $this->userId,
+            'username' => $this->username,
+            'email' => $this->email,
+            'password' => $this->password,
+            'hash' => $this->hash,
+            'lastIp' => $this->lastIp,
+            'registerIp' => $this->registerIp,
+            'isActive' => $this->isActive,
+            'isEnabled' => $this->isEnabled,
+            'timeLogin' => $this->timeLogin,
+            'timeRegister' => $this->timeRegister,
+        ];
     }
 
     /**
@@ -163,17 +159,5 @@ class Entity extends ArrayObject implements DependencyInjectionInterface, Serial
             'time_login' => $this->timeLogin ? $this->timeLogin->format('Y-m-d H:i:s') : null,
             'time_register' => $this->timeRegister ? $this->timeRegister->format('Y-m-d H:i:s') : null
         ];
-    }
-
-    /**
-     * Injects a service into the class
-     *
-     * @param string $property
-     * @param object $service
-     * @return void
-     */
-    public function injectDependency($property, $service)
-    {
-        $this->{$property} = $service;
     }
 }

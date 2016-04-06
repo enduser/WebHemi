@@ -79,6 +79,7 @@ class HomePageAction implements DependencyInjectionInterface
             if ($this->auth->hasIdentity()) {
                 /** @var UserEntity $userEntity */
                 $userEntity = $this->auth->getIdentity();
+
                 $data = [
                     'user' => $userEntity,
                     'meta' => $userEntity->getMetaList(),
