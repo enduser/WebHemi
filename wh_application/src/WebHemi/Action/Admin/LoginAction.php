@@ -23,26 +23,9 @@
  *
  */
 
-namespace WebHemi\Action;
+namespace WebHemi\Action\Admin;
 
-use Zend\Diactoros\Response\JsonResponse;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-
-/**
- * Class PingAction
- * @package WebHemi\Action
- */
-class PingAction
+class LoginAction
 {
-    /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param callable|null $next
-     * @return JsonResponse
-     */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
-    {
-        return new JsonResponse(['ack' => time()]);
-    }
+    
 }

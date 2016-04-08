@@ -121,7 +121,7 @@ return [
                 'calls' => [
                     ['injectDependency' => [':router', Zend\Expressive\Router\RouterInterface::class]],
                     ['injectDependency' => [':auth', Zend\Authentication\AuthenticationService::class]],
-                    ['injectDependency' => [':alc', WebHemi\Acl\AclService::class]],
+                    ['injectDependency' => [':acl', WebHemi\Acl\AclService::class]],
                 ]
             ],
 

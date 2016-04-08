@@ -61,6 +61,7 @@ class AclService implements DependencyInjectionInterface
     public function init()
     {
         // todo implement ACL service, check WebHemi2\Acl\Acl
+        var_dump('ACL SERVICE');
     }
 
     /**
@@ -70,6 +71,8 @@ class AclService implements DependencyInjectionInterface
      */
     public function isAllowed($resource, $role = null)
     {
+        if (APPLICATION_MODULE == APPLICATION_MODULE_ADMIN) return false;
+
         return true;
 //        try {
 //            if (empty($role)) {

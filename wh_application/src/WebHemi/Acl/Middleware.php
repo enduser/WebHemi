@@ -25,11 +25,14 @@
 
 namespace WebHemi\Acl;
 
-use Zend\Authentication\Result;
-use WebHemi\Acl\AclService;
+use Zend\Expressive\Router\ZendRouter;
+use Zend\Expressive\Router\RouteResult;
+use Zend\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Authentication\AuthenticationService;
+use WebHemi\User\Entity as UserEntity;
+use WebHemi\Acl\Role\Provider as AclRoleProvider;
 use WebHemi\Application\DependencyInjectionInterface;
 
 /**
@@ -38,6 +41,8 @@ use WebHemi\Application\DependencyInjectionInterface;
  */
 class Middleware implements DependencyInjectionInterface
 {
+    /** @var  ZendRouter */
+    protected $router;
     /** @var  AuthenticationService */
     protected $auth;
     /** @var  AclService */
@@ -53,7 +58,39 @@ class Middleware implements DependencyInjectionInterface
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
-        // @TODO: check WebHemi2\Event\AclEvent
+        /** @var RouteResult $routeResult */
+        $routeResult = $this->router->match($request);
+        $middleware = str_replace(['WebHemi\\Action\\', 'Action'], [], $routeResult->getMatchedMiddleware());
+        $resource = str_replace('\\', ':', $this->camelToDashed($middleware));
+
+        list($controllerName, $actionName) = explode(':', $resource);
+
+        if ($this->auth->hasIdentity()) {
+            /** @var UserEntity $userEntity */
+            $userEntity = $this->auth->getIdentity();
+            $role = $userEntity->getCurrentUserRole()->name;
+        } else {
+            $role = AclRoleProvider::DEFAULT_ROLE;
+        }
+
+        $allowed = $this->acl->isAllowed($resource, $role);
+
+        if (!$allowed) {
+            // in admin module if there's no authenticated user, the user should be redirected to the login page
+            if (APPLICATION_MODULE == APPLICATION_MODULE_ADMIN
+                && $actionName != 'login'
+                && !$this->auth->hasIdentity()
+            ) {
+                // @todo check when the module is type of sub-directory
+                $redirect = '/foo/';
+                $response->withStatus(302);
+                return $response->withHeader('location', $redirect);
+            }
+            else {
+                // otherwise it's a 403 Forbidden error
+                throw new \Exception('Forbidden', 403);
+            }
+        }
 
 //        if ($this->auth && !$this->auth->hasIdentity()) {
 //            $this->auth->getAdapter()->setIdentity('admin');
@@ -67,6 +104,17 @@ class Middleware implements DependencyInjectionInterface
 //        }
 
         return $next($request, $response);
+    }
+
+    /**
+     * Converts
+     *
+     * @param $className
+     * @return mixed
+     */
+    protected function camelToDashed($className)
+    {
+        return strtolower(preg_replace('/([a-zA-Z])(?=[A-Z])/', '$1-', $className));
     }
 
     /**
