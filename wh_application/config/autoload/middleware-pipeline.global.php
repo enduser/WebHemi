@@ -27,6 +27,7 @@ return [
             'middleware' => [
                 Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
 
+                WebHemi\Router\Middleware::class,
                 WebHemi\Acl\Middleware::class,
 
                 Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
