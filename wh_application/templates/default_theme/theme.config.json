@@ -15,13 +15,19 @@
       "admin_login_stylesheet": "css/login.css",
       "admin_login_javascript": "js/login.js"
     },
+    "layout": "layout/layout",
+    "paths": {
+      "test": "view/test",
+      "layout": "view/layout",
+      "error": "view/error"
+    },
     "map": {
-      "layout/layout": "layout/layout.phtml",
-      "layout/error": "layout/error.phtml",
-      "error/500": "error/500.phtml",
-      "error/401": "error/401.phtml",
-      "error/403": "error/403.phtml",
-      "error/404": "error/404.phtml"
+      "layout/layout": "view/layout/layout.phtml",
+      "layout/error": "view/layout/error.phtml",
+      "error/500": "view/error/500.phtml",
+      "error/401": "view/error/401.phtml",
+      "error/403": "view/error/403.phtml",
+      "error/404": "view/error/404.phtml"
     }
   }
 }

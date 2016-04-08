@@ -43,14 +43,14 @@ return [
     ],
     'templates' => [
         'map' => [
-            'layout/login' => 'layout/login.phtml',
-            'layout/layout' => 'layout/admin.phtml',
-            'layout/error' => 'layout/error.phtml',
-            'error/error' => 'error/500.phtml',
-            'error/500' => 'error/500.phtml',
-            'error/401' => 'error/401.phtml',
-            'error/403' => 'error/403.phtml',
-            'error/404' => 'error/404.phtml'
+            'layout/login' => 'view/layout/login.phtml',
+            'layout/layout' => 'view/layout/admin.phtml',
+            'layout/error' => 'view/layout/error.phtml',
+            'error/error' => 'view/error/500.phtml',
+            'error/500' => 'view/error/500.phtml',
+            'error/401' => 'view/error/401.phtml',
+            'error/403' => 'view/error/403.phtml',
+            'error/404' => 'view/error/404.phtml'
         ]
     ],
     'routes' => [

@@ -101,17 +101,17 @@ class Entity extends AbstractEntity
     public function __debugInfo()
     {
         return [
-            'userId' => $this->userId,
-            'username' => $this->username,
-            'email' => $this->email,
-            'password' => $this->password,
-            'hash' => $this->hash,
-            'lastIp' => $this->lastIp,
-            'registerIp' => $this->registerIp,
-            'isActive' => $this->isActive,
-            'isEnabled' => $this->isEnabled,
-            'timeLogin' => $this->timeLogin,
-            'timeRegister' => $this->timeRegister,
+            'userId' => isset($this->userId) ? $this->userId : null,
+            'username' => isset($this->username) ? $this->username : null,
+            'email' => isset($this->email) ? $this->email : null,
+            'password' => isset($this->password) ? $this->password : null,
+            'hash' => isset($this->hash) ? $this->hash : null,
+            'lastIp' => isset($this->lastIp) ? $this->lastIp : null,
+            'registerIp' => isset($this->registerIp) ? $this->registerIp : null,
+            'isActive' => isset($this->isActive) ? $this->isActive : null,
+            'isEnabled' => isset($this->isEnabled) ? $this->isEnabled : null,
+            'timeLogin' => isset($this->timeLogin) ? $this->timeLogin : null,
+            'timeRegister' => isset($this->timeRegister) ? $this->timeRegister : null,
         ];
     }
 

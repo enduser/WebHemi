@@ -27,6 +27,8 @@ namespace WebHemi\Acl;
 
 use WebHemi\Acl\Table;
 use WebHemi\Acl\Role\Provider as RoleProvider;
+use WebHemi\Acl\Role\Entity as AclRoleEntity;
+use WebHemi\User\Entity as UserEntity;
 use Zend\Permissions\Acl\Acl;
 use Zend\Permissions\Acl\Exception;
 use Zend\Authentication\AuthenticationService;
@@ -35,6 +37,8 @@ use WebHemi\Application\DependencyInjectionInterface;
 /**
  * Class AclService
  * @package WebHemi\Acl
+ *
+ * @method UserEntity $this->auth->getIdentity()
  */
 class AclService implements DependencyInjectionInterface
 {
@@ -56,7 +60,7 @@ class AclService implements DependencyInjectionInterface
      */
     public function init()
     {
-        var_dump('aclService::init');
+        // todo implement ACL service, check WebHemi2\Acl\Acl
     }
 
     /**
@@ -66,30 +70,36 @@ class AclService implements DependencyInjectionInterface
      */
     public function isAllowed($resource, $role = null)
     {
-        try {
-            if (empty($role)) {
-                // Todo: create table connection chain
-//                $role = $this->auth->hasIdentity()
-//                    ? $this->auth->getIdentity()->getRole()
-//                    : RoleProvider::DEFAULT_ROLE;
-            }
-
-            if (!$this->acl->hasResource($resource)) {
-                return false;
-            }
-
-            list($class, $action) = explode(':', $resource);
-
-            // allow access for logout page, invalid role or non-forced resources
-            if ('logout' == $action || !$this->acl->hasRole($role)) {
-                return true;
-            }
-
-            return $this->acl->isAllowed($role, $resource);
-        } catch (Exception\InvalidArgumentException $e) {
-            // It is not necessary to terminate the whole script running. Fair enough to return with a FALSE.
-            return false;
-        }
+        return true;
+//        try {
+//            if (empty($role)) {
+//                $role = RoleProvider::DEFAULT_ROLE;
+//
+//                if ($this->auth->hasIdentity()) {
+//                    /** @var UserEntity $userEntity */
+//                    $userEntity = $this->auth->getIdentity();
+//                    /** @var AclRoleEntity $role */
+//                    $role = $userEntity->getCurrentUserRole()->name;
+//                }
+//            }
+//
+//            if (!$this->acl->hasResource($resource)) {
+//                return false;
+//            }
+//
+//            list($class, $action) = explode(':', $resource);
+//            unset($class);
+//
+//            // allow access for logout page, invalid role or non-forced resources
+//            if ('logout' == $action || !$this->acl->hasRole($role)) {
+//                return true;
+//            }
+//
+//            return $this->acl->isAllowed($role, $resource);
+//        } catch (Exception\InvalidArgumentException $e) {
+//            // It is not necessary to terminate the whole script running. Fair enough to return with a FALSE.
+//            return false;
+//        }
     }
 
     /**

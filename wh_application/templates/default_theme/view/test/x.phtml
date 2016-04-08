@@ -1,5 +1,6 @@
 <?php
 /**
+ *
  * WebHemi
  *
  * PHP version 5.6
@@ -19,19 +20,11 @@
  * @copyright 2012 - 2016 Gixx-web (http://www.gixx-web.com)
  * @license   http://webhemi.gixx-web.com/license/new-bsd   New BSD License
  * @link      http://www.gixx-web.com
+ *
  */
 
-return [
-    'templates' => [
-//        'layout' => 'layout/layout',
-//        'paths' => [
-//            'web-hemi' => ['wh_application/templates/default_theme/view/web-hemi'],
-//            'test' => ['wh_application/templates/default_theme/view/test'],
-//            'layout'   => ['wh_application/templates/default_theme/view/layout'],
-//            'error'    => ['wh_application/templates/default_theme/view/error'],
-//        ],
-    ],
-    'view_helpers' => [
-
-    ],
-];
+$this->headTitle('Home'); ?>
+<form action="" method="post">
+    <input type="submit" value="POST">
+</form>
+<h1>HOME PAGE</h1>

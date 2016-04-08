@@ -61,8 +61,6 @@ class HomePageAction implements DependencyInjectionInterface
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
-        var_dump('action middleware');
-
         $params = $request->getQueryParams();
 
         if (isset($params['e404'])) {
@@ -105,7 +103,8 @@ class HomePageAction implements DependencyInjectionInterface
             ]);
         }
 
-        return new HtmlResponse($this->template->render('web-hemi::home-page', $data));
+        return new HtmlResponse($this->template->render('test::x', $data));
+//        return new HtmlResponse($this->template->render('web-hemi::home-page', $data));
     }
 
     /**

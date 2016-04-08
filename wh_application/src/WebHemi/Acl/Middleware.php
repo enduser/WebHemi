@@ -26,7 +26,7 @@
 namespace WebHemi\Acl;
 
 use Zend\Authentication\Result;
-
+use WebHemi\Acl\AclService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Authentication\AuthenticationService;
@@ -40,6 +40,8 @@ class Middleware implements DependencyInjectionInterface
 {
     /** @var  AuthenticationService */
     protected $auth;
+    /** @var  AclService */
+    protected $acl;
 
     /**
      * @param ServerRequestInterface $request
@@ -51,20 +53,19 @@ class Middleware implements DependencyInjectionInterface
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
-        // TODO: build ACL graph, check accessibility, throw an error when forbidden
-        //throw new \Exception('Forbidden', 403);
+        // @TODO: check WebHemi2\Event\AclEvent
 
-        if ($this->auth && !$this->auth->hasIdentity()) {
-            $this->auth->getAdapter()->setIdentity('admin');
-            $this->auth->getAdapter()->setCredential('admin');
-            /** @var Result $result */
-            $result = $this->auth->authenticate();
+//        if ($this->auth && !$this->auth->hasIdentity()) {
+//            $this->auth->getAdapter()->setIdentity('admin');
+//            $this->auth->getAdapter()->setCredential('admin');
+//            /** @var Result $result */
+//            $result = $this->auth->authenticate();
+//
+//            if ($result->getCode() != Result::SUCCESS) {
+//                throw new \Exception(implode('; ', $result->getMessages()), 403);
+//            }
+//        }
 
-            if ($result->getCode() != Result::SUCCESS) {
-                throw new \Exception(implode('; ', $result->getMessages()), 403);
-            }
-        }
-        var_dump('acl middleware');
         return $next($request, $response);
     }
 

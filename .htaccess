@@ -7,7 +7,7 @@ SetEnvIf Host .*\.dev APPLICATION_ENV=dev
     php_value xdebug.profiler_enable_trigger Off
 #    php_value xdebug.var_display_max_children 512
 #    php_value xdebug.var_display_max_data 1024
-#    php_value xdebug.var_display_max_depth 10
+    php_value xdebug.var_display_max_depth 10
     php_flag opcache.enable Off
 </If>
 
@@ -72,6 +72,7 @@ Options -Indexes -MultiViews
     RewriteCond %{REQUEST_URI} !(.+)/$
     RewriteRule ^(.+)$ /$1/ [L,R=301]
     # Redirect all other request to entry point
+    RewriteCond %{REQUEST_URI} !\.(jpg|png|gif|ico|js|css|ttf|eot|woff|woff2|webm|mp4)$
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-l
     RewriteRule ^(.*)$ application.php [NC,L]

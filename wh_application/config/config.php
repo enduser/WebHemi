@@ -238,8 +238,12 @@ $config = ArrayUtils::merge($config, include $applicationConfigFile);
 // Fix template map paths
 $themeTemplatePath = str_replace($applicationSettings['applicationPath'], 'wh_application', $themePath);
 
+foreach ($config['templates']['paths'] as $alias => $template) {
+    $config['templates']['paths'][$alias] = [$themeTemplatePath . '/' . $template];
+}
+
 foreach ($config['templates']['map'] as $alias => $template) {
-    $config['templates']['map'][$alias] = $themeTemplatePath . '/view/' . $template;
+    $config['templates']['map'][$alias] = $themeTemplatePath . '/' . $template;
 }
 
 // Create application-wide constants
@@ -249,5 +253,5 @@ createDefinitions($applicationSettings);
 unset($serverData, $applicationSettings, $module, $modules, $domain, $subDomain, $url, $urlParts, $domainParts, $tld);
 unset($tmp, $moduleName, $moduleData, $defaultThemePath, $themePath, $themeName, $themeConfig, $applicationConfigFile);
 unset($themeTemplatePath, $applicationModuleList);
-
+//var_dump($config);exit;
 return new ArrayObject($config, ArrayObject::ARRAY_AS_PROPS);
