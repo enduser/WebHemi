@@ -63,32 +63,33 @@ class Middleware implements DependencyInjectionInterface
         $middleware = str_replace(['WebHemi\\Action\\', 'Action'], [], $routeResult->getMatchedMiddleware());
         $resource = str_replace('\\', ':', $this->camelToDashed($middleware));
 
-        list($controllerName, $actionName) = explode(':', $resource);
+        if ($resource) {
+            list($controllerName, $actionName) = explode(':', $resource);
 
-        if ($this->auth->hasIdentity()) {
-            /** @var UserEntity $userEntity */
-            $userEntity = $this->auth->getIdentity();
-            $role = $userEntity->getCurrentUserRole()->name;
-        } else {
-            $role = AclRoleProvider::DEFAULT_ROLE;
-        }
-
-        $allowed = $this->acl->isAllowed($resource, $role);
-
-        if (!$allowed) {
-            // in admin module if there's no authenticated user, the user should be redirected to the login page
-            if (APPLICATION_MODULE == APPLICATION_MODULE_ADMIN
-                && $actionName != 'login'
-                && !$this->auth->hasIdentity()
-            ) {
-                // @todo check when the module is type of sub-directory
-                $redirect = '/foo/';
-                $response->withStatus(302);
-                return $response->withHeader('location', $redirect);
+            if ($this->auth->hasIdentity()) {
+                /** @var UserEntity $userEntity */
+                $userEntity = $this->auth->getIdentity();
+                $role = $userEntity->getCurrentUserRole()->name;
+            } else {
+                $role = AclRoleProvider::DEFAULT_ROLE;
             }
-            else {
-                // otherwise it's a 403 Forbidden error
-                throw new \Exception('Forbidden', 403);
+
+            $allowed = $this->acl->isAllowed($resource, $role);
+
+            if (!$allowed) {
+                // in admin module if there's no authenticated user, the user should be redirected to the login page
+                if (APPLICATION_MODULE == APPLICATION_MODULE_ADMIN
+                    && $actionName != 'login'
+                    && !$this->auth->hasIdentity()
+                ) {
+                    // @todo check when the module is type of sub-directory
+                    $redirect = '/foo/';
+                    $response->withStatus(302);
+                    return $response->withHeader('location', $redirect);
+                } else {
+                    // otherwise it's a 403 Forbidden error
+                    throw new \Exception('Forbidden', 403);
+                }
             }
         }
 

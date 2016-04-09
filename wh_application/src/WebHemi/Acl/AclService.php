@@ -25,11 +25,10 @@
 
 namespace WebHemi\Acl;
 
-use WebHemi\Acl\Table;
 use WebHemi\Acl\Role\Provider as RoleProvider;
 use WebHemi\Acl\Role\Entity as AclRoleEntity;
 use WebHemi\User\Entity as UserEntity;
-use Zend\Permissions\Acl\Acl;
+use Zend\Permissions\Acl\Acl as ZendAcl;
 use Zend\Permissions\Acl\Exception;
 use Zend\Authentication\AuthenticationService;
 use WebHemi\Application\DependencyInjectionInterface;
@@ -42,12 +41,12 @@ use WebHemi\Application\DependencyInjectionInterface;
  */
 class AclService implements DependencyInjectionInterface
 {
-    /** @var  Acl */
+    /** @var  ZendAcl */
     protected $acl;
     /** @var  AuthenticationService */
     protected $auth;
 
-    public function __construct(Acl $acl)
+    public function __construct(ZendAcl $acl)
     {
         // set core ACL service
         $this->acl = $acl;
@@ -61,7 +60,8 @@ class AclService implements DependencyInjectionInterface
     public function init()
     {
         // todo implement ACL service, check WebHemi2\Acl\Acl
-        var_dump('ACL SERVICE');
+//        var_dump('ACL SERVICE');
+//        dumpDefinitions();
     }
 
     /**
@@ -71,7 +71,7 @@ class AclService implements DependencyInjectionInterface
      */
     public function isAllowed($resource, $role = null)
     {
-        if (APPLICATION_MODULE == APPLICATION_MODULE_ADMIN) return false;
+//        if (APPLICATION_MODULE == APPLICATION_MODULE_ADMIN) return false;
 
         return true;
 //        try {

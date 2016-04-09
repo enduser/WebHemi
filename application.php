@@ -43,6 +43,6 @@ if (APPLICATION_MODULE_TYPE == APPLICATION_MODULE_TYPE_SUBDIR) {
     $topApp = \Zend\Expressive\AppFactory::create($container, $router);
     $topApp->pipe('/' . APPLICATION_MODULE_URI, $app);
     $topApp->run();
+} else {
+    $app->run();
 }
-
-$app->run();

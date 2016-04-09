@@ -24,7 +24,7 @@
  */
 namespace WebHemiTest\Action;
 
-use WebHemi\Action\PingAction;
+use WebHemi\Action\Website\PingAction;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 

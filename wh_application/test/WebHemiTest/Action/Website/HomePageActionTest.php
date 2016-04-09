@@ -24,7 +24,7 @@
  */
 namespace WebHemiTest\Action;
 
-use WebHemi\Action\HomePageAction;
+use WebHemi\Action\Website\HomePageAction;
 use WebHemi\User\Entity as UserEntity;
 use WebHemi\User\Meta\Entity as UserMetaEntity;
 use WebHemi\Acl\Role\Entity as AclRoleEntity;

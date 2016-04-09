@@ -170,7 +170,7 @@ if (empty($config['applications'][$module]['theme'])) {
 $applicationSettings['applicationModule']     = $module;
 $applicationSettings['applicationModuleType'] = $modules[$module]['type'];
 $applicationSettings['applicationModuleUri']  = $modules[$module]['path'];
-$applicationSettings['applicationModuleList'] = json_encode(array_keys($applicationModuleList));
+$applicationSettings['applicationModuleList'] = json_encode($applicationModuleList);
 // Preset variables for default theme
 $defaultThemePath                             = $applicationSettings['applicationPath'] . '/templates/default_theme';
 $themeName                                    = 'default';
