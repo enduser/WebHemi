@@ -249,9 +249,16 @@ foreach ($config['templates']['map'] as $alias => $template) {
 // Create application-wide constants
 createDefinitions($applicationSettings);
 
+// fix route paths. Piping the applications are very buggy.
+if (APPLICATION_MODULE_TYPE == APPLICATION_MODULE_TYPE_SUBDIR) {
+    foreach ($config['routes'] as $index => $route) {
+        $config['routes'][$index]['path'] = '/' . APPLICATION_MODULE_URI . $config['routes'][$index]['path'];
+    }
+}
+
 // Cleanup global variables
 unset($serverData, $applicationSettings, $module, $modules, $domain, $subDomain, $url, $urlParts, $domainParts, $tld);
 unset($tmp, $moduleName, $moduleData, $defaultThemePath, $themePath, $themeName, $themeConfig, $applicationConfigFile);
-unset($themeTemplatePath, $applicationModuleList);
+unset($themeTemplatePath, $applicationModuleList, $alias, $template, $subDir, $file, $index, $route);
 //var_dump($config);exit;
 return new ArrayObject($config, ArrayObject::ARRAY_AS_PROPS);

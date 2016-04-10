@@ -124,6 +124,7 @@ class Middleware implements DependencyInjectionInterface
      */
     public function __invoke($error, ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
+        var_dump('Error middleware');
         // If we don't get an Exception, then probably the Response holds the error information
         if (!$error instanceof Exception) {
             $error = new Exception($response->getReasonPhrase(), $response->getStatusCode());
@@ -152,8 +153,8 @@ class Middleware implements DependencyInjectionInterface
 
         return new HtmlResponse(
             $this->templateRenderer->render(
-                'error::' . $template,
-                ['layout' => 'layout::error', 'status' => $code, 'reason' => $this->phrases[$code], 'error' => $error]
+                'error/' . $template,
+                ['layout' => 'layout/error', 'status' => $code, 'reason' => $this->phrases[$code], 'error' => $error]
             ),
             $code
         );
