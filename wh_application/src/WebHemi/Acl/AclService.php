@@ -25,19 +25,23 @@
 
 namespace WebHemi\Acl;
 
-use WebHemi\Acl\Role\Provider as RoleProvider;
+use WebHemi\Acl\Resource\Table as AclResourceTable;
+use WebHemi\Acl\Resource\Entity as AclResourceEntity;
+use WebHemi\Acl\Role\Table as AclRoleTable;
 use WebHemi\Acl\Role\Entity as AclRoleEntity;
-use WebHemi\User\Entity as UserEntity;
+use WebHemi\Acl\Rule\Table as AclRuleTable;
+use WebHemi\Acl\Rule\Entity as AclRuleEntity;
+use WebHemi\Acl\Assert\CleanIp;
 use Zend\Permissions\Acl\Acl as ZendAcl;
 use Zend\Permissions\Acl\Exception;
+use Zend\Permissions\Acl\Resource\GenericResource;
+use Zend\Permissions\Acl\Role\GenericRole;
 use Zend\Authentication\AuthenticationService;
 use WebHemi\Application\DependencyInjectionInterface;
 
 /**
  * Class AclService
  * @package WebHemi\Acl
- *
- * @method UserEntity $this->auth->getIdentity()
  */
 class AclService implements DependencyInjectionInterface
 {
@@ -45,7 +49,19 @@ class AclService implements DependencyInjectionInterface
     protected $acl;
     /** @var  AuthenticationService */
     protected $auth;
+    /** @var  AclResourceTable */
+    protected $aclResourceTable;
+    /** @var  AclRoleTable */
+    protected $aclRoleTable;
+    /** @var  AclRuleTable */
+    protected $aclRuleTable;
+    /** @var  CleanIp */
+    protected $assertion;
 
+    /**
+     * AclService constructor.
+     * @param ZendAcl $acl
+     */
     public function __construct(ZendAcl $acl)
     {
         // set core ACL service
@@ -55,13 +71,39 @@ class AclService implements DependencyInjectionInterface
     }
 
     /**
-     * Build ACL graph
+     * @return $this
      */
     public function init()
     {
-        // todo implement ACL service, check WebHemi2\Acl\Acl
-//        var_dump('ACL SERVICE');
-//        dumpDefinitions();
+        $resources = $this->aclResourceTable->getResources();
+        $roles     = $this->aclRoleTable->getRoles();
+        $rules     = $this->aclRuleTable->getRules(true);
+
+        /** @var AclResourceEntity $aclResourceEntity */
+        foreach ($resources as $aclResourceEntity) {
+            $resource = new GenericResource($aclResourceEntity->name);
+            $this->acl->addResource($resource);
+        }
+
+        /** @var AclRoleEntity $aclRoleEntity */
+        foreach ($roles as $aclRoleEntity) {
+            $role = new GenericRole($aclRoleEntity->name);
+            $this->acl->addRole($role);
+        }
+
+        /** @var AclRuleEntity $aclRuleEntity */
+        foreach ($rules as $aclRuleEntity) {
+            /** @var AclResourceEntity $resource */
+            $resource = $aclRuleEntity->getResource();
+            /** @var AclRoleEntity $role */
+            $role = $aclRuleEntity->getRole();
+
+            if ($resource && $this->acl->hasResource($resource->name) && $role && $this->acl->hasRole($role->name)) {
+                $this->acl->allow($role->name, $resource->name, null, $this->assertion);
+            }
+        }
+
+        return $this;
     }
 
     /**
@@ -69,40 +111,39 @@ class AclService implements DependencyInjectionInterface
      * @param null $role
      * @return bool
      */
-    public function isAllowed($resource, $role = null)
+    public function isAllowed($resourceName, $roleName = null)
     {
-//        if (APPLICATION_MODULE == APPLICATION_MODULE_ADMIN) return false;
+        try {
+            if (empty($roleName)) {
+                $roleName = AclRoleEntity::DEFAULT_ROLE;
 
-        return true;
-//        try {
-//            if (empty($role)) {
-//                $role = RoleProvider::DEFAULT_ROLE;
-//
-//                if ($this->auth->hasIdentity()) {
-//                    /** @var UserEntity $userEntity */
-//                    $userEntity = $this->auth->getIdentity();
-//                    /** @var AclRoleEntity $role */
-//                    $role = $userEntity->getCurrentUserRole()->name;
-//                }
-//            }
-//
-//            if (!$this->acl->hasResource($resource)) {
-//                return false;
-//            }
-//
-//            list($class, $action) = explode(':', $resource);
-//            unset($class);
-//
-//            // allow access for logout page, invalid role or non-forced resources
-//            if ('logout' == $action || !$this->acl->hasRole($role)) {
-//                return true;
-//            }
-//
-//            return $this->acl->isAllowed($role, $resource);
-//        } catch (Exception\InvalidArgumentException $e) {
-//            // It is not necessary to terminate the whole script running. Fair enough to return with a FALSE.
-//            return false;
-//        }
+                if ($this->auth->hasIdentity()) {
+                    /** @var UserEntity $userEntity */
+                    $userEntity = $this->auth->getIdentity();
+                    /** @var AclRoleEntity $role */
+                    $role = $userEntity->getCurrentUserRole();
+                    $roleName = $role->name;
+                }
+            }
+
+            // Deny for invalid resource
+            if (!$this->acl->hasResource($resourceName)) {
+                return false;
+            }
+
+            list($actionGroup, $actionName) = explode(':', $resourceName);
+            unset($actionGroup);
+
+            // Allow access for login and logout pages, invalid role or non-forced resources
+            if ('login' == $actionName || 'logout' == $actionName || !$this->acl->hasRole($roleName)) {
+                return true;
+            }
+
+            return $this->acl->isAllowed($roleName, $resourceName);
+        } catch (Exception\InvalidArgumentException $e) {
+            // It is not necessary to terminate the whole script running. Fair enough to return with a FALSE.
+            return false;
+        }
     }
 
     /**

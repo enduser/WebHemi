@@ -25,7 +25,7 @@ return [
     'applications' => [
         'Admin' => [
             // The default type is "subdir". "Subdomain" only when vhost supports it.
-            'type' => 'subdomain',
+            'type' => 'subdir',
             'path' => 'admin',
             'theme' => 'gold',
         ],

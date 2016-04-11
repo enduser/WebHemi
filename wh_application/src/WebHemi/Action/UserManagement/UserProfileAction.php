@@ -23,26 +23,30 @@
  *
  */
 
-namespace WebHemi\Action\Website;
+namespace WebHemi\Action\UserManagement;
 
-use Zend\Diactoros\Response\JsonResponse;
+use WebHemi\Action\AbstractAction;
+use Zend\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class PingAction
- * @package WebHemi\Action
+ * Class UserProfileAction
+ * @package WebHemi\Action\UserManagement
  */
-class PingAction
+class UserProfileAction extends AbstractAction
 {
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param callable|null $next
-     * @return JsonResponse
+     * @return HtmlResponse|JsonResponse
+     * @throws \Exception
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
-        return new JsonResponse(['ack' => time()]);
+        $data = ['action' => 'user-management/user-profile'];
+
+        return new HtmlResponse($this->template->render('test::x', $data));
     }
 }

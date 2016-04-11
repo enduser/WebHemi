@@ -61,4 +61,22 @@ class Table extends AbstractTableGateway
         $rowSet = $this->select(['id_acl_rule' => (int)$ruleId]);
         return $rowSet->current();
     }
+
+    /**
+     * @param bool $allowedOnly
+     * @return array
+     */
+    public function getRules($allowedOnly = false)
+    {
+        $rowSet     = $allowedOnly ? $this->select(['is_allowed' => 1]) : $this->select();
+        $entityList = [];
+
+        /** @var Entity $entity */
+        while ($entity = $rowSet->current()) {
+            $entityList[$entity->aclResourceId] = $entity;
+            $rowSet->next();
+        }
+
+        return $entityList;
+    }
 }

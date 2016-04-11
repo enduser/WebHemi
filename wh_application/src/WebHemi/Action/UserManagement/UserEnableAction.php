@@ -23,7 +23,7 @@
  *
  */
 
-namespace WebHemi\Action\Admin;
+namespace WebHemi\Action\UserManagement;
 
 use WebHemi\Action\AbstractAction;
 use Zend\Diactoros\Response\HtmlResponse;
@@ -31,10 +31,10 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class LoginAction
- * @package WebHemi\Action\Admin
+ * Class UserEnableAction
+ * @package WebHemi\Action\UserManagement
  */
-class LoginAction extends AbstractAction
+class UserEnableAction extends AbstractAction
 {
     /**
      * @param ServerRequestInterface $request
@@ -45,7 +45,7 @@ class LoginAction extends AbstractAction
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
-        $data = ['action' => 'admin/login'];
+        $data = ['action' => 'user-management/user-enable'];
 
         return new HtmlResponse($this->template->render('test::x', $data));
     }

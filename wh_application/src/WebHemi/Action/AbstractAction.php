@@ -23,43 +23,23 @@
  *
  */
 
-namespace WebHemi\Router;
+namespace WebHemi\Action;
 
-use WebHemi\Router\Exception as RouterException;
-use Zend\Expressive\Router\ZendRouter;
-use Zend\Expressive\Router\RouteResult;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Zend\Expressive\ZendView\ZendViewRenderer;
 use WebHemi\Application\DependencyInjectionInterface;
 
-/**
- * Class Middleware
- * @package WebHemi\Router
- */
-class Middleware implements DependencyInjectionInterface
+abstract class AbstractAction implements DependencyInjectionInterface
 {
-    /** @var  ZendRouter */
-    protected $router;
+    /** @var ZendViewRenderer */
+    protected $template;
 
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param callable $next
-     *
-     * @return mixed
-     * @throws \Exception
+     * AbstractAction constructor.
+     * @param ZendViewRenderer $templateRenderer
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    public function __construct(ZendViewRenderer $templateRenderer = null)
     {
-        /** @var RouteResult $routeResult */
-        $routeResult = $this->router->match($request);
-
-        // Cut middleware sequence and go to ErrorMiddleware directly
-        if ($routeResult->isFailure()) {
-            throw new RouterException();
-        }
-
-        return $next($request, $response);
+        $this->template = $templateRenderer;
     }
 
     /**

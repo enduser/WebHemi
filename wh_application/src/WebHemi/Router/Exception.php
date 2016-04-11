@@ -23,9 +23,30 @@
  *
  */
 
-$this->headTitle('Home'); ?>
-<form action="" method="post">
-    <input type="submit" value="POST">
-</form>
-<h1>HOME PAGE</h1>
-<?php echo $this->action; ?>
+namespace WebHemi\Router;
+
+/**
+ * Class Exception
+ * @package WebHemi\Router
+ */
+class Exception extends \Exception
+{
+    /**
+     * Exception constructor.
+     * @param string $message
+     * @param int $code
+     * @param \Exception|null $previous
+     */
+    public function __construct($message = "", $code = 0, \Exception $previous = null)
+    {
+        if (empty($message)) {
+            $message = 'Not Found';
+        }
+
+        if (empty($code)) {
+            $code = 404;
+        }
+
+        parent::__construct($message, $code, $previous);
+    }
+}

@@ -26,6 +26,10 @@
 namespace WebHemi\Acl\Rule;
 
 use WebHemi\Db\AbstractEntity;
+use WebHemi\Acl\Resource\Table as AclResourceTable;
+use WebHemi\Acl\Resource\Entity as AclResourceEntity;
+use WebHemi\Acl\Role\Table as AclRoleTable;
+use WebHemi\Acl\Role\Entity as AclRoleEntity;
 
 /**
  * Class Entity
@@ -38,6 +42,27 @@ use WebHemi\Db\AbstractEntity;
  */
 class Entity extends AbstractEntity
 {
+    /** @var  AclResourceTable */
+    protected $aclResourceTable;
+    /** @var  AclRoleTable */
+    protected $aclRoleTable;
+
+    /**
+     * @return AclResourceEntity
+     */
+    public function getResource()
+    {
+        return $this->aclResourceTable->getResourceById($this->aclResourceId);
+    }
+
+    /**
+     * @return AclRoleEntity
+     */
+    public function getRole()
+    {
+        return $this->aclRoleTable->getRoleById($this->aclRoleId);
+    }
+
     /**
      * Exchange array values into object properties.
      *
@@ -47,7 +72,7 @@ class Entity extends AbstractEntity
      */
     public function exchangeArray($data)
     {
-        $this->aclRuleId = isset($data['id_alc_rule']) ? (int)$data['id_alc_rule'] : null;
+        $this->aclRuleId = isset($data['id_acl_rule']) ? (int)$data['id_acl_rule'] : null;
         $this->aclRoleId = isset($data['fk_acl_role']) ? (int)$data['fk_acl_role'] : null;
         $this->aclResourceId = isset($data['fk_acl_resource']) ? (int)$data['fk_acl_resource'] : null;
         $this->isAllowed = isset($data['is_allowed']) ? (int)$data['is_allowed'] : false;

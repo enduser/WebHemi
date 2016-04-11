@@ -24,7 +24,7 @@
  */
 namespace WebHemiTest\Action;
 
-use WebHemi\Action\Website\HomePageAction;
+use WebHemi\Action\Website\IndexAction;
 use WebHemi\User\Entity as UserEntity;
 use WebHemi\User\Meta\Entity as UserMetaEntity;
 use WebHemi\Acl\Role\Entity as AclRoleEntity;
@@ -40,7 +40,7 @@ use Zend\ServiceManager\Config;
  * Class HomePageActionTest
  * @package WebHemiTest\Action
  */
-class HomePageActionTest extends \PHPUnit_Framework_TestCase
+class IndexActionTest extends \PHPUnit_Framework_TestCase
 {
     /** @var RouterInterface */
     protected $router;
@@ -83,7 +83,7 @@ class HomePageActionTest extends \PHPUnit_Framework_TestCase
      */
     public function testResponse()
     {
-        $homePage = new HomePageAction();
+        $homePage = new IndexAction();
 
         $homePage->injectDependency('auth', $this->authService->reveal());
         $homePage->injectDependency('router', $this->router);

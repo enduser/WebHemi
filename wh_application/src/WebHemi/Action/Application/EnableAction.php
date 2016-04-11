@@ -23,44 +23,30 @@
  *
  */
 
-namespace WebHemi\Acl\Resource;
+namespace WebHemi\Action\Application;
 
-use Zend\Permissions\Acl\Resource\ResourceInterface;
+use WebHemi\Action\AbstractAction;
+use Zend\Diactoros\Response\HtmlResponse;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class Resource
- * @package WebHemi\Acl
+ * Class EnableAction
+ * @package WebHemi\Action\Application
  */
-class Resource implements ResourceInterface
+class EnableAction extends AbstractAction
 {
-    /** @var string */
-    protected $resourceId;
-
     /**
-     * Resource constructor.
-     * @param null $resourceId
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param callable|null $next
+     * @return HtmlResponse|JsonResponse
+     * @throws \Exception
      */
-    public function __construct($resourceId = null)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
-        $this->resourceId = $resourceId;
-    }
+        $data = ['action' => 'application/enable'];
 
-    /**
-     * @return null|string
-     */
-    public function getResourceId()
-    {
-        return $this->resourceId;
-    }
-
-    /**
-     * @param string $resourceId
-     * @return $this
-     */
-    public function setResourceId($resourceId)
-    {
-        $this->resourceId = $resourceId;
-
-        return $this;
+        return new HtmlResponse($this->template->render('test::x', $data));
     }
 }

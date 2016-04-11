@@ -61,4 +61,21 @@ class Table extends AbstractTableGateway
         $rowSet = $this->select(['id_acl_resource' => (int)$resourceId]);
         return $rowSet->current();
     }
+
+    /**
+     * @return array
+     */
+    public function getResources()
+    {
+        $rowSet     = $this->select();
+        $entityList = [];
+
+        /** @var Entity $entity */
+        while ($entity = $rowSet->current()) {
+            $entityList[$entity->aclResourceId] = $entity;
+            $rowSet->next();
+        }
+
+        return $entityList;
+    }
 }

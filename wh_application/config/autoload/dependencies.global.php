@@ -44,19 +44,14 @@ return [
             WebHemi\User\Meta\Table::class                            => WebHemi\Factory\DbTableFactory::class,
             WebHemi\User\Role\Table::class                            => WebHemi\Factory\DbTableFactory::class,
 
-//            WebHemi\Acl\Entity::class                                 => WebHemi\Factory\DbEntityFactory::class,
-//            WebHemi\Acl\Resource\Entity::class                        => WebHemi\Factory\DbEntityFactory::class,
-//            WebHemi\Acl\Role\Entity::class                            => WebHemi\Factory\DbEntityFactory::class,
-//            WebHemi\Application\Entity::class                         => WebHemi\Factory\DbEntityFactory::class,
-//            WebHemi\Client\Lock\Entity::class                         => WebHemi\Factory\DbEntityFactory::class,
             WebHemi\User\Entity::class                                => WebHemi\Factory\DbEntityFactory::class,
-//            WebHemi\User\Acl\Entity::class                            => WebHemi\Factory\DbEntityFactory::class,
-//            WebHemi\User\Meta\Entity::class                           => WebHemi\Factory\DbEntityFactory::class,
+            WebHemi\Acl\Rule\Entity::class                            => WebHemi\Factory\DbEntityFactory::class,
 
             WebHemi\Acl\AclService::class                             => WebHemi\Factory\ServiceFactory::class,
             WebHemi\Auth\Adapter::class                               => WebHemi\Factory\ServiceFactory::class,
             WebHemi\Auth\Storage\Session::class                       => WebHemi\Factory\ServiceFactory::class,
             Zend\Authentication\AuthenticationService::class          => WebHemi\Factory\ServiceFactory::class,
+            WebHemi\Acl\Assert\CleanIp::class                         => WebHemi\Factory\ServiceFactory::class,
 
             WebHemi\Router\Middleware::class                          => WebHemi\Factory\MiddlewareFactory::class,
             WebHemi\Acl\Middleware::class                             => WebHemi\Factory\MiddlewareFactory::class,
@@ -86,18 +81,26 @@ return [
                 ],
             ],
 
+            WebHemi\Acl\Rule\Entity::class => [
+                'class' => WebHemi\Acl\Rule\Entity::class,
+                'calls' => [
+                    ['injectDependency' => [':aclResourceTable', WebHemi\Acl\Resource\Table::class]],
+                    ['injectDependency' => [':aclRoleTable',     WebHemi\Acl\Role\Table::class]],
+                ],
+            ],
+
             WebHemi\Auth\Adapter::class => [
                 'class' => WebHemi\Auth\Adapter::class,
                 'calls' => [
                     ['injectDependency' => [':userTable',       WebHemi\User\Table::class]],
-                    ['injectDependency' => [':clientLockTable', WebHemi\Client\Lock\Table::class]]
+                    ['injectDependency' => [':clientLockTable', WebHemi\Client\Lock\Table::class]],
                 ],
             ],
 
             WebHemi\Auth\Storage\Session::class => [
                 'class' => WebHemi\Auth\Storage\Session::class,
                 'calls' => [
-                    ['injectDependency' => [':userTable', WebHemi\User\Table::class]]
+                    ['injectDependency' => [':userTable', WebHemi\User\Table::class]],
                 ]
             ],
 
@@ -105,31 +108,43 @@ return [
                 'class' => WebHemi\Acl\AclService::class,
                 'arguments' => [Zend\Permissions\Acl\Acl::class],
                 'calls' => [
-                    ['init' => []]
-                ]
+                    ['injectDependency' => [':aclResourceTable', WebHemi\Acl\Resource\Table::class]],
+                    ['injectDependency' => [':aclRoleTable',     WebHemi\Acl\Role\Table::class]],
+                    ['injectDependency' => [':aclRuleTable',     WebHemi\Acl\Rule\Table::class]],
+                    ['injectDependency' => [':assertion',        WebHemi\Acl\Assert\CleanIp::class]],
+                    ['injectDependency' => [':auth',             Zend\Authentication\AuthenticationService::class]],
+                    ['init' => []],
+                ],
+            ],
+
+            WebHemi\Acl\Assert\CleanIp::class => [
+                'class' => WebHemi\Acl\Assert\CleanIp::class,
+                'calls' => [
+                    ['injectDependency' => [':clientLockTable', WebHemi\Client\Lock\Table::class]],
+                ],
             ],
 
             WebHemi\Router\Middleware::class => [
                 'class' => WebHemi\Router\Middleware::class,
                 'calls' => [
                     ['injectDependency' => [':router', Zend\Expressive\Router\RouterInterface::class]],
-                ]
+                ],
             ],
 
             WebHemi\Acl\Middleware::class => [
                 'class' => WebHemi\Acl\Middleware::class,
                 'calls' => [
                     ['injectDependency' => [':router', Zend\Expressive\Router\RouterInterface::class]],
-                    ['injectDependency' => [':auth', Zend\Authentication\AuthenticationService::class]],
-                    ['injectDependency' => [':acl', WebHemi\Acl\AclService::class]],
-                ]
+                    ['injectDependency' => [':auth',   Zend\Authentication\AuthenticationService::class]],
+                    ['injectDependency' => [':acl',    WebHemi\Acl\AclService::class]],
+                ],
             ],
 
             WebHemi\Error\Middleware::class => [
                 'class' => WebHemi\Error\Middleware::class,
                 'calls' => [
                     ['injectDependency' => [':templateRenderer', Zend\Expressive\Template\TemplateRendererInterface::class]],
-                ]
+                ],
             ],
         ]
     ],

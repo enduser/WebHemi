@@ -23,22 +23,15 @@
 
 return [
     'dependencies' => [
-        'invokables' => [
-            WebHemi\Action\Website\PingAction::class => WebHemi\Action\Website\PingAction::class,
-        ],
         'factories' => [
-            WebHemi\Action\Website\HomePageAction::class => WebHemi\Factory\MiddlewareFactory::class,
+            WebHemi\Action\Admin\IndexAction::class => WebHemi\Factory\MiddlewareFactory::class,
+            WebHemi\Action\Admin\LoginAction::class => WebHemi\Factory\MiddlewareFactory::class,
+            WebHemi\Action\Admin\LogoutAction::class => WebHemi\Factory\MiddlewareFactory::class,
         ],
         'service_factory' => [
-            WebHemi\Action\Website\HomePageAction::class => [
-                'class' => WebHemi\Action\Website\HomePageAction::class,
-                'calls' => [
-                    ['injectDependency' => [':auth',     Zend\Authentication\AuthenticationService::class]],
-                    ['injectDependency' => [':router',   Zend\Expressive\Router\RouterInterface::class]],
-                    ['injectDependency' => [':template', Zend\Expressive\Template\TemplateRendererInterface::class]],
-                    ['injectDependency' => [':config',   'config']]
-                ]
-            ],
+            WebHemi\Action\Admin\IndexAction::class => ['arguments' => [Zend\Expressive\Template\TemplateRendererInterface::class]],
+            WebHemi\Action\Admin\LoginAction::class => ['arguments' => [Zend\Expressive\Template\TemplateRendererInterface::class]],
+            WebHemi\Action\Admin\LogoutAction::class => ['arguments' => [Zend\Expressive\Template\TemplateRendererInterface::class]],
         ]
     ],
     'templates' => [
@@ -55,21 +48,21 @@ return [
     ],
     'routes' => [
         [
-            'name' => 'home',
+            'name' => 'index',
             'path' => '/',
-            'middleware' => WebHemi\Action\Website\HomePageAction::class,
+            'middleware' => WebHemi\Action\Admin\IndexAction::class,
             'allowed_methods' => ['GET'],
         ],
         [
-            'name' => 'authome',
-            'path' => '/auth/',
-            'middleware' => WebHemi\Action\Website\HomePageAction::class,
+            'name' => 'login',
+            'path' => '/login/',
+            'middleware' => WebHemi\Action\Admin\LoginAction::class,
             'allowed_methods' => ['GET'],
         ],
         [
-            'name' => 'api.ping',
-            'path' => '/api/ping/',
-            'middleware' => WebHemi\Action\Website\PingAction::class,
+            'name' => 'logout',
+            'path' => '/logout/',
+            'middleware' => WebHemi\Action\Admin\LogoutAction::class,
             'allowed_methods' => ['GET'],
         ],
     ],

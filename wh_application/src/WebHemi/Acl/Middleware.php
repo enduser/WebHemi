@@ -25,14 +25,14 @@
 
 namespace WebHemi\Acl;
 
+use WebHemi\Acl\Exception as AclException;
 use Zend\Expressive\Router\ZendRouter;
 use Zend\Expressive\Router\RouteResult;
-use Zend\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Authentication\AuthenticationService;
 use WebHemi\User\Entity as UserEntity;
-use WebHemi\Acl\Role\Provider as AclRoleProvider;
+use WebHemi\Acl\Role\Entity as AclRoleEntity;
 use WebHemi\Application\DependencyInjectionInterface;
 
 /**
@@ -54,27 +54,28 @@ class Middleware implements DependencyInjectionInterface
      * @param callable $next
      *
      * @return mixed
-     * @throws \Exception
+     * @throws Exception
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
         /** @var RouteResult $routeResult */
         $routeResult = $this->router->match($request);
         $middleware = str_replace(['WebHemi\\Action\\', 'Action'], [], $routeResult->getMatchedMiddleware());
-        $resource = str_replace('\\', ':', $this->camelToDashed($middleware));
+        $resourceName = str_replace('\\', ':', $this->camelToDashed($middleware));
 
-        if ($resource) {
-            list($controllerName, $actionName) = explode(':', $resource);
+        if ($resourceName) {
+            list($actionGroup, $actionName) = explode(':', $resourceName);
+            unset($actionGroup);
 
             if ($this->auth->hasIdentity()) {
                 /** @var UserEntity $userEntity */
                 $userEntity = $this->auth->getIdentity();
-                $role = $userEntity->getCurrentUserRole()->name;
+                $roleName = $userEntity->getCurrentUserRole()->name;
             } else {
-                $role = AclRoleProvider::DEFAULT_ROLE;
+                $roleName = AclRoleEntity::DEFAULT_ROLE;
             }
 
-            $allowed = $this->acl->isAllowed($resource, $role);
+            $allowed = $this->acl->isAllowed($resourceName, $roleName);
 
             if (!$allowed) {
                 // in admin module if there's no authenticated user, the user should be redirected to the login page
@@ -82,27 +83,20 @@ class Middleware implements DependencyInjectionInterface
                     && $actionName != 'login'
                     && !$this->auth->hasIdentity()
                 ) {
-                    // @todo check when the module is type of sub-directory
-                    $redirect = '/foo/';
+                    $redirect = '/login/';
+
+                    if (APPLICATION_MODULE_TYPE == APPLICATION_MODULE_TYPE_SUBDIR) {
+                        $redirect = '/' . APPLICATION_MODULE_URI . $redirect;
+                    }
+
                     $response->withStatus(302);
                     return $response->withHeader('location', $redirect);
                 } else {
                     // otherwise it's a 403 Forbidden error
-                    throw new \Exception('Forbidden', 403);
+                    throw new AclException();
                 }
             }
         }
-
-//        if ($this->auth && !$this->auth->hasIdentity()) {
-//            $this->auth->getAdapter()->setIdentity('admin');
-//            $this->auth->getAdapter()->setCredential('admin');
-//            /** @var Result $result */
-//            $result = $this->auth->authenticate();
-//
-//            if ($result->getCode() != Result::SUCCESS) {
-//                throw new \Exception(implode('; ', $result->getMessages()), 403);
-//            }
-//        }
 
         return $next($request, $response);
     }

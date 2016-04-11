@@ -61,4 +61,21 @@ class Table extends AbstractTableGateway
         $rowSet = $this->select(['id_acl_role' => (int)$roleId]);
         return $rowSet->current();
     }
+
+    /**
+     * @return array
+     */
+    public function getRoles()
+    {
+        $rowSet     = $this->select();
+        $entityList = [];
+
+        /** @var Entity $entity */
+        while ($entity = $rowSet->current()) {
+            $entityList[$entity->aclRoleId] = $entity;
+            $rowSet->next();
+        }
+
+        return $entityList;
+    }
 }

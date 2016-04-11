@@ -23,35 +23,30 @@
  *
  */
 
-namespace WebHemi\Acl\Resource;
+namespace WebHemi\Action\Admin;
+
+use WebHemi\Action\AbstractAction;
+use Zend\Diactoros\Response\HtmlResponse;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class Provider
- * @package WebHemi\Acl\Resource
+ * Class AboutAction
+ * @package WebHemi\Action\Admin
  */
-class Provider
+class AboutAction extends AbstractAction
 {
-    /** @var array  */
-    protected $resources = [];
-
     /**
-     * Provider constructor.
-     * @param array $config
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param callable|null $next
+     * @return HtmlResponse|JsonResponse
+     * @throws \Exception
      */
-    public function __construct(array $config = [])
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
-        foreach ($config as $resourceName) {
-            if (!isset($this->resources[$resourceName])) {
-                $this->resources[$resourceName] = new Resource($resourceName);
-            }
-        }
-    }
+        $data = ['action' => 'admin/about'];
 
-    /**
-     * @return array
-     */
-    public function getResources()
-    {
-        return $this->resources;
+        return new HtmlResponse($this->template->render('test::x', $data));
     }
 }

@@ -23,37 +23,30 @@
  *
  */
 
-namespace WebHemi\Acl\Role;
+namespace WebHemi\Action\User;
+
+use WebHemi\Action\AbstractAction;
+use Zend\Diactoros\Response\HtmlResponse;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class Provider
- * @package WebHemi\Acl\Role
+ * Class UserEditAction
+ * @package WebHemi\Action\User
  */
-class Provider
+class UserEditAction extends AbstractAction
 {
-    const DEFAULT_ROLE = 'guest';
-
-    /** @var array  */
-    protected $roles = [];
-
     /**
-     * Provider constructor.
-     * @param array $config
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param callable|null $next
+     * @return HtmlResponse|JsonResponse
+     * @throws \Exception
      */
-    public function __construct(array $config = [])
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
-        foreach ($config as $roleName) {
-            if (!isset($this->roles[$roleName])) {
-                $this->roles[$roleName] = new Role($roleName);
-            }
-        }
-    }
+        $data = ['action' => 'user/user-edit'];
 
-    /**
-     * @return array
-     */
-    public function getRoles()
-    {
-        return $this->roles;
+        return new HtmlResponse($this->template->render('test::x', $data));
     }
 }

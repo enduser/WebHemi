@@ -22,30 +22,31 @@
  * @link      http://www.gixx-web.com
  *
  */
-namespace WebHemiTest\Action;
 
-use WebHemi\Action\Website\PingAction;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\ServerRequest;
+namespace WebHemi\Action\User;
+
+use WebHemi\Action\AbstractAction;
+use Zend\Diactoros\Response\HtmlResponse;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class PingActionTest
- * @package WebHemiTest\Action
+ * Class IndexAction
+ * @package WebHemi\Action\User
  */
-class PingActionTest extends \PHPUnit_Framework_TestCase
+class IndexAction extends AbstractAction
 {
     /**
-     * Test response
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param callable|null $next
+     * @return HtmlResponse|JsonResponse
+     * @throws \Exception
      */
-    public function testResponse()
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
-        $pingAction = new PingAction();
-        $response = $pingAction(new ServerRequest(['/']), new Response(), function () {
-        });
-        $json = json_decode((string) $response->getBody());
+        $data = ['action' => 'user/index'];
 
-        $this->assertTrue($response instanceof Response);
-        $this->assertTrue($response instanceof Response\JsonResponse);
-        $this->assertTrue(isset($json->ack));
+        return new HtmlResponse($this->template->render('test::x', $data));
     }
 }

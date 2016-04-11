@@ -23,19 +23,32 @@
 
 return [
     'dependencies' => [
-        'invokables' => [
-            WebHemi\Action\Website\PingAction::class => WebHemi\Action\Website\PingAction::class,
-        ],
         'factories' => [
-            WebHemi\Action\Website\HomePageAction::class => WebHemi\Factory\MiddlewareFactory::class,
+            WebHemi\Action\Website\IndexAction::class => WebHemi\Factory\MiddlewareFactory::class,
+            WebHemi\Action\Website\ViewAction::class => WebHemi\Factory\MiddlewareFactory::class,
+            WebHemi\Action\User\IndexAction::class => WebHemi\Factory\MiddlewareFactory::class,
+            WebHemi\Action\User\UserViewAction::class => WebHemi\Factory\MiddlewareFactory::class,
+            WebHemi\Action\User\UserProfileAction::class => WebHemi\Factory\MiddlewareFactory::class,
+            WebHemi\Action\User\UserEditAction::class => WebHemi\Factory\MiddlewareFactory::class,
+            WebHemi\Action\User\LoginAction::class => WebHemi\Factory\MiddlewareFactory::class,
+            WebHemi\Action\User\LogoutAction::class => WebHemi\Factory\MiddlewareFactory::class
         ],
         'service_factory' => [
-            WebHemi\Action\Website\HomePageAction::class => [
-                'class' => WebHemi\Action\Website\HomePageAction::class,
+            WebHemi\Action\Website\ViewAction::class => ['arguments' => [Zend\Expressive\Template\TemplateRendererInterface::class]],
+            WebHemi\Action\User\IndexAction::class => ['arguments' => [Zend\Expressive\Template\TemplateRendererInterface::class]],
+            WebHemi\Action\User\UserViewAction::class => ['arguments' => [Zend\Expressive\Template\TemplateRendererInterface::class]],
+            WebHemi\Action\User\UserProfileAction::class => ['arguments' => [Zend\Expressive\Template\TemplateRendererInterface::class]],
+            WebHemi\Action\User\UserEditAction::class => ['arguments' => [Zend\Expressive\Template\TemplateRendererInterface::class]],
+            WebHemi\Action\User\LoginAction::class => ['arguments' => [Zend\Expressive\Template\TemplateRendererInterface::class]],
+            WebHemi\Action\User\LogoutAction::class => ['arguments' => [Zend\Expressive\Template\TemplateRendererInterface::class]],
+
+
+            WebHemi\Action\Website\IndexAction::class => [
+                'class' => WebHemi\Action\Website\IndexAction::class,
+                'arguments' => [Zend\Expressive\Template\TemplateRendererInterface::class],
                 'calls' => [
                     ['injectDependency' => [':auth',     Zend\Authentication\AuthenticationService::class]],
                     ['injectDependency' => [':router',   Zend\Expressive\Router\RouterInterface::class]],
-                    ['injectDependency' => [':template', Zend\Expressive\Template\TemplateRendererInterface::class]],
                     ['injectDependency' => [':config',   'config']]
                 ]
             ],
@@ -43,21 +56,60 @@ return [
     ],
     'routes' => [
         [
-            'name' => 'home',
+            'name' => 'index',
             'path' => '/',
-            'middleware' => WebHemi\Action\Website\HomePageAction::class,
+            'middleware' => WebHemi\Action\Website\IndexAction::class,
+            'allowed_methods' => ['GET'],
+        ],
+//        [
+//            'name' => 'view',
+//            'type' => 'regex',
+//            'middleware' => WebHemi\Action\Website\ViewAction::class,
+//            'allowed_methods' => ['GET'],
+//            'options' => [
+//                'regex' => '\/(?:(?<category>[a-zA-Z0-9_-]+))?/(?<id>[\/a-zA-Z0-9_-]+)(\.(?<format>(json|html|rss)))?',
+//                'defaults' => [
+//                    'category' => 'default',
+//                    'format' => 'html',
+//                ],
+//                'spec' => '/%category%/%id%.%format%',
+//            ],
+//        ],
+//        [
+//            'name' => 'user',
+//            'path' => '/user/',
+//            'middleware' => WebHemi\Action\User\IndexAction::class,
+//            'allowed_methods' => ['GET'],
+//        ],
+//        [
+//            'name' => 'user-view',
+//            'type' => 'segment',
+//            'path' => '/user/[:userName]/',
+//            'middleware' => WebHemi\Action\User\UserViewAction::class,
+//            'allowed_methods' => ['GET'],
+//        ],
+//        [
+//            'name' => 'user-profile',
+//            'path' => '/user/profile/',
+//            'middleware' => WebHemi\Action\User\UserProfileAction::class,
+//            'allowed_methods' => ['GET'],
+//        ],
+//        [
+//            'name' => 'user-edit',
+//            'path' => '/user/edit/',
+//            'middleware' => WebHemi\Action\User\UserEditAction::class,
+//            'allowed_methods' => ['GET'],
+//        ],
+        [
+            'name' => 'login',
+            'path' => '/login/',
+            'middleware' => WebHemi\Action\User\LoginAction::class,
             'allowed_methods' => ['GET'],
         ],
         [
-            'name' => 'authome',
-            'path' => '/auth/',
-            'middleware' => WebHemi\Action\Website\HomePageAction::class,
-            'allowed_methods' => ['GET'],
-        ],
-        [
-            'name' => 'api.ping',
-            'path' => '/api/ping/',
-            'middleware' => WebHemi\Action\Website\PingAction::class,
+            'name' => 'logout',
+            'path' => '/logout/',
+            'middleware' => WebHemi\Action\User\LogoutAction::class,
             'allowed_methods' => ['GET'],
         ],
     ],

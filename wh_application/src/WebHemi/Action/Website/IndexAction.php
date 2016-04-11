@@ -25,6 +25,7 @@
 
 namespace WebHemi\Action\Website;
 
+use WebHemi\Action\AbstractAction;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
@@ -34,19 +35,16 @@ use Zend\Expressive\Template;
 use Zend\Expressive\ZendView\ZendViewRenderer;
 use Zend\Authentication\AuthenticationService;
 use Zend\ServiceManager\Config;
-use WebHemi\Application\DependencyInjectionInterface;
 use WebHemi\User\Entity as UserEntity;
 
 /**
- * Class HomePageAction
- * @package WebHemi\Action
+ * Class IndexAction
+ * @package WebHemi\Action\Website
  */
-class HomePageAction implements DependencyInjectionInterface
+class IndexAction extends AbstractAction
 {
     /** @var Router\RouterInterface  */
     protected $router;
-    /** @var null|Template\TemplateRendererInterface  */
-    protected $template;
     /** @var AuthenticationService  */
     protected $auth;
     /** @var  Config */
@@ -72,6 +70,17 @@ class HomePageAction implements DependencyInjectionInterface
         }
 
         $data = [];
+
+//        if ($this->auth && !$this->auth->hasIdentity()) {
+//            $this->auth->getAdapter()->setIdentity('admin');
+//            $this->auth->getAdapter()->setCredential('admin');
+//            /** @var Result $result */
+//            $result = $this->auth->authenticate();
+//
+//            if ($result->getCode() != Result::SUCCESS) {
+//                throw new \Exception(implode('; ', $result->getMessages()), 403);
+//            }
+//        }
 
         if ($this->auth) {
             if ($this->auth->hasIdentity()) {
@@ -103,19 +112,8 @@ class HomePageAction implements DependencyInjectionInterface
             ]);
         }
 
-        return new HtmlResponse($this->template->render('test::x', $data));
-//        return new HtmlResponse($this->template->render('web-hemi::home-page', $data));
-    }
+        $data['action'] = 'website/index';
 
-    /**
-     * Injects a service into the class
-     *
-     * @param string $property
-     * @param object $service
-     * @return void
-     */
-    public function injectDependency($property, $service)
-    {
-        $this->{$property} = $service;
+        return new HtmlResponse($this->template->render('test::x', $data));
     }
 }

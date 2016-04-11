@@ -38,6 +38,8 @@ use WebHemi\Db\AbstractEntity;
  */
 class Entity extends AbstractEntity
 {
+    const DEFAULT_ROLE = 'guest';
+
     /**
      * Exchange array values into object properties.
      *

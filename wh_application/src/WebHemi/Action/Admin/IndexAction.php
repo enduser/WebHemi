@@ -31,10 +31,10 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class LoginAction
+ * Class IndexAction
  * @package WebHemi\Action\Admin
  */
-class LoginAction extends AbstractAction
+class IndexAction extends AbstractAction
 {
     /**
      * @param ServerRequestInterface $request
@@ -45,7 +45,7 @@ class LoginAction extends AbstractAction
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
-        $data = ['action' => 'admin/login'];
+        $data = ['action' => 'admin/index'];
 
         return new HtmlResponse($this->template->render('test::x', $data));
     }

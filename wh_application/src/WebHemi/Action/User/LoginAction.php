@@ -23,7 +23,7 @@
  *
  */
 
-namespace WebHemi\Action\Admin;
+namespace WebHemi\Action\User;
 
 use WebHemi\Action\AbstractAction;
 use Zend\Diactoros\Response\HtmlResponse;
@@ -32,7 +32,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class LoginAction
- * @package WebHemi\Action\Admin
+ * @package WebHemi\Action\User
  */
 class LoginAction extends AbstractAction
 {
@@ -45,7 +45,7 @@ class LoginAction extends AbstractAction
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
-        $data = ['action' => 'admin/login'];
+        $data = ['action' => 'user/login'];
 
         return new HtmlResponse($this->template->render('test::x', $data));
     }
