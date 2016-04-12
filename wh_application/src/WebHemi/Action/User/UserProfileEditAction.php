@@ -34,7 +34,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * Class UserEditAction
  * @package WebHemi\Action\User
  */
-class UserEditAction extends AbstractAction
+class UserProfileEditAction extends AbstractAction
 {
     /**
      * @param ServerRequestInterface $request
@@ -45,7 +45,7 @@ class UserEditAction extends AbstractAction
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
-        $data = ['action' => 'user/user-edit'];
+        $data = ['action' => 'user/user-profile-edit'];
 
         return new HtmlResponse($this->template->render('test::x', $data));
     }

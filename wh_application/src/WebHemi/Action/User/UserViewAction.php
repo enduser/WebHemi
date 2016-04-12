@@ -29,6 +29,8 @@ use WebHemi\Action\AbstractAction;
 use Zend\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Expressive\Router;
+use Zend\Expressive\Router\RouteResult;
 
 /**
  * Class UserViewAction
@@ -36,6 +38,9 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class UserViewAction extends AbstractAction
 {
+    /** @var Router\ZendRouter  */
+    protected $router;
+
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
@@ -45,6 +50,11 @@ class UserViewAction extends AbstractAction
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
+        /** @var RouteResult $routeResult */
+        $routeResult = $this->router->match($request);
+
+        var_dump($routeResult->getMatchedParams());
+
         $data = ['action' => 'user/user-view'];
 
         return new HtmlResponse($this->template->render('test::x', $data));

@@ -29,6 +29,8 @@ use WebHemi\Action\AbstractAction;
 use Zend\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Result;
 
 /**
  * Class LoginAction
@@ -36,6 +38,9 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class LoginAction extends AbstractAction
 {
+    /** @var AuthenticationService  */
+    protected $auth;
+
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
@@ -45,7 +50,20 @@ class LoginAction extends AbstractAction
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
+        if ($this->auth && !$this->auth->hasIdentity()) {
+            $this->auth->getAdapter()->setIdentity('admin');
+            $this->auth->getAdapter()->setCredential('admin');
+            /** @var Result $result */
+            $result = $this->auth->authenticate();
+
+            if ($result->getCode() != Result::SUCCESS) {
+                throw new \Exception(implode('; ', $result->getMessages()), 403);
+            }
+        }
+
         $data = ['action' => 'user/login'];
+
+        var_dump($this->auth->getIdentity());
 
         return new HtmlResponse($this->template->render('test::x', $data));
     }

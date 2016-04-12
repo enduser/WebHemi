@@ -107,8 +107,8 @@ class AclService implements DependencyInjectionInterface
     }
 
     /**
-     * @param $resource
-     * @param null $role
+     * @param string $resourceName
+     * @param null $roleName
      * @return bool
      */
     public function isAllowed($resourceName, $roleName = null)

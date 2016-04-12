@@ -73,7 +73,7 @@ class Table extends AbstractTableGateway
 
         /** @var Entity $entity */
         while ($entity = $rowSet->current()) {
-            $entityList[$entity->aclResourceId] = $entity;
+            $entityList[$entity->aclRuleId] = $entity;
             $rowSet->next();
         }
 
