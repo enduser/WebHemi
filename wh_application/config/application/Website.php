@@ -43,7 +43,6 @@ return [
                 'calls' => [
                     ['injectDependency' => [':auth',     Zend\Authentication\AuthenticationService::class]],
                 ],
-
             ],
 
             WebHemi\Action\User\UserViewAction::class => [
@@ -71,7 +70,7 @@ return [
                     ['injectDependency' => [':router',   Zend\Expressive\Router\RouterInterface::class]],
                 ],
             ],
-        ]
+        ],
     ],
     'routes' => [
         [
@@ -79,59 +78,52 @@ return [
             'path' => '/',
             'middleware' => WebHemi\Action\Website\IndexAction::class,
             'allowed_methods' => ['GET'],
-            'priority' => 1000,
-        ],
-        [
-            'name' => 'login',
-            'path' => '/login/',
-            'middleware' => WebHemi\Action\User\LoginAction::class,
-            'allowed_methods' => ['GET'],
-            'priority' => 1000,
-        ],
-        [
-            'name' => 'logout',
-            'path' => '/logout/',
-            'middleware' => WebHemi\Action\User\LogoutAction::class,
-            'allowed_methods' => ['GET'],
-            'priority' => 1000,
-        ],
-        [
-            'name' => 'user-profile',
-            'path' => '/user/profile/',
-            'middleware' => WebHemi\Action\User\UserProfileAction::class,
-            'allowed_methods' => ['GET'],
-            'priority' => 1000,
-        ],
-        [
-            'name' => 'user-edit',
-            'path' => '/user/profile/edit/',
-            'middleware' => WebHemi\Action\User\UserProfileEditAction::class,
-            'allowed_methods' => ['GET'],
-            'priority' => 1000,
         ],
         [
             'name' => 'user-view',
             'path' => '/user/:userName/',
             'options' => [
                 'constraints' => [
-                    'userName' => '(?!profile)[a-zA-Z][a-zA-Z0-9_-]{5,31}',
+                    'userName' => '(?!login|logout|profile)[a-zA-Z][a-zA-Z0-9_-]{5,31}',
                 ]
             ],
             'middleware' => WebHemi\Action\User\UserViewAction::class,
             'allowed_methods' => ['GET'],
-            'priority' => 1000,
+        ],
+        [
+            'name' => 'user-login',
+            'path' => '/user/login/',
+            'middleware' => WebHemi\Action\User\LoginAction::class,
+            'allowed_methods' => ['GET','POST'],
+        ],
+        [
+            'name' => 'user-logout',
+            'path' => '/user/logout/',
+            'middleware' => WebHemi\Action\User\LogoutAction::class,
+            'allowed_methods' => ['GET'],
+        ],
+        [
+            'name' => 'user-profile',
+            'path' => '/user/profile/',
+            'middleware' => WebHemi\Action\User\UserProfileAction::class,
+            'allowed_methods' => ['GET'],
+        ],
+        [
+            'name' => 'user-profile-edit',
+            'path' => '/user/profile/edit/',
+            'middleware' => WebHemi\Action\User\UserProfileEditAction::class,
+            'allowed_methods' => ['GET','POST'],
         ],
         [
             'name' => 'view',
             'path' => '/:customPath',
             'options' => [
                 'constraints' => [
-                    'customPath' => '(?!login|logout|user)[a-zA-Z][a-zA-Z0-9\-\_\+\/\s\.]+',
+                    'customPath' => '(?!user)[a-zA-Z][a-zA-Z0-9\-\_\+\/\s\.]+',
                 ],
             ],
             'middleware' => WebHemi\Action\Website\ViewAction::class,
             'allowed_methods' => ['GET'],
-            'priority' => 5000,
         ],
     ],
 ];

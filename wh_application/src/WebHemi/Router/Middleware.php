@@ -31,6 +31,7 @@ use Zend\Expressive\Router\RouteResult;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use WebHemi\Application\DependencyInjectionInterface;
+use WebHemi\Action\Website\ViewAction;
 
 /**
  * Class Middleware
@@ -57,6 +58,20 @@ class Middleware implements DependencyInjectionInterface
         // Cut middleware sequence and go to ErrorMiddleware directly
         if ($routeResult->isFailure()) {
             throw new RouterException();
+        }
+
+        // For Website module the content is under dynamic URIs, so we need to check in the database
+        if (APPLICATION_MODULE == APPLICATION_MODULE_WEBSITE && $routeResult->getMatchedMiddleware() == ViewAction::class) {
+            var_dump($routeResult);
+            $matchedParams = $routeResult->getMatchedParams();
+            $requestedUri = $matchedParams['customPath'];
+
+
+            // @todo implement
+            // If dynamic path not found, raise an error
+            if (!$requestedUri) {
+                throw new RouterException();
+            }
         }
 
         return $next($request, $response);
