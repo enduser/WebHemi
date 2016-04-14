@@ -26,24 +26,24 @@
  */
 function createDefinitions(array $applicationSettings)
 {
-    define('APPLICATION_MODULE_ADMIN', $applicationSettings['applicationModuleAdmin']);
-    define('APPLICATION_MODULE_WEBSITE', $applicationSettings['applicationModuleWebsite']);
-    define('APPLICATION_MODULE_TYPE_SUBDOMAIN', $applicationSettings['applicationModuleTypeSubdomain']);
-    define('APPLICATION_MODULE_TYPE_SUBDIR', $applicationSettings['applicationModuleTypeSubdirectory']);
-    define('AUTOLOGIN_COOKIE_PREFIX', $applicationSettings['autologinCookiePrefix']);
-    define('SESSION_COOKIE_PREFIX', $applicationSettings['sessionCookiePrefix']);
-    define('APPLICATION_PATH', $applicationSettings['applicationPath']);
-    define('APPLICATION_MODULE', $applicationSettings['applicationModule']);
-    define('APPLICATION_MODULE_LIST', $applicationSettings['applicationModuleList']);
-    define('APPLICATION_MODULE_TYPE', $applicationSettings['applicationModuleType']);
-    define('APPLICATION_MODULE_URI', $applicationSettings['applicationModuleUri']);
-    define('MAIN_DOMAIN', $applicationSettings['mainDomain']);
-    define('APPLICATION_DOMAIN', $applicationSettings['applicationDomain']);
-    define('APPLICATION_THEME_NAME', $applicationSettings['applicationThemeName']);
-    define('APPLICATION_THEME_SYSTEM_PATH', $applicationSettings['applicationThemeSystemPath']);
-    define('APPLICATION_THEME_RESOURCE_PATH', $applicationSettings['applicationThemeResourcePath']);
-    define('APPLICATION_THEME_ADMIN_LOGIN_STYLE', $applicationSettings['applicationThemeAdminLoginStyle']);
-    define('APPLICATION_THEME_ADMIN_LOGIN_SCRIPT', $applicationSettings['applicationThemeAdminLoginScript']);
+    defined('APPLICATION_MODULE_ADMIN') || define('APPLICATION_MODULE_ADMIN', $applicationSettings['applicationModuleAdmin']);
+    defined('APPLICATION_MODULE_WEBSITE') || define('APPLICATION_MODULE_WEBSITE', $applicationSettings['applicationModuleWebsite']);
+    defined('APPLICATION_MODULE_TYPE_SUBDOMAIN') || define('APPLICATION_MODULE_TYPE_SUBDOMAIN', $applicationSettings['applicationModuleTypeSubdomain']);
+    defined('APPLICATION_MODULE_TYPE_SUBDIR') || define('APPLICATION_MODULE_TYPE_SUBDIR', $applicationSettings['applicationModuleTypeSubdirectory']);
+    defined('AUTOLOGIN_COOKIE_PREFIX') || define('AUTOLOGIN_COOKIE_PREFIX', $applicationSettings['autologinCookiePrefix']);
+    defined('SESSION_COOKIE_PREFIX') || define('SESSION_COOKIE_PREFIX', $applicationSettings['sessionCookiePrefix']);
+    defined('APPLICATION_PATH') || define('APPLICATION_PATH', $applicationSettings['applicationPath']);
+    defined('APPLICATION_MODULE') || define('APPLICATION_MODULE', $applicationSettings['applicationModule']);
+    defined('APPLICATION_MODULE_LIST') || define('APPLICATION_MODULE_LIST', $applicationSettings['applicationModuleList']);
+    defined('APPLICATION_MODULE_TYPE') || define('APPLICATION_MODULE_TYPE', $applicationSettings['applicationModuleType']);
+    defined('APPLICATION_MODULE_URI') || define('APPLICATION_MODULE_URI', $applicationSettings['applicationModuleUri']);
+    defined('MAIN_DOMAIN') || define('MAIN_DOMAIN', $applicationSettings['mainDomain']);
+    defined('APPLICATION_DOMAIN') || define('APPLICATION_DOMAIN', $applicationSettings['applicationDomain']);
+    defined('APPLICATION_THEME_NAME') || define('APPLICATION_THEME_NAME', $applicationSettings['applicationThemeName']);
+    defined('APPLICATION_THEME_SYSTEM_PATH') || define('APPLICATION_THEME_SYSTEM_PATH', $applicationSettings['applicationThemeSystemPath']);
+    defined('APPLICATION_THEME_RESOURCE_PATH') || define('APPLICATION_THEME_RESOURCE_PATH', $applicationSettings['applicationThemeResourcePath']);
+    defined('APPLICATION_THEME_ADMIN_LOGIN_STYLE') || define('APPLICATION_THEME_ADMIN_LOGIN_STYLE', $applicationSettings['applicationThemeAdminLoginStyle']);
+    defined('APPLICATION_THEME_ADMIN_LOGIN_SCRIPT') || define('APPLICATION_THEME_ADMIN_LOGIN_SCRIPT', $applicationSettings['applicationThemeAdminLoginScript']);
 }
 
 /**

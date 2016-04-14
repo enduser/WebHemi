@@ -22,29 +22,32 @@
  * @link      http://www.gixx-web.com
  *
  */
+
 namespace WebHemiTest\Fixtures;
 
-use ArrayObject;
-
 /**
- * Class GetConfigTrait
+ * Class PropertyClass
  * @package WebHemiTest\Fixtures
  */
-trait GetConfigTrait
+class PropertyClass
 {
+    /** @var  mixed */
+    public $prop;
+
     /**
-     * Get application config
-     *
-     * @return ArrayObject
+     * PropertyClass constructor.
+     * @param mixed $prop
      */
-    protected function getConfig()
+    public function __construct($prop = null)
     {
-        static $config;
+        $this->prop = $prop;
+    }
 
-        if (!isset($config)) {
-            $config = include __DIR__ . '/../../../config/config.php';
-        }
-
-        return $config;
+    /**
+     * @param mixed $prop
+     */
+    public function setProperty($prop = null)
+    {
+        $this->prop = $prop;
     }
 }

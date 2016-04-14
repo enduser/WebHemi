@@ -52,7 +52,7 @@ class ErrorHandler
      * ErrorHandler constructor.
      * @param TemplateRendererInterface $templateRenderer
      */
-    public function __construct(TemplateRendererInterface $templateRenderer)
+    public function __construct(TemplateRendererInterface $templateRenderer = null)
     {
         $this->templateRenderer = $templateRenderer;
     }
@@ -67,7 +67,6 @@ class ErrorHandler
      */
     public function __invoke(Request $request, Response $response, $error = null)
     {
-        var_dump('Error final handler');
         if (!$error) {
             if ($response->getStatusCode() === 200
                 && $response->getBody()->getSize() === 0

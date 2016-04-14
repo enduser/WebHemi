@@ -22,29 +22,33 @@
  * @link      http://www.gixx-web.com
  *
  */
+
 namespace WebHemiTest\Fixtures;
 
-use ArrayObject;
+use Interop\Container\ContainerInterface;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 
-/**
- * Class GetConfigTrait
- * @package WebHemiTest\Fixtures
- */
-trait GetConfigTrait
+trait ContainerTrait
 {
     /**
-     * Get application config
-     *
-     * @return ArrayObject
+     * @return mixed
      */
-    protected function getConfig()
+    protected function mockContainerInterface()
     {
-        static $config;
+        $container = $this->prophesize(ContainerInterface::class);
+        $container->has(Argument::type('string'))->willReturn(false);
+        return $container;
+    }
 
-        if (!isset($config)) {
-            $config = include __DIR__ . '/../../../config/config.php';
-        }
-
-        return $config;
+    /**
+     * @param ObjectProphecy $container
+     * @param string $serviceName
+     * @param mixed $service
+     */
+    protected function injectServiceInContainer(ObjectProphecy $container, $serviceName, $service)
+    {
+        $container->has($serviceName)->willReturn(true);
+        $container->get($serviceName)->willReturn($service);
     }
 }

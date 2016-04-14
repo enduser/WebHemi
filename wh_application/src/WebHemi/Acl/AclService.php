@@ -32,6 +32,7 @@ use WebHemi\Acl\Role\Entity as AclRoleEntity;
 use WebHemi\Acl\Rule\Table as AclRuleTable;
 use WebHemi\Acl\Rule\Entity as AclRuleEntity;
 use WebHemi\Acl\Assert\CleanIp;
+use WebHemi\User\Entity as UserEntity;
 use Zend\Permissions\Acl\Acl as ZendAcl;
 use Zend\Permissions\Acl\Exception;
 use Zend\Permissions\Acl\Resource\GenericResource;
@@ -62,12 +63,14 @@ class AclService implements DependencyInjectionInterface
      * AclService constructor.
      * @param ZendAcl $acl
      */
-    public function __construct(ZendAcl $acl)
+    public function __construct(ZendAcl $acl = null)
     {
-        // set core ACL service
-        $this->acl = $acl;
-        // deny all by default
-        $this->acl->deny();
+        if ($acl instanceof ZendAcl) {
+            // set core ACL service
+            $this->acl = $acl;
+            // deny all by default
+            $this->acl->deny();
+        }
     }
 
     /**
@@ -75,31 +78,33 @@ class AclService implements DependencyInjectionInterface
      */
     public function init()
     {
-        $resources = $this->aclResourceTable->getResources();
-        $roles     = $this->aclRoleTable->getRoles();
-        $rules     = $this->aclRuleTable->getRules(true);
+        if ($this->acl instanceof ZendAcl) {
+            $resources = $this->aclResourceTable->getResources();
+            $roles = $this->aclRoleTable->getRoles();
+            $rules = $this->aclRuleTable->getRules(true);
 
-        /** @var AclResourceEntity $aclResourceEntity */
-        foreach ($resources as $aclResourceEntity) {
-            $resource = new GenericResource($aclResourceEntity->name);
-            $this->acl->addResource($resource);
-        }
+            /** @var AclResourceEntity $aclResourceEntity */
+            foreach ($resources as $aclResourceEntity) {
+                $resource = new GenericResource($aclResourceEntity->name);
+                $this->acl->addResource($resource);
+            }
 
-        /** @var AclRoleEntity $aclRoleEntity */
-        foreach ($roles as $aclRoleEntity) {
-            $role = new GenericRole($aclRoleEntity->name);
-            $this->acl->addRole($role);
-        }
+            /** @var AclRoleEntity $aclRoleEntity */
+            foreach ($roles as $aclRoleEntity) {
+                $role = new GenericRole($aclRoleEntity->name);
+                $this->acl->addRole($role);
+            }
 
-        /** @var AclRuleEntity $aclRuleEntity */
-        foreach ($rules as $aclRuleEntity) {
-            /** @var AclResourceEntity $resource */
-            $resource = $aclRuleEntity->getResource();
-            /** @var AclRoleEntity $role */
-            $role = $aclRuleEntity->getRole();
+            /** @var AclRuleEntity $aclRuleEntity */
+            foreach ($rules as $aclRuleEntity) {
+                /** @var AclResourceEntity $resource */
+                $resource = $aclRuleEntity->getResource();
+                /** @var AclRoleEntity $role */
+                $role = $aclRuleEntity->getRole();
 
-            if ($resource && $this->acl->hasResource($resource->name) && $role && $this->acl->hasRole($role->name)) {
-                $this->acl->allow($role->name, $resource->name, null, $this->assertion);
+                if ($resource && $this->acl->hasResource($resource->name) && $role && $this->acl->hasRole($role->name)) {
+                    $this->acl->allow($role->name, $resource->name, null, $this->assertion);
+                }
             }
         }
 

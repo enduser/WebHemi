@@ -26,7 +26,7 @@
 namespace WebHemi\Factory;
 
 use Interop\Container\ContainerInterface;
-use Exception;
+use InvalidArgumentException;
 
 /**
  * Class ServiceFactory
@@ -81,27 +81,66 @@ class ServiceFactory
      * @param null $canonicalName
      * @param null $requestedName
      * @return object
-     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function __invoke(ContainerInterface $container, $canonicalName = null, $requestedName = null)
     {
         $className = $requestedName ?: $canonicalName;
         $config = $container->get('config');
 
-        try {
-            if (!isset($config['dependencies']['service_factory'][$className])) {
-                $instance = new $className;
-            } else {
-                // resolve possible alias
-                $className = (isset($config['dependencies']['service_factory'][$className]['class']))
-                    ? $config['dependencies']['service_factory'][$className]['class']
-                    : $className;
+        if (!isset($config['dependencies']['service_factory'][$className])) {
+            if (!class_exists($className)) {
+                throw new InvalidArgumentException('Cannot instantiate class: ' . $className, 500);
+            }
 
-                $arguments = [];
+            $instance = new $className;
+        } else {
+            $serviceConfig = $config['dependencies']['service_factory'][$className];
 
-                // checking arguments
-                if (isset($config['dependencies']['service_factory'][$className]['arguments'])) {
-                    foreach ($config['dependencies']['service_factory'][$className]['arguments'] as $parameter) {
+            // resolve possible alias
+            $className = (isset($serviceConfig['class']))
+                ? $serviceConfig['class']
+                : $className;
+
+            if (!class_exists($className)) {
+                throw new InvalidArgumentException('Cannot instantiate class: ' . $className, 500);
+            }
+
+            $arguments = [];
+
+            // checking arguments
+            if (isset($serviceConfig['arguments'])) {
+                foreach ($serviceConfig['arguments'] as $parameter) {
+                    if ($container->has($parameter)) {
+                        $arguments[] = $container->get($parameter);
+                    } elseif (class_exists($parameter)) {
+                        $arguments[] = new $parameter;
+                    } else {
+                        // support forcing to scalar
+                        if (strpos($parameter, ':') === 0) {
+                            $parameter = substr($parameter, 1);
+                        }
+
+                        $arguments[] = $parameter;
+                    }
+                }
+            }
+
+            // instantiate the class with the given argument list
+            $instance = new $className(...$arguments);
+
+            // checking for data injection
+            if (isset($serviceConfig['calls'])) {
+                foreach ($serviceConfig['calls'] as $dependency) {
+                    $method = key($dependency);
+                    $parameters = current($dependency);
+                    $arguments = [];
+
+                    if (!method_exists($instance, $method)) {
+                        throw new InvalidArgumentException('Cannot call method ' . $method . ' in class: ' . $className, 500);
+                    }
+
+                    foreach ($parameters as $parameter) {
                         if ($container->has($parameter)) {
                             $arguments[] = $container->get($parameter);
                         } elseif (class_exists($parameter)) {
@@ -115,44 +154,11 @@ class ServiceFactory
                             $arguments[] = $parameter;
                         }
                     }
-                }
 
-                // instantiate the class with the given argument list
-                $instance = new $className(...$arguments);
-
-                // checking for data injection
-                if (isset($config['dependencies']['service_factory'][$className]['calls'])) {
-                    foreach ($config['dependencies']['service_factory'][$className]['calls'] as $dependency) {
-                        $method = key($dependency);
-                        $parameters = current($dependency);
-                        $arguments = [];
-
-                        foreach ($parameters as $parameter) {
-                            if ($container->has($parameter)) {
-                                $arguments[] = $container->get($parameter);
-                            } elseif (class_exists($parameter)) {
-                                $arguments[] = new $parameter;
-                            } else {
-                                // support forcing to scalar
-                                if (strpos($parameter, ':') === 0) {
-                                    $parameter = substr($parameter, 1);
-                                }
-
-                                $arguments[] = $parameter;
-                            }
-                        }
-
-                        if (method_exists($instance, $method)) {
-                            $instance->{$method}(...$arguments);
-                        } else {
-                            throw new Exception('Cannot call method ' . $method . ' in class: ' . $className, 500);
-                        }
-                    }
+                    $instance->{$method}(...$arguments);
                 }
             }
-            return $instance;
-        } catch (Exception $e) {
-            throw new Exception('Cannot instantiate class: ' . $className . '. Error: ' . $e->getMessage(), 500);
         }
+        return $instance;
     }
 }
