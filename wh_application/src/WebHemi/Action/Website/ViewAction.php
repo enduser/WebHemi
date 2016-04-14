@@ -29,7 +29,7 @@ use WebHemi\Action\AbstractAction;
 use Zend\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Expressive\Router;
+use Zend\Expressive\Router as ZendRouter;
 use Zend\Expressive\Router\RouteResult;
 
 /**
@@ -38,6 +38,9 @@ use Zend\Expressive\Router\RouteResult;
  */
 class ViewAction extends AbstractAction
 {
+    /** @var  ZendRouter */
+    protected $router;
+
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
@@ -50,7 +53,15 @@ class ViewAction extends AbstractAction
         /** @var RouteResult $routeResult */
         $routeResult = $this->router->match($request);
 
-        var_dump($routeResult->getMatchedParams());
+        $matchedParams = $routeResult->getMatchedParams();
+        $requestedUri = $matchedParams['customPath'];
+        var_dump($requestedUri);
+
+        // @todo implement
+        // If dynamic path not found, raise an error
+        if (!$requestedUri) {
+            throw new RouterException();
+        }
 
         $data = ['action' => 'website/view'];
 

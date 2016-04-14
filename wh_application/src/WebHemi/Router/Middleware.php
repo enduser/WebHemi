@@ -60,20 +60,6 @@ class Middleware implements DependencyInjectionInterface
             throw new RouterException();
         }
 
-        // For Website module the content is under dynamic URIs, so we need to check in the database
-        if (APPLICATION_MODULE == APPLICATION_MODULE_WEBSITE && $routeResult->getMatchedMiddleware() == ViewAction::class) {
-            var_dump($routeResult);
-            $matchedParams = $routeResult->getMatchedParams();
-            $requestedUri = $matchedParams['customPath'];
-
-
-            // @todo implement
-            // If dynamic path not found, raise an error
-            if (!$requestedUri) {
-                throw new RouterException();
-            }
-        }
-
         return $next($request, $response);
     }
 

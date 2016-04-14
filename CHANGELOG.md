@@ -1,6 +1,13 @@
 Change log
 ==========
 
+Version 3.0.0-1.1
+-----------------
+* Implement proper routing and action structure
+* Implement Auth
+* Implement ALC
+* Define better database entities and entity relations
+
 Version 3.0.0-1.0
 -----------------
 * Inherit features from WebHemi2
