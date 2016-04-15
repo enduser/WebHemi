@@ -31,7 +31,6 @@ use Zend\Expressive\Router\RouteResult;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use WebHemi\Application\DependencyInjectionInterface;
-use WebHemi\Action\Website\ViewAction;
 
 /**
  * Class Middleware
@@ -69,6 +68,8 @@ class Middleware implements DependencyInjectionInterface
      * @param string $property
      * @param object $service
      * @return void
+     *
+     * @codeCoverageIgnore
      */
     public function injectDependency($property, $service)
     {

@@ -38,10 +38,12 @@ use Zend\Expressive\Template\TemplateRendererInterface;
  */
 class Middleware implements DependencyInjectionInterface
 {
-    /**
-     * @var TemplateRendererInterface
-     */
+    /** @var TemplateRendererInterface */
     private $templateRenderer;
+    /** @var int */
+    protected $code = 500;
+    /** @var string */
+    protected $template = '500';
 
     /**
      * Map of standard HTTP status code/reason phrases
@@ -130,31 +132,31 @@ class Middleware implements DependencyInjectionInterface
 
         switch ($error->getCode()) {
             case 401:
-                $code = 401;
-                $template = 401;
+                $this->code = 401;
+                $this->template = '401';
                 break;
 
             case 403:
-                $code = 403;
-                $template = 403;
+                $this->code = 403;
+                $this->template = '403';
                 break;
 
             case 404:
-                $code = 404;
-                $template = 404;
+                $this->code = 404;
+                $this->template = '404';
                 break;
 
             default:
-                $code = array_key_exists($error->getCode(), $this->phrases) ? $error->getCode() : 500;
-                $template = 500;
+                $this->code = array_key_exists($error->getCode(), $this->phrases) ? $error->getCode() : 500;
+                $this->template = '500';
         }
 
         return new HtmlResponse(
             $this->templateRenderer->render(
-                'error/' . $template,
-                ['layout' => 'layout/error', 'status' => $code, 'reason' => $this->phrases[$code], 'error' => $error]
+                'error/' . $this->template,
+                ['layout' => 'layout/error', 'status' => $this->code, 'reason' => $this->phrases[$this->code], 'error' => $error]
             ),
-            $code
+            $this->code
         );
     }
 
@@ -164,6 +166,8 @@ class Middleware implements DependencyInjectionInterface
      * @param string $property
      * @param object $service
      * @return void
+     *
+     * @codeCoverageIgnore
      */
     public function injectDependency($property, $service)
     {

@@ -155,6 +155,8 @@ class Session implements DependencyInjectionInterface, StorageInterface
      * @param string $property
      * @param object $service
      * @return void
+     * 
+     * @codeCoverageIgnore
      */
     public function injectDependency($property, $service)
     {

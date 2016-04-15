@@ -118,6 +118,8 @@ class Middleware implements DependencyInjectionInterface
      * @param string $property
      * @param object $service
      * @return void
+     * 
+     * @codeCoverageIgnore
      */
     public function injectDependency($property, $service)
     {
