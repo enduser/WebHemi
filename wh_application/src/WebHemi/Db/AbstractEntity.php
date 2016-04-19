@@ -28,6 +28,11 @@ namespace WebHemi\Db;
 use Serializable;
 use WebHemi\Application\DependencyInjectionInterface;
 
+/**
+ * Class AbstractEntity
+ * @package WebHemi\Db
+ * @codeCoverageIgnore
+ */
 abstract class AbstractEntity implements DependencyInjectionInterface, Serializable
 {
     /**
@@ -84,8 +89,6 @@ abstract class AbstractEntity implements DependencyInjectionInterface, Serializa
      * @param string $property
      * @param object $service
      * @return void
-     * 
-     * @codeCoverageIgnore
      */
     public function injectDependency($property, $service)
     {
