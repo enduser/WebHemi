@@ -23,44 +23,39 @@
  *
  */
 
-namespace WebHemiTest\Fixtures;
+namespace WebHemiTest\Router;
 
-use Zend\Diactoros\Response;
-use Zend\Diactoros\ServerRequest;
+use WebHemi\Router\Exception;
+use PHPUnit_Framework_TestCase as TestCase;
 
 /**
- * Class PropertyClass
- * @package WebHemiTest\Fixtures
+ * Class ExceptionTest
+ * @package WebHemiTest\Error
  */
-class PropertyClass
+class ExceptionTest extends TestCase
 {
-    /** @var  mixed */
-    public $prop;
-
     /**
-     * PropertyClass constructor.
-     * @param mixed $prop
+     * Test exception without any parameters
      */
-    public function __construct($prop = null)
+    public function testExceptionWithNoParams()
     {
-        $this->prop = $prop;
+        $exception = new Exception();
+
+        $this->assertEquals(404, $exception->getCode());
+        $this->assertEquals('Not Found', $exception->getMessage());
     }
 
     /**
-     * @param null $request
-     * @param null $response
-     * @return bool
+     * Test exception with specific parameters
      */
-    public function __invoke($request = null, $response = null)
+    public function testExceptionWithParams()
     {
-        return ':)';
-    }
+        $code = 123;
+        $message = 'Hello World!';
 
-    /**
-     * @param mixed $prop
-     */
-    public function setProperty($prop = null)
-    {
-        $this->prop = $prop;
+        $exception = new Exception($message, $code);
+
+        $this->assertEquals($code, $exception->getCode());
+        $this->assertEquals($message, $exception->getMessage());
     }
 }
