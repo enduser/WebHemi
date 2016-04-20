@@ -28,6 +28,7 @@ namespace WebHemiTest\Db;
 use WebHemi\Acl\Resource\Table as AclResourceTable;
 use WebHemi\Acl\Resource\Entity as AclResourceEntity;
 use WebHemi\Acl\Role\Table as AclRoleTable;
+use WebHemi\Acl\Role\Entity as AclRoleEntity;
 use WebHemi\Acl\Rule\Table as AclRuleTable;
 use WebHemi\Application\Table as ApplicationTable;
 use WebHemi\Client\Lock\Table as ClientLockTable;
@@ -84,6 +85,37 @@ class TableTest extends TestCase
         foreach ($result as $key => $value) {
             $this->assertInstanceOf(AclResourceEntity::class, $value);
             $this->assertEquals($key, $value->aclResourceId);
+        }
+    }
+
+    /**
+     * @covers \WebHemi\Acl\Role\Table
+     */
+    public function testRoleTable()
+    {
+        $adapter = new DbAdapter([
+            'driver' => 'Pdo_Sqlite',
+            'database' => realpath(__DIR__ . '/../Fixtures/database.sqlite3')
+        ]);
+
+        $entity = new AclRoleEntity();
+
+        $table = new AclRoleTable($adapter, $entity);
+        $this->assertInstanceOf(AclRoleTable::class, $table);
+
+        $result = $table->getRoleById(-1);
+        $this->assertNull($result);
+
+        $result = $table->getRoleById(1);
+        $this->assertInstanceOf(AclRoleEntity::class, $result);
+        $this->assertEquals('admin', $result->name);
+
+        $result = $table->getRoles();
+        $this->assertTrue(count($result) > 0);
+        $this->assertInternalType('array', $result);
+        foreach ($result as $key => $value) {
+            $this->assertInstanceOf(AclRoleEntity::class, $value);
+            $this->assertEquals($key, $value->aclRoleId);
         }
     }
 }

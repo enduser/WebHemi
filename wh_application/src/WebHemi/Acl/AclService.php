@@ -34,7 +34,7 @@ use WebHemi\Acl\Rule\Entity as AclRuleEntity;
 use WebHemi\Acl\Assert\CleanIp;
 use WebHemi\User\Entity as UserEntity;
 use Zend\Permissions\Acl\Acl as ZendAcl;
-use Zend\Permissions\Acl\Exception;
+use Zend\Permissions\Acl\Exception as ZendException;
 use Zend\Permissions\Acl\Resource\GenericResource;
 use Zend\Permissions\Acl\Role\GenericRole;
 use Zend\Authentication\AuthenticationService;
@@ -145,7 +145,7 @@ class AclService implements DependencyInjectionInterface
             }
 
             return $this->acl->isAllowed($roleName, $resourceName);
-        } catch (Exception\InvalidArgumentException $e) {
+        } catch (ZendException\InvalidArgumentException $e) {
             // It is not necessary to terminate the whole script running. Fair enough to return with a FALSE.
             return false;
         }

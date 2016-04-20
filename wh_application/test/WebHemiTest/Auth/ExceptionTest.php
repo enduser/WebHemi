@@ -25,7 +25,7 @@
 
 namespace WebHemiTest\Auth;
 
-use WebHemi\Auth\Exception;
+use WebHemi\Auth\Exception as AuthException;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**
@@ -39,7 +39,7 @@ class ExceptionTest extends TestCase
      */
     public function testExceptionWithNoParams()
     {
-        $exception = new Exception();
+        $exception = new AuthException();
 
         $this->assertEquals(401, $exception->getCode());
         $this->assertEquals('Unauthorized', $exception->getMessage());
@@ -53,7 +53,7 @@ class ExceptionTest extends TestCase
         $code = 123;
         $message = 'Hello World!';
 
-        $exception = new Exception($message, $code);
+        $exception = new AuthException($message, $code);
 
         $this->assertEquals($code, $exception->getCode());
         $this->assertEquals($message, $exception->getMessage());

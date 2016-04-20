@@ -23,9 +23,9 @@
  *
  */
 
-namespace WebHemiTest\Error;
+namespace WebHemiTest\Acl;
 
-use WebHemi\Error\Exception as ErrorException;
+use WebHemi\Acl\Exception as AclException;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**
@@ -39,10 +39,10 @@ class ExceptionTest extends TestCase
      */
     public function testExceptionWithNoParams()
     {
-        $exception = new ErrorException();
+        $exception = new AclException();
 
-        $this->assertEquals(500, $exception->getCode());
-        $this->assertEquals('Internal Server Error', $exception->getMessage());
+        $this->assertEquals(403, $exception->getCode());
+        $this->assertEquals('Forbidden', $exception->getMessage());
     }
 
     /**
@@ -53,7 +53,7 @@ class ExceptionTest extends TestCase
         $code = 123;
         $message = 'Hello World!';
 
-        $exception = new ErrorException($message, $code);
+        $exception = new AclException($message, $code);
 
         $this->assertEquals($code, $exception->getCode());
         $this->assertEquals($message, $exception->getMessage());
