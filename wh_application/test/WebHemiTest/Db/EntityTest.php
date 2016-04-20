@@ -36,6 +36,10 @@ use WebHemi\User\Role\Entity as UserRoleEntity;
 use DateTime;
 use PHPUnit_Framework_TestCase as TestCase;
 
+/**
+ * Class EntityTest
+ * @package WebHemiTest\Db
+ */
 class EntityTest extends TestCase
 {
     /**
@@ -219,7 +223,7 @@ class EntityTest extends TestCase
         }
         // we know that the indexes, but maybe not values, match.
         // compare the values between the two arrays
-        foreach($a as $k => $v) {
+        foreach ($a as $k => $v) {
             if ($typeIdentical && $v !== $b[$k]) {
                 $result = false;
             } elseif (!$typeIdentical && $v != $b[$k]) {
