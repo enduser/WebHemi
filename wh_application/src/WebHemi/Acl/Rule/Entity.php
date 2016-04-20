@@ -49,6 +49,7 @@ class Entity extends AbstractEntity
 
     /**
      * @return AclResourceEntity
+     * @codeCoverageIgnore
      */
     public function getResource()
     {
@@ -57,6 +58,7 @@ class Entity extends AbstractEntity
 
     /**
      * @return AclRoleEntity
+     * @codeCoverageIgnore
      */
     public function getRole()
     {
@@ -75,7 +77,7 @@ class Entity extends AbstractEntity
         $this->aclRuleId = isset($data['id_acl_rule']) ? (int)$data['id_acl_rule'] : null;
         $this->aclRoleId = isset($data['fk_acl_role']) ? (int)$data['fk_acl_role'] : null;
         $this->aclResourceId = isset($data['fk_acl_resource']) ? (int)$data['fk_acl_resource'] : null;
-        $this->isAllowed = isset($data['is_allowed']) ? (int)$data['is_allowed'] : false;
+        $this->isAllowed = isset($data['is_allowed']) ? (bool)$data['is_allowed'] : false;
 
         return $this;
     }

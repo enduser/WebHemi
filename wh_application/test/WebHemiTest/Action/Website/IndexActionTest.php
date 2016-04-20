@@ -35,12 +35,13 @@ use Zend\Diactoros\ServerRequest;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Stdlib\ArrayUtils;
 use Zend\ServiceManager\Config;
+use PHPUnit_Framework_TestCase as TestCase;
 
 /**
  * Class HomePageActionTest
  * @package WebHemiTest\Action
  */
-class IndexActionTest extends \PHPUnit_Framework_TestCase
+class IndexActionTest extends TestCase
 {
     /** @var RouterInterface */
     protected $router;

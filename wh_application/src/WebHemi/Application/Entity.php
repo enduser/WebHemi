@@ -33,8 +33,9 @@ use WebHemi\Db\AbstractEntity;
  *
  * @property int    $applicationId
  * @property string $name
- * @property bool   $isReadonly
+ * @property bool   $isReadOnly
  * @property string $description
+ * @property string $metaData
  */
 class Entity extends AbstractEntity
 {
@@ -49,8 +50,9 @@ class Entity extends AbstractEntity
     {
         $this->applicationId = (isset($data['id_application'])) ? (int)$data['id_application'] : null;
         $this->name = (isset($data['name'])) ? $data['name'] : null;
-        $this->isReadonly = (isset($data['is_readonly'])) ? (bool)$data['is_readonly'] : true;
+        $this->isReadOnly = (isset($data['is_read_only'])) ? (bool)$data['is_read_only'] : true;
         $this->description = (isset($data['description'])) ? $data['description'] : null;
+        $this->metaData = (isset($data['meta_data'])) ? $data['meta_data'] : null;
 
         return $this;
     }
@@ -64,9 +66,10 @@ class Entity extends AbstractEntity
     {
         return [
             'id_application' => $this->applicationId,
-            'username' => $this->name,
-            'is_readonly' => $this->isReadonly ? 1 : 0,
-            'description' => $this->description
+            'name' => $this->name,
+            'is_read_only' => $this->isReadOnly ? 1 : 0,
+            'description' => $this->description,
+            'meta_data' => $this->metaData
         ];
     }
 }
