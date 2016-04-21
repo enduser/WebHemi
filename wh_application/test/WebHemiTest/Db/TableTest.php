@@ -30,6 +30,7 @@ use WebHemi\Acl\Resource\Entity as AclResourceEntity;
 use WebHemi\Acl\Role\Table as AclRoleTable;
 use WebHemi\Acl\Role\Entity as AclRoleEntity;
 use WebHemi\Acl\Rule\Table as AclRuleTable;
+use WebHemi\Acl\Rule\Entity as AclRuleEntity;
 use WebHemi\Application\Table as ApplicationTable;
 use WebHemi\Client\Lock\Table as ClientLockTable;
 use WebHemi\User\Table as UserTable;
@@ -117,5 +118,43 @@ class TableTest extends TestCase
             $this->assertInstanceOf(AclRoleEntity::class, $value);
             $this->assertEquals($key, $value->aclRoleId);
         }
+    }
+
+    /**
+     * @covers \WebHemi\Acl\Rule\Table
+     */
+    public function testRuleTable()
+    {
+        $adapter = new DbAdapter([
+            'driver' => 'Pdo_Sqlite',
+            'database' => realpath(__DIR__ . '/../Fixtures/database.sqlite3')
+        ]);
+
+        $entity = new AclRuleEntity();
+
+        $table = new AclRuleTable($adapter, $entity);
+        $this->assertInstanceOf(AclRuleTable::class, $table);
+
+        $result = $table->getRuleById(-1);
+        $this->assertNull($result);
+
+        $result = $table->getRuleById(1);
+        $this->assertInstanceOf(AclRuleEntity::class, $result);
+        $this->assertEquals(1, $result->aclRoleId);
+        $this->assertEquals(1, $result->aclResourceId);
+        $this->assertEquals(1, $result->isAllowed);
+
+        $result = $table->getRules(false);
+        $this->assertTrue(count($result) == 162);
+        $this->assertInternalType('array', $result);
+
+        $key = key($result);
+        $value = current($result);
+
+        $this->assertInstanceOf(AclRuleEntity::class, $value);
+        $this->assertEquals($key, $value->aclRuleId);
+
+        $result = $table->getRules(true);
+        $this->assertTrue(count($result) == 96);
     }
 }

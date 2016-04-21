@@ -52,14 +52,14 @@ class CleanIp implements DependencyInjectionInterface, AssertionInterface
      *
      * @return boolean
      */
-    public function assert(Acl $acl, RoleInterface $role = null, ResourceInterface $resource = null, $privilege = null)
+    public function assert(Acl $acl = null, RoleInterface $role = null, ResourceInterface $resource = null, $privilege = null)
     {
         // determine the current timestamp according to the UTC time
         $currentTime = new DateTime(gmdate('Y-m-d H:i:s'));
         $currentTimestamp = $currentTime->getTimestamp();
 
-        $lockTime = $this->clientLockTable->getLock()->timeLock;
-        $lockTimestamp = $lockTime instanceof DateTime ? $lockTime->getTimestamp() : $currentTimestamp;
+        $lock = $this->clientLockTable->getLock();
+        $lockTimestamp = $lock->timeLock instanceof DateTime ? $lock->timeLock->getTimestamp() : $currentTimestamp;
 
         // determine the timeout in seconds
         $timeout = ClientLockTable::LOCK_TIME * 60;
@@ -67,9 +67,9 @@ class CleanIp implements DependencyInjectionInterface, AssertionInterface
         // if the lock times out, it should be released
         if ($timeout < $currentTimestamp - $lockTimestamp) {
             $this->clientLockTable->releaseLock();
+            return true;
         }
-
-        return $this->clientLockTable->getLock()->tryings >= ClientLockTable::MAX_TRYINGS ? false : true;
+        return $lock->tryings >= ClientLockTable::MAX_TRYINGS ? false : true;
     }
 
     /**
@@ -78,7 +78,7 @@ class CleanIp implements DependencyInjectionInterface, AssertionInterface
      * @param string $property
      * @param object $service
      * @return void
-     * 
+     *
      * @codeCoverageIgnore
      */
     public function injectDependency($property, $service)

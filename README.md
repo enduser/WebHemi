@@ -1,6 +1,8 @@
 WebHemi
 =======
 
+[![WebHemi Version](https://img.shields.io/badge/version-v3.0.0--1.2-yellowgreen.svg)]()
+[![Minimum PHP Version](https://img.shields.io/badge/PHP-%3E%3D5.6-blue.svg)](https://php.net/)
 [![Build Status](https://travis-ci.org/Gixx/WebHemi.svg?branch=master)](https://travis-ci.org/Gixx/WebHemi)
 [![Coverage Status](https://coveralls.io/repos/github/Gixx/WebHemi/badge.svg?branch=master)](https://coveralls.io/github/Gixx/WebHemi?branch=master)
 
@@ -14,7 +16,7 @@ A Zend Framework Expressive blog engine. By comparison, it will be something lik
 Requirements
 ------------
 - *nix operating system
-- PHP 5.5+
+- PHP 5.6+
 - MySQL 5.5+
 - Apache 2.4+ with 'mod_rewrite' enabled
 
@@ -30,9 +32,9 @@ Features / Goals
 - Secure authentication [IN PROGRESS]
 - Secure Form solution [IN PROGRESS]
 - Form enhancements [IN PROGRESS]
+- Write unit tests [IN PROGRESS]
 - Easy-to-use 'Admin' application [PLANNING]`
 - User friendly design for 'Admin' application [PLANNING]
-- Write unit tests [IN PROGRESS]
 - 'Virtual folder structure'-like content management [PLANNING]
 - Default website design [PLANNING]
 - Responsive design for 'Admin' application to use the page from mobile devices [PLANNING]

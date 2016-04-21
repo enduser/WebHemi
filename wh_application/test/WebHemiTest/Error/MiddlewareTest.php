@@ -142,7 +142,8 @@ class MiddlewareTest extends TestCase
     }
 
     /**
-     * @param int $code
+     * @param int    $code
+     * @param string $template
      *
      * @dataProvider errorCodeProvider
      */

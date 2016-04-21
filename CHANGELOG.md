@@ -1,6 +1,12 @@
 Change log
 ==========
 
+Version 3.0.0-1.2
+-----------------
+* Start creating Unit tests
+* Connect project with TravisCI to check builds
+* Connect project with Coveralls to get code coverage
+
 Version 3.0.0-1.1
 -----------------
 * Implement proper routing and action structure
