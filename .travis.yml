@@ -13,4 +13,4 @@ script:
   - php wh_application/vendor/bin/phpunit -c wh_application/tools/validation/PhpUnit.xml
 
 after_success:
-  - php wh_application/vendor/bin/coveralls -v
+  - php wh_application/vendor/bin/coveralls
