@@ -1,6 +1,8 @@
 WebHemi
 =======
 
+[![Coverage Status](https://coveralls.io/repos/github/Gixx/WebHemi/badge.svg?branch=master)](https://coveralls.io/github/Gixx/WebHemi?branch=master)
+
 **THIS PROJECT IS UNDER DEVELOPMENT. EXPERIMENTAL USE ONLY!**
 
 Introduction
