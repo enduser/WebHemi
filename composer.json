@@ -103,7 +103,8 @@
     "phpmd/phpmd": "@stable",
     "squizlabs/php_codesniffer": "^2.3",
     "phpunit/phpunit": "^4.8",
-    "filp/whoops": "^1.1"
+    "filp/whoops": "^1.1",
+    "satooshi/php-coveralls": "^1.0"
   },
   "autoload": {
     "psr-4": {
