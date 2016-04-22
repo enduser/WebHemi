@@ -37,7 +37,7 @@ use ArrayObject;
 use InvalidArgumentException;
 
 /**
- * Class FinalHandlerFactoryTest
+ * Class ServiceFactoryTest
  * @package WebHemiTest\Factory
  */
 class ServiceFactoryTest extends TestCase

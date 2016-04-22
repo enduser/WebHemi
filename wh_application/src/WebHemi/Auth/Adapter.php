@@ -42,8 +42,11 @@ use DateTime;
 class Adapter implements DependencyInjectionInterface, AdapterInterface
 {
     const PASSWORD_COST = 9;
-
     const PASSWORD_ALGORITHM = PASSWORD_DEFAULT;
+    const RESULT_SUCCESS = 'Authentication successful.';
+    const RESULT_WRONG_IDENTITY = 'A record with the supplied identity could not be found.';
+    const RESULT_NOT_AVAILABLE_IDENTITY = 'A record with the supplied identity is not available.';
+    const RESULT_WRONG_CREDENTIAL = 'Supplied credential is invalid.';
 
     /** @var string */
     public $identity = null;
@@ -65,7 +68,7 @@ class Adapter implements DependencyInjectionInterface, AdapterInterface
     public function __construct()
     {
         // Avoid access to super global
-        $this->serverData = filter_input_array(INPUT_SERVER);
+        $this->serverData = getServerVariables();
     }
 
     /**
@@ -77,6 +80,7 @@ class Adapter implements DependencyInjectionInterface, AdapterInterface
     public function authenticate()
     {
         /** @var UserEntity $userEntity */
+        $userEntity = null;
 
         if (!isset($this->verifiedUser)) {
             if (strpos($this->identity, '@') !== false) {
@@ -92,21 +96,21 @@ class Adapter implements DependencyInjectionInterface, AdapterInterface
                 $authResult = new Result(
                     Result::FAILURE_IDENTITY_NOT_FOUND,
                     $this->identity,
-                    ['A record with the supplied identity could not be found.']
+                    [self::RESULT_WRONG_IDENTITY]
                 );
             } elseif (!$userEntity->isActive || !$userEntity->isEnabled) {
                 // else if the identity exists but not activated or disabled
                 $authResult = new Result(
                     Result::FAILURE_UNCATEGORIZED,
                     $this->identity,
-                    ['A record with the supplied identity is not available.']
+                    [self::RESULT_NOT_AVAILABLE_IDENTITY]
                 );
             } elseif (!password_verify($this->credential, $userEntity->password)) {
                 // else if the supplied credential is not valid
                 $authResult = new Result(
                     Result::FAILURE_CREDENTIAL_INVALID,
                     $this->identity,
-                    ['Supplied credential is invalid. ' . sha1($this->credential)]
+                    [self::RESULT_WRONG_CREDENTIAL]
                 );
             }
         } else {
@@ -139,18 +143,17 @@ class Adapter implements DependencyInjectionInterface, AdapterInterface
             $authResult = new Result(
                 Result::SUCCESS,
                 $userEntity,
-                ['Authentication successful.']
+                [self::RESULT_SUCCESS]
             );
 
             // avoid auth process in the same runtime
             $this->verifiedUser = $userEntity;
 
-            // @TODO: implement lock
             // reset the counter
-            //$this->clientLockTable->releaseLock();
+            $this->clientLockTable->releaseLock();
         } else {
             // increment the counter so the ACL's IP assert can ban for a specific time (LockTable::LOCK_TIME)
-            //$this->clientLockTable->setLock();
+            $this->clientLockTable->setLock();
         }
 
         return $authResult;
@@ -201,7 +204,7 @@ class Adapter implements DependencyInjectionInterface, AdapterInterface
      * @param string $property
      * @param object $service
      * @return void
-     * 
+     *
      * @codeCoverageIgnore
      */
     public function injectDependency($property, $service)

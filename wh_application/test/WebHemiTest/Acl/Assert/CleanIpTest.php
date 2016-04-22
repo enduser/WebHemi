@@ -30,11 +30,10 @@ use WebHemi\Client\Lock\Entity as ClientLockEntity;
 use WebHemi\Client\Lock\Table as ClientLockTable;
 use Prophecy\Argument;
 use PHPUnit_Framework_TestCase as TestCase;
-use Prophecy\Prophecy\MethodProphecy;
 
 /**
- * Class ExceptionTest
- * @package WebHemiTest\Error
+ * Class CleanIpTest
+ * @package WebHemiTest\Acl
  */
 class CleanIpTest extends TestCase
 {

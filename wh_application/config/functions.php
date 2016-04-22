@@ -26,6 +26,31 @@
  */
 function createDefinitions(array $applicationSettings)
 {
+    $requiredAttributes = [
+        'applicationModuleAdmin',
+        'applicationModuleWebsite',
+        'applicationModuleTypeSubdomain',
+        'applicationModuleTypeSubdirectory',
+        'autologinCookiePrefix',
+        'sessionCookiePrefix',
+        'applicationPath',
+        'applicationModule',
+        'applicationModuleList',
+        'applicationModuleType',
+        'applicationModuleUri',
+        'mainDomain',
+        'applicationDomain',
+        'applicationThemeName',
+        'applicationThemeSystemPath',
+        'applicationThemeResourcePath',
+        'applicationThemeAdminLoginStyle',
+        'applicationThemeAdminLoginScript'
+    ];
+
+    if (empty($applicationSettings) || count(array_diff($requiredAttributes, array_keys($applicationSettings))) > 0) {
+        throw new \InvalidArgumentException('Cannot create constants. Some of the required attributes are missing.');
+    }
+
     defined('APPLICATION_MODULE_ADMIN') || define('APPLICATION_MODULE_ADMIN', $applicationSettings['applicationModuleAdmin']);
     defined('APPLICATION_MODULE_WEBSITE') || define('APPLICATION_MODULE_WEBSITE', $applicationSettings['applicationModuleWebsite']);
     defined('APPLICATION_MODULE_TYPE_SUBDOMAIN') || define('APPLICATION_MODULE_TYPE_SUBDOMAIN', $applicationSettings['applicationModuleTypeSubdomain']);

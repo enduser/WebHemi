@@ -37,7 +37,7 @@ use WebHemiTest\Fixtures\PropertyClass;
 
 /**
  * Class MiddlewareTest
- * @package WebHemiTest\Error
+ * @package WebHemiTest\Router
  */
 class MiddlewareTest extends TestCase
 {

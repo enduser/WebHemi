@@ -31,6 +31,7 @@ use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Http\PhpEnvironment\RemoteAddress;
 use Zend\Validator\Ip as IpValidator;
+use DateTime;
 
 /**
  * Class Table

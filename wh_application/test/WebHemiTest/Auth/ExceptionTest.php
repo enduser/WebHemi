@@ -30,7 +30,7 @@ use PHPUnit_Framework_TestCase as TestCase;
 
 /**
  * Class ExceptionTest
- * @package WebHemiTest\Error
+ * @package WebHemiTest\Auth
  */
 class ExceptionTest extends TestCase
 {

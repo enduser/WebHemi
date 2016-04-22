@@ -24,7 +24,7 @@
 use Zend\Stdlib\ArrayUtils;
 use Zend\Stdlib\Glob;
 
-require_once 'definitions.php';
+require_once 'functions.php';
 
 $config              = [];
 $serverData          = getServerVariables();
