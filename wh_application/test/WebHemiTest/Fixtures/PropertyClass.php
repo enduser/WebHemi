@@ -26,7 +26,6 @@
 namespace WebHemiTest\Fixtures;
 
 use Zend\Diactoros\Response;
-use Zend\Diactoros\ServerRequest;
 
 /**
  * Class PropertyClass
@@ -47,11 +46,9 @@ class PropertyClass
     }
 
     /**
-     * @param null $request
-     * @param null $response
      * @return bool
      */
-    public function __invoke($request = null, $response = null)
+    public function __invoke()
     {
         return ':)';
     }
@@ -62,5 +59,14 @@ class PropertyClass
     public function setProperty($prop = null)
     {
         $this->prop = $prop;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     */
+    public function setAnyProperty($name, $value)
+    {
+        $this->{$name} = $value;
     }
 }

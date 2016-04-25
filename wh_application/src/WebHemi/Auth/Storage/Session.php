@@ -65,6 +65,8 @@ class Session implements DependencyInjectionInterface, StorageInterface
 
     /**
      * Overwrite PHP settings to be more secure
+     *
+     * @codeCoverageIgnore
      */
     protected function secureConfigSession()
     {
@@ -84,6 +86,8 @@ class Session implements DependencyInjectionInterface, StorageInterface
 
     /**
      * Regenerate Storage Session Id
+     *
+     * @codeCoverageIgnore
      */
     public function regenerateStorageId()
     {
@@ -94,6 +98,7 @@ class Session implements DependencyInjectionInterface, StorageInterface
      * Check whether the storage is empty
      *
      * @return bool
+     * @codeCoverageIgnore
      */
     public function isEmpty()
     {
@@ -155,7 +160,7 @@ class Session implements DependencyInjectionInterface, StorageInterface
      * @param string $property
      * @param object $service
      * @return void
-     * 
+     *
      * @codeCoverageIgnore
      */
     public function injectDependency($property, $service)
