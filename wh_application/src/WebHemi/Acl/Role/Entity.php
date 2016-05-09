@@ -26,6 +26,7 @@
 namespace WebHemi\Acl\Role;
 
 use WebHemi\Db\AbstractEntity;
+use Zend\Permissions\Acl\Role\RoleInterface;
 
 /**
  * Class Entity
@@ -36,9 +37,37 @@ use WebHemi\Db\AbstractEntity;
  * @property bool $isReadOnly
  * @property string $description
  */
-class Entity extends AbstractEntity
+class Entity extends AbstractEntity implements RoleInterface
 {
     const DEFAULT_ROLE = 'guest';
+
+    /**
+     * Unique id of Role
+     *
+     * @var string
+     */
+    protected $roleId;
+
+    /**
+     * Defined by RoleInterface; returns the Role identifier
+     *
+     * @return string
+     */
+    public function getRoleId()
+    {
+        return $this->roleId;
+    }
+
+    /**
+     * Defined by RoleInterface; returns the Role identifier
+     * Proxies to getRoleId()
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getRoleId();
+    }
 
     /**
      * Exchange array values into object properties.
@@ -53,6 +82,8 @@ class Entity extends AbstractEntity
         $this->name = isset($data['name']) ? $data['name'] : null;
         $this->isReadOnly = isset($data['is_read_only']) ? (bool)$data['is_read_only'] : false;
         $this->description = isset($data['description']) ? $data['description'] : null;
+
+        $this->roleId = $this->name;
 
         return $this;
     }

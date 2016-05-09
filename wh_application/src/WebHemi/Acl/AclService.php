@@ -35,7 +35,6 @@ use WebHemi\Acl\Assert\CleanIp;
 use WebHemi\User\Entity as UserEntity;
 use Zend\Permissions\Acl\Acl as ZendAcl;
 use Zend\Permissions\Acl\Exception as ZendException;
-use Zend\Permissions\Acl\Resource\GenericResource;
 use Zend\Permissions\Acl\Role\GenericRole;
 use Zend\Authentication\AuthenticationService;
 use WebHemi\Application\DependencyInjectionInterface;
@@ -85,14 +84,12 @@ class AclService implements DependencyInjectionInterface
 
             /** @var AclResourceEntity $aclResourceEntity */
             foreach ($resources as $aclResourceEntity) {
-                $resource = new GenericResource($aclResourceEntity->name);
-                $this->acl->addResource($resource);
+                $this->acl->addResource($aclResourceEntity);
             }
 
             /** @var AclRoleEntity $aclRoleEntity */
             foreach ($roles as $aclRoleEntity) {
-                $role = new GenericRole($aclRoleEntity->name);
-                $this->acl->addRole($role);
+                $this->acl->addRole($aclRoleEntity);
             }
 
             /** @var AclRuleEntity $aclRuleEntity */

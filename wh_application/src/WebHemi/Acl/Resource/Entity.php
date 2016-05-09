@@ -26,6 +26,7 @@
 namespace WebHemi\Acl\Resource;
 
 use WebHemi\Db\AbstractEntity;
+use Zend\Permissions\Acl\Resource\ResourceInterface;
 
 /**
  * Class Entity
@@ -36,8 +37,36 @@ use WebHemi\Db\AbstractEntity;
  * @property bool $isReadOnly
  * @property string $description
  */
-class Entity extends AbstractEntity
+class Entity extends AbstractEntity implements ResourceInterface
 {
+    /**
+     * Unique id of Resource
+     *
+     * @var string
+     */
+    protected $resourceId;
+
+    /**
+     * Defined by ResourceInterface; returns the Resource identifier
+     *
+     * @return string
+     */
+    public function getResourceId()
+    {
+        return $this->resourceId;
+    }
+
+    /**
+     * Defined by ResourceInterface; returns the Resource identifier
+     * Proxies to getResourceId()
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getResourceId();
+    }
+
     /**
      * Exchange array values into object properties.
      *
@@ -51,6 +80,8 @@ class Entity extends AbstractEntity
         $this->name = isset($data['name']) ? $data['name'] : null;
         $this->isReadOnly = isset($data['is_read_only']) ? (bool)$data['is_read_only'] : false;
         $this->description = isset($data['description']) ? $data['description'] : null;
+
+        $this->resourceId = $this->name;
 
         return $this;
     }
