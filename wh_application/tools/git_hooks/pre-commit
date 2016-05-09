@@ -69,8 +69,8 @@ function check_phpcs()
 {
     echo -e "\n$MAGENTA  Run PHP Code Sniffer $NORMAL"
     phpcs_path="$PROJECT_ROOT/wh_application/vendor/squizlabs/php_codesniffer"
-    #echo "$phpcs_path/scripts/phpcs --standard=$PROJECT_ROOT/wh_application/tools/validation/PhpCs/ruleset.xml $FILE "
     echo "$FILES_NAME_TO_CHECK" | while read FILE; do
+        echo "$phpcs_path/scripts/phpcs --standard=$PROJECT_ROOT/wh_application/tools/validation/PhpCs/ruleset.xml $FILE "
         result="$($phpcs_path/scripts/phpcs --standard=$PROJECT_ROOT/wh_application/tools/validation/PhpCs/ruleset.xml "$FILE" 2>&1)"
         if [ $? -ne 0 ]; then
             print_check_warn "$FILE" " + 4"
